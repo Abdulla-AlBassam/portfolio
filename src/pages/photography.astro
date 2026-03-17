@@ -5,11 +5,15 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import PhotographyGrid from "@/components/PhotographyGrid.svelte";
 
 const photographyDir = path.join(process.cwd(), "public", "photography");
+const thumbDir = path.join(photographyDir, "thumbs");
 const validExtensions = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif", ".gif"]);
 
-let photos: string[] = [];
+let photos: { src: string; thumb: string }[] = [];
 
 if (fs.existsSync(photographyDir)) {
+  const hasThumbDir = fs.existsSync(thumbDir);
+  const thumbFiles = hasThumbDir ? new Set(fs.readdirSync(thumbDir)) : new Set<string>();
+
   photos = fs
     .readdirSync(photographyDir)
     .filter((file) => {
@@ -17,7 +21,14 @@ if (fs.existsSync(photographyDir)) {
       return validExtensions.has(ext) && !file.startsWith(".");
     })
     .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
-    .map((file) => `/photography/${file}`);
+    .map((file) => {
+      const thumbName = file.replace(/\.\w+$/, ".webp");
+      const hasThumb = thumbFiles.has(thumbName);
+      return {
+        src: `/photography/${file}`,
+        thumb: hasThumb ? `/photography/thumbs/${thumbName}` : `/photography/${file}`,
+      };
+    });
 }
 ---
 

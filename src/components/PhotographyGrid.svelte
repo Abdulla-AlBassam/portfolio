@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
 
-  export let photos = [];
+  export let photos = []; // Array of { src: string, thumb: string }
 
   let expandedIndex = -1;
   let thumbRect = null;
@@ -113,7 +113,7 @@
       on:click={() => handleClick(i)}
     >
       <img
-        src={photo}
+        src={photo.thumb}
         alt=""
         loading="lazy"
         decoding="async"
@@ -132,7 +132,7 @@
   >
     <div class="overlay-backdrop"></div>
     <img
-      src={photos[expandedIndex]}
+      src={photos[expandedIndex].src}
       alt=""
       class="overlay-image"
       style={overlayImageStyle}
