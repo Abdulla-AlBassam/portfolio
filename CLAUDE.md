@@ -6,7 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 npm run dev        # Start dev server at localhost:4321
-npm run build      # Production build (static output)
+npm run build      # Generate thumbnails + Astro production build (static output to dist/)
+npm run thumbs     # Generate photography WebP thumbnails only (400px width via Sharp)
 npm run preview    # Preview production build locally
 ```
 
@@ -14,18 +15,40 @@ No test runner or linter is configured.
 
 ## Architecture
 
-Astro v4 static site with Svelte v5 interactive islands and Tailwind CSS v3. Deployed on Vercel. Site: abdulla.dev.
+Astro v4 static site with Svelte v5 interactive islands, Tailwind CSS v3, and Three.js for 3D/shader effects. TypeScript throughout. Deployed on Vercel at abdulla.dev.
+
+### Tech Stack
+
+- **Astro v4.16** — Static site generator (island architecture, zero JS by default)
+- **Svelte v5** — Interactive component islands (hydrated selectively)
+- **Tailwind CSS v3.4** — Utility-first styling
+- **Three.js v0.170** — 3D sphere scene + GLSL shader effects
+- **TypeScript v5.6** — Strict mode (extends Astro's strict config)
+- **Sharp** — Thumbnail generation (used in build script, not in package.json deps)
 
 ### Layout & Routing
 
-All pages use `src/layouts/BaseLayout.astro`, which loads the Svelte `Navigation` component with `client:load` and wraps page content in `<main>`. Pages live in `src/pages/` and map directly to routes (`me.astro` → `/me`, `projects.astro` → `/projects`).
+All pages use `src/layouts/BaseLayout.astro`, which loads the Svelte `Navigation` component with `client:load` and wraps page content in `<main>`. File-based routing in `src/pages/`.
+
+### Pages
+
+| Route | File | Key Feature |
+|-------|------|-------------|
+| `/` | `index.astro` | Hero + Three.js sphere cluster |
+| `/me` | `me.astro` | Bio, education, profile photo with shader warp |
+| `/projects` | `projects.astro` | 11 project cards, sidebar category filter |
+| `/projects/rest-api` | `projects/rest-api.astro` | REST API source code + architecture diagrams |
+| `/projects/operating-systems` | `projects/operating-systems.astro` | OS project PDF browser |
+| `/skills` | `skills.astro` | 5 skill categories + 3 certifications |
+| `/photography` | `photography.astro` | Masonry photo gallery with lightbox |
+| `/contact` | `contact.astro` | Formspree form + social links + CV download |
 
 ### Interactive Components (Svelte Islands)
 
-- **Navigation.svelte** — Full-screen menu overlay with a 2×3 CSS grid. Hover physics expand/compress grid rows and columns via reactive Svelte stores (`colTemplate`, `rowTemplate`) driven by `hoveredCell`. Mobile overrides to single column at ≤768px.
-- **ThreeScene.svelte** — Home page Three.js sphere cluster (12 metallic spheres with physics, cursor repulsion via raycasting, collision chain reactions, spring-back animation).
-- **ImageWarp.svelte** — About page profile photo with GLSL fragment shader for mouse-following Gaussian distortion (Three.js orthographic camera).
-- **PhotographyGrid.svelte** — Photography page masonry grid.
+- **Navigation.svelte** (`client:load`) — Full-screen menu overlay with 2×3 CSS grid. Hover physics expand/compress rows and columns via reactive stores (`colTemplate`, `rowTemplate`) driven by `hoveredCell`. The "Me" cell spans both columns in row 1; 4 remaining cells fill a 2×2 grid below. Mobile overrides to single column at ≤768px. Transitions: 0.6s cubic-bezier.
+- **ThreeScene.svelte** (`client:load`) — Home page Three.js scene: 12 metallic spheres with physics simulation, cursor repulsion via raycasting, sphere-to-sphere collision chain reactions, spring-back (damped oscillator), idle rotation. ACES tone mapping.
+- **ImageWarp.svelte** (`client:visible`) — About page profile photo with GLSL fragment shader for mouse-following Gaussian distortion. Three.js orthographic camera, smooth lerp (0.08 position, 0.06 strength). Hidden on mobile (≤768px).
+- **PhotographyGrid.svelte** (`client:load`) — CSS columns masonry layout (10 cols desktop → 3 cols mobile). Phase-based state machine for lightbox: idle → expanding → expanded → collapsing. Loads WebP thumbnails, swaps to full-res on click. Lazy loading + async decoding.
 
 ### Path Aliases
 
@@ -33,7 +56,7 @@ Defined in `tsconfig.json`: `@/*` → `src/*`, `@components/*`, `@layouts/*`, `@
 
 ### Styling
 
-Dark theme (#0a0a0a background, white text). Fonts: Space Grotesk (headings/display), Inter (body). Global styles in `src/styles/global.css`. Component-level styling uses Tailwind utilities.
+Dark theme (#0a0a0a background, #fafafa text). Fonts: Space Grotesk (headings/display), Inter (body) — loaded via Google Fonts with preconnect. Global styles in `src/styles/global.css` (smooth scrolling, custom scrollbar, font smoothing). Component-level styling uses Tailwind utilities inline. Primary mobile breakpoint: 768px.
 
 ### Content Collections
 
@@ -41,4 +64,69 @@ Blog collection is scaffolded in `src/content/config.ts` with Zod schema (title,
 
 ### Static Assets
 
-`public/` contains `cv.pdf`, `favicon.svg`, `robots.txt`. Photography images would go in `public/photography/`.
+```
+public/
+├── cv.pdf                    # Downloadable CV
+├── favicon.svg
+├── robots.txt
+├── aboutme.jpg               # Profile photo (used by ImageWarp shader)
+├── 01-05.jpg                 # Project poster/thumbnail images
+├── photography/              # Full-size photography gallery images
+│   └── thumbs/               # Auto-generated WebP thumbnails (gitignored)
+└── projects/
+    ├── docs/                  # Project PDFs
+    ├── rest-api/              # REST API project assets
+    └── architecture-blueprint/
+```
+
+### External Integrations
+
+- **Formspree** — Contact form backend (endpoint: `https://formspree.io/f/xreapker`)
+- **Google Fonts** — Space Grotesk + Inter (preconnect)
+- **Vercel** — Static hosting (`vercel.json` declares framework: astro)
+
+## Project Status
+
+### Completed
+- All 8 pages functional and responsive
+- Navigation with hover physics
+- Three.js home page sphere scene
+- GLSL shader profile photo effect
+- Photography masonry grid with lightbox
+- 11 project cards with category filtering
+- Contact form, skills page, about page
+
+### Not Yet Built
+- Blog posts (collection scaffolded, no content)
+- Detail pages for most projects (only rest-api and operating-systems have them)
+- Page transitions between routes
+- Light mode toggle
+
+## Key File Map
+
+```
+src/
+├── components/
+│   ├── Navigation.svelte         # Menu overlay with grid hover physics
+│   ├── ThreeScene.svelte         # Home page 3D sphere cluster
+│   ├── ImageWarp.svelte          # About page photo distortion shader
+│   └── PhotographyGrid.svelte   # Photography masonry + lightbox
+├── layouts/
+│   └── BaseLayout.astro          # Page wrapper (nav + meta + fonts)
+├── pages/
+│   ├── index.astro               # Home
+│   ├── me.astro                  # About
+│   ├── projects.astro            # Projects grid + filter
+│   ├── projects/rest-api.astro   # REST API detail page
+│   ├── projects/operating-systems.astro
+│   ├── photography.astro         # Photo gallery
+│   ├── skills.astro              # Skills + certs
+│   └── contact.astro             # Contact form
+├── styles/
+│   └── global.css                # Tailwind base + global styles
+└── content/
+    ├── config.ts                 # Blog collection schema
+    └── blog/                     # Empty, ready for .md posts
+scripts/
+└── generate-thumbs.mjs          # Sharp thumbnail generator
+```
