@@ -12,65 +12,102 @@ import ImageWarp from "@/components/ImageWarp.svelte";
     <div class="about-layout">
       <div class="about-content">
         <div class="bio">
-          <p>
-            I'm Abdulla AlBassam, a final-year Cybersecurity and Networking
-            student at Northumbria University, on track for a First Class
-            Honours degree. I'm a recipient of the Saudi government's "Emdad"
-            Scholarship (The Custodian of the Two Holy Mosques Scholarship
-            Program), and I hold the Cisco CCNA and ISC2 CC certifications,
-            with the eJPT currently in progress and the OSCP on my longer-term
-            roadmap.
-          </p>
-          <p>
-            My final year computing project sits at the intersection of machine
-            learning and cybersecurity. I am building an adversarially robust
-            spam detection system using a fine-tuned DistilBERT transformer
-            model deployed within a secure mail server pipeline, evaluating how
-            intelligent systems can be hardened against adversarial
-            manipulation. That project represents the kind of work I find most
-            compelling, where deep technical problems meet real-world security
-            threats.
-          </p>
-          <p>
-            Across my degree, I've worked hands-on in penetration testing,
-            defensive security, enterprise networking, digital forensics, and
-            secure software architecture. I've conducted vulnerability
-            assessments using Nmap and Burp Suite, implemented defensive
-            controls with iptables and Snort, designed a multi-site enterprise
-            WAN with MPLS VPN and IPSec in GNS3, carried out forensic
-            investigations using Autopsy, FTK Imager, and Volatility 3, and
-            built a secure REST API from scratch. Outside of university, I
-            sharpen my offensive skills through CTF challenges on TryHackMe and
-            Hack The Box, working through real-world exploitation and privilege
-            escalation scenarios.
-          </p>
-          <p>
-            I also build things on the side. I founded Sweaty, a social
-            platform for gamers that I designed and developed end-to-end using
-            React Native. It features reviews, ratings, curated lists, a
-            real-time social feed, AI-powered recommendations, and
-            game-library importing. The app is currently in pilot testing
-            before its full public release. Teaching myself full-stack mobile
-            development, database design, and UI/UX principles from scratch to
-            bring a product to life taught me invaluable skills in the realm of
-            how business is conducted in the real world, and I look forward to
-            further developing my computing skills, no matter the niche.
-          </p>
-          <p>
-            I'm a member of the Claude Builder Club at Northumbria, where I
-            work on agentic AI development and automation projects. I've also
-            completed certifications from Anthropic and Google in AI
-            prototyping and agentic development. Whether it's security,
-            software, or AI, I'm drawn to building things that work, breaking
-            things that don't, and understanding the theory behind both.
-          </p>
-          <p>
-            Contact me <a href="/contact" class="bio-link">here</a>, or find my
-            <a href="https://letterboxd.com/3boodi/" class="bio-link">Letterboxd</a> :)
-          </p>
+          <div class="bio-section reveal">
+            <h2 class="section-label">BACKGROUND</h2>
+            <p>
+              I'm Abdulla AlBassam, a final-year Cybersecurity and Networking
+              student at <span class="highlight">Northumbria University</span>,
+              on track for a <span class="highlight">First Class Honours</span>
+              degree. I'm a recipient of the Saudi government's
+              <span class="highlight">"Emdad" Scholarship</span> (The Custodian
+              of the Two Holy Mosques Scholarship Program), and I hold the
+              <span class="highlight">Cisco CCNA</span> and
+              <span class="highlight">ISC2 CC</span> certifications, with the
+              <span class="highlight">eJPT</span> currently in progress and the
+              <span class="highlight">OSCP</span> on my longer-term roadmap.
+            </p>
+          </div>
+
+          <div class="bio-section reveal">
+            <h2 class="section-label">FINAL YEAR PROJECT</h2>
+            <p>
+              My final year computing project sits at the intersection of
+              machine learning and cybersecurity. I am building an adversarially
+              robust spam detection system using a fine-tuned
+              <span class="highlight">DistilBERT</span> transformer model
+              deployed within a secure mail server pipeline, evaluating how
+              intelligent systems can be hardened against adversarial
+              manipulation. That project represents the kind of work I find most
+              compelling, where deep technical problems meet real-world security
+              threats.
+            </p>
+          </div>
+
+          <div class="bio-section reveal">
+            <h2 class="section-label">EXPERIENCE</h2>
+            <p>
+              Across my degree, I've worked hands-on in penetration testing,
+              defensive security, enterprise networking, digital forensics, and
+              secure software architecture. I've conducted vulnerability
+              assessments using <span class="highlight">Nmap</span> and
+              <span class="highlight">Burp Suite</span>, implemented defensive
+              controls with <span class="highlight">iptables</span> and
+              <span class="highlight">Snort</span>, designed a multi-site
+              enterprise WAN with <span class="highlight">MPLS VPN</span> and
+              <span class="highlight">IPSec</span> in
+              <span class="highlight">GNS3</span>, carried out forensic
+              investigations using <span class="highlight">Autopsy</span>,
+              <span class="highlight">FTK Imager</span>, and
+              <span class="highlight">Volatility 3</span>, and built a secure
+              REST API from scratch. Outside of university, I sharpen my
+              offensive skills through CTF challenges on
+              <span class="highlight">TryHackMe</span> and
+              <span class="highlight">Hack The Box</span>, working through
+              real-world exploitation and privilege escalation scenarios.
+            </p>
+          </div>
+
+          <div class="bio-section reveal">
+            <h2 class="section-label">SWEATY</h2>
+            <p>
+              I also build things on the side. I founded
+              <span class="highlight">Sweaty</span>, a social platform for
+              gamers that I designed and developed end-to-end using
+              <span class="highlight">React Native</span>. It features reviews,
+              ratings, curated lists, a real-time social feed, AI-powered
+              recommendations, and game-library importing. The app is currently
+              in pilot testing before its full public release. Teaching myself
+              full-stack mobile development, database design, and UI/UX
+              principles from scratch to bring a product to life taught me
+              invaluable skills in the realm of how business is conducted in the
+              real world, and I look forward to further developing my computing
+              skills, no matter the niche.
+            </p>
+          </div>
+
+          <div class="bio-section reveal">
+            <h2 class="section-label">AI & COMMUNITY</h2>
+            <p>
+              I'm a member of the <span class="highlight">Claude Builder Club</span>
+              at Northumbria, where I work on agentic AI development and
+              automation projects. I've also completed certifications from
+              <span class="highlight">Anthropic</span> and
+              <span class="highlight">Google</span> in AI prototyping and
+              agentic development. Whether it's security, software, or AI, I'm
+              drawn to building things that work, breaking things that don't,
+              and understanding the theory behind both.
+            </p>
+          </div>
+
+          <div class="bio-section reveal">
+            <p>
+              Contact me <a href="/contact" class="bio-link">here</a>, or find my
+              <a href="https://letterboxd.com/3boodi/" class="bio-link">Letterboxd</a> :)
+            </p>
+          </div>
         </div>
 
-        <div class="education">
+        <div class="education reveal">
           <h2>EDUCATION</h2>
           <div class="edu-card">
             <span class="period">2023 — 2026</span>
@@ -150,11 +187,42 @@ import ImageWarp from "@/components/ImageWarp.svelte";
     align-items: start;
   }
 
+  .bio-section {
+    margin-bottom: 2.5rem;
+  }
+
+  .section-label {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #444;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin: 0 0 0.75rem 0;
+    padding-left: 1rem;
+    border-left: 2px solid #333;
+    transition: color 0.3s, border-color 0.3s;
+  }
+
+  .bio-section:hover .section-label {
+    color: #666;
+    border-left-color: #555;
+  }
+
   .bio p {
     color: #999;
     line-height: 1.8;
     font-size: 0.95rem;
-    margin: 0 0 1.5rem 0;
+    margin: 0;
+  }
+
+  .highlight {
+    color: #ccc;
+    transition: color 0.2s;
+  }
+
+  .highlight:hover {
+    color: white;
   }
 
   .bio-link {
@@ -166,6 +234,18 @@ import ImageWarp from "@/components/ImageWarp.svelte";
 
   .bio-link:hover {
     color: white;
+  }
+
+  /* Scroll-triggered reveal animations */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .education {
@@ -277,3 +357,19 @@ import ImageWarp from "@/components/ImageWarp.svelte";
     }
   }
 </style>
+
+<script>
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15 }
+  );
+
+  document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+</script>
