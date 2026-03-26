@@ -22,7 +22,8 @@ Astro v4 static site with Svelte v5 interactive islands, Tailwind CSS v3, and Th
 - **Astro v4.16** — Static site generator (island architecture, zero JS by default)
 - **Svelte v5** — Interactive component islands (hydrated selectively)
 - **Tailwind CSS v3.4** — Utility-first styling
-- **Three.js v0.170** — 3D sphere scene + GLSL shader effects
+- **Three.js v0.170** — 3D rendering engine (used via Threlte + directly for GLSL shader effects)
+- **Threlte 8** (`@threlte/core`, `@threlte/extras`) — Declarative Svelte wrapper for Three.js
 - **TypeScript v5.6** — Strict mode (extends Astro's strict config)
 - **Sharp** — Thumbnail generation (used in build script, not in package.json deps)
 
@@ -46,7 +47,8 @@ All pages use `src/layouts/BaseLayout.astro`, which loads the Svelte `Navigation
 ### Interactive Components (Svelte Islands)
 
 - **Navigation.svelte** (`client:load`) — Full-screen menu overlay with 2×3 CSS grid. Hover physics expand/compress rows and columns via reactive stores (`colTemplate`, `rowTemplate`) driven by `hoveredCell`. The "Me" cell spans both columns in row 1; 4 remaining cells fill a 2×2 grid below. Mobile overrides to single column at ≤768px. Transitions: 0.6s cubic-bezier.
-- **ThreeScene.svelte** (`client:load`) — Home page Three.js scene: 12 metallic spheres with physics simulation, cursor repulsion via raycasting, sphere-to-sphere collision chain reactions, spring-back (damped oscillator), idle rotation. ACES tone mapping.
+- **ThreeScene.svelte** (`client:load`) — Home page 3D scene: thin Canvas wrapper using Threlte 8. Delegates to `TorusKnotScene.svelte`.
+- **TorusKnotScene.svelte** — Threlte 8 floating wireframe torus knot with mouse-follow rotation. Uses `<Float>` for bobbing/auto-rotation, `<Wireframe>` for white wireframe lines, and `useTask` for smooth cursor-tracking tilt.
 - **ImageWarp.svelte** (`client:visible`) — About page profile photo with GLSL fragment shader for mouse-following Gaussian distortion. Three.js orthographic camera, smooth lerp (0.08 position, 0.06 strength). Hidden on mobile (≤768px).
 - **PhotographyGrid.svelte** (`client:load`) — CSS columns masonry layout (10 cols desktop → 3 cols mobile). Phase-based state machine for lightbox: idle → expanding → expanded → collapsing. Loads WebP thumbnails, swaps to full-res on click. Lazy loading + async decoding.
 
@@ -108,7 +110,8 @@ public/
 src/
 ├── components/
 │   ├── Navigation.svelte         # Menu overlay with grid hover physics
-│   ├── ThreeScene.svelte         # Home page 3D sphere cluster
+│   ├── ThreeScene.svelte         # Home page 3D scene (Threlte Canvas wrapper)
+│   ├── TorusKnotScene.svelte     # Wireframe torus knot with Float + mouse-follow
 │   ├── ImageWarp.svelte          # About page photo distortion shader
 │   └── PhotographyGrid.svelte   # Photography masonry + lightbox
 ├── layouts/
