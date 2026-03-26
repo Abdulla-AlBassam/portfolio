@@ -40,17 +40,15 @@
 
   // Chain link config: 5 interlocking torus rings
   // Each link alternates rotation 90 degrees and is spaced along X
-  const linkRadius = 0.5
-  const tubeRadius = 0.08
+  const linkRadius = 1.0
+  const tubeRadius = 0.15
   const segments = isMobile ? [32, 16] : [48, 24]
-  const spacing = 0.85
+  const spacing = 1.7
 
   const links = [
-    { x: -spacing * 2, rotZ: 0 },
-    { x: -spacing,     rotZ: Math.PI / 2 },
-    { x: 0,            rotZ: 0 },
-    { x: spacing,      rotZ: Math.PI / 2 },
-    { x: spacing * 2,  rotZ: 0 },
+    { x: -spacing, rotZ: 0 },
+    { x: 0,        rotZ: Math.PI / 2 },
+    { x: spacing,  rotZ: 0 },
   ]
 </script>
 
