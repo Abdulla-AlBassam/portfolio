@@ -62,6 +62,8 @@
     return new THREE.TubeGeometry(curve, tubularSegments, tubeRadius, radialSegments, true)
   }
 
+  let particleGeo = $state(null)
+
   onMount(() => {
     isMobile = window.innerWidth < 768
 
@@ -85,20 +87,48 @@
     const geom = createChainLinkGeometry(linkWidth, linkHeight, tubeR, tSegs, rSegs)
     geometries = [geom, geom, geom]
 
+    // Atmospheric particles
+    const particleCount = isMobile ? 80 : 200
+    const positions = new Float32Array(particleCount * 3)
+    const spread = 6
+    for (let i = 0; i < particleCount; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * spread * 2
+      positions[i * 3 + 1] = (Math.random() - 0.5) * spread * 2
+      positions[i * 3 + 2] = (Math.random() - 0.5) * spread
+    }
+    const pGeo = new THREE.BufferGeometry()
+    pGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+    particleGeo = pGeo
+
     cleanup = () => {
       window.removeEventListener('mousemove', handler)
       window.removeEventListener('touchmove', handler)
       geom.dispose()
+      pGeo.dispose()
     }
   })
 
   onDestroy(() => cleanup())
 
+  let elapsed = 0
+
   useTask((delta) => {
     if (!groupRef) return
+    elapsed += delta
     const lerpSpeed = 1 - Math.pow(0.03, delta)
     groupRef.rotation.y += (mouseX * 0.4 - groupRef.rotation.y) * lerpSpeed
     groupRef.rotation.x += (mouseY * 0.25 - groupRef.rotation.x) * lerpSpeed
+
+    // Drift particles slowly
+    if (particleGeo) {
+      const pos = particleGeo.attributes.position
+      for (let i = 0; i < pos.count; i++) {
+        pos.array[i * 3 + 1] += delta * 0.08
+        // Wrap around when drifting too high
+        if (pos.array[i * 3 + 1] > 6) pos.array[i * 3 + 1] = -6
+      }
+      pos.needsUpdate = true
+    }
   })
 
   // Chain link positions and rotations
@@ -141,3 +171,16 @@
     {/each}
   </T.Group>
 </Float>
+
+{#if particleGeo}
+  <T.Points geometry={particleGeo}>
+    <T.PointsMaterial
+      color="#ffffff"
+      size={0.015}
+      transparent
+      opacity={0.4}
+      sizeAttenuation
+      depthWrite={false}
+    />
+  </T.Points>
+{/if}
