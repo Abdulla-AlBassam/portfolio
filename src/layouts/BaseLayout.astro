@@ -9,7 +9,7 @@ interface Props {
 
 const {
   title,
-  description = "Abdulla AlBassam — Cybersecurity student, network engineer, and builder.",
+  description = "Abdulla AlBassam - Cybersecurity",
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -32,6 +32,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:description" content={description} />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Analytics -->
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="8c977691-5137-4260-bd4b-9abd81c35a1a"></script>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

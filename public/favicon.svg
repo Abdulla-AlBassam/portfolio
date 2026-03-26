@@ -1,4 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="6" fill="#0A0A0A"/>
-  <text x="16" y="22" font-family="monospace" font-size="18" font-weight="bold" fill="#22D3EE" text-anchor="middle">A</text>
+  <defs>
+    <radialGradient id="sphere" cx="40%" cy="35%" r="50%">
+      <stop offset="0%" stop-color="#444"/>
+      <stop offset="60%" stop-color="#111"/>
+      <stop offset="100%" stop-color="#000"/>
+    </radialGradient>
+  </defs>
+  <circle cx="16" cy="16" r="14" fill="url(#sphere)"/>
 </svg>
