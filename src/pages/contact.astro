@@ -260,7 +260,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
   .submit-btn.sending .btn-sending { display: inline; }
 
   .submit-btn.sent {
-    background: #2a2a2a;
+    background: var(--bg-raised);
     color: var(--text-secondary);
     cursor: default;
   }
@@ -300,7 +300,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 
   .social-link:hover {
     border-color: var(--border-hover);
-    background: #0f0f0f;
+    background: var(--bg-hover);
   }
 
   .social-name {
@@ -488,9 +488,9 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
       right: '3.5rem',
       top: '50%',
       transform: 'translateY(-50%)',
-      background: '#1a1a1a',
-      border: '1px solid #333',
-      color: '#aaa',
+      background: getComputedStyle(document.documentElement).getPropertyValue('--bg-raised').trim(),
+      border: '1px solid ' + getComputedStyle(document.documentElement).getPropertyValue('--border-active').trim(),
+      color: getComputedStyle(document.documentElement).getPropertyValue('--text-muted').trim(),
       fontSize: '0.7rem',
       padding: '0.3rem 0.65rem',
       borderRadius: '0.35rem',

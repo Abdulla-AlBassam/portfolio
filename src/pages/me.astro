@@ -475,6 +475,11 @@ import ImageWarp from "@/components/ImageWarp.svelte";
     display: block;
   }
 
+  /* Invert ImageWarp shader canvas in light mode */
+  :global(html.light-mode) .photo-area :global(canvas) {
+    filter: invert(1);
+  }
+
   @media (max-width: 768px) {
     .page {
       padding: 7rem 1.5rem 3rem;

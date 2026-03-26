@@ -33,6 +33,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
+    <!-- Restore theme before paint to prevent flash -->
+    <script is:inline>
+      if (localStorage.getItem('theme-preference') === 'light') {
+        document.documentElement.classList.add('light-mode');
+      }
+    </script>
+
     <!-- Analytics -->
     <script defer src="https://cloud.umami.is/script.js" data-website-id="8c977691-5137-4260-bd4b-9abd81c35a1a"></script>
 
@@ -59,8 +66,96 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   </head>
   <body>
     <Navigation client:load />
+
+    <!-- Theme toggle -->
+    <button
+      class="theme-toggle"
+      id="theme-toggle"
+      aria-label="Toggle light mode"
+      type="button"
+    >
+      <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+        <circle cx="12" cy="12" r="5" />
+        <line x1="12" y1="1" x2="12" y2="3" />
+        <line x1="12" y1="21" x2="12" y2="23" />
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+        <line x1="1" y1="12" x2="3" y2="12" />
+        <line x1="21" y1="12" x2="23" y2="12" />
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+      </svg>
+      <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+      </svg>
+    </button>
+
     <main>
       <slot />
     </main>
+
+    <script>
+      const toggle = document.getElementById('theme-toggle');
+      const html = document.documentElement;
+      const key = 'theme-preference';
+
+      // Update aria-label to match current state
+      if (html.classList.contains('light-mode')) {
+        toggle?.setAttribute('aria-label', 'Toggle dark mode');
+      }
+
+      toggle?.addEventListener('click', () => {
+        const isLight = html.classList.toggle('light-mode');
+        localStorage.setItem(key, isLight ? 'light' : 'dark');
+        toggle.setAttribute('aria-label', isLight ? 'Toggle dark mode' : 'Toggle light mode');
+      });
+    </script>
   </body>
 </html>
+
+<style is:global>
+  /* ── Theme toggle ── */
+  .theme-toggle {
+    position: fixed;
+    top: 1.65rem;
+    right: 5.5rem;
+    z-index: 50;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: color 0.3s, border-color 0.3s;
+  }
+
+  .theme-toggle:hover {
+    color: var(--text-heading);
+    border-color: var(--border-hover);
+  }
+
+  .theme-toggle:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* Show sun in dark mode, moon in light mode */
+  .icon-moon { display: none; }
+  .icon-sun { display: block; }
+
+  html.light-mode .icon-sun { display: none; }
+  html.light-mode .icon-moon { display: block; }
+
+  @media (max-width: 768px) {
+    .theme-toggle {
+      right: 4.5rem;
+      top: 1.35rem;
+      width: 34px;
+      height: 34px;
+    }
+  }
+</style>

@@ -86,7 +86,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     letter-spacing: 0.15em;
     margin: 0 0 2rem 0;
     padding-bottom: 1rem;
-    border-bottom: 1px solid #1a1a1a;
+    border-bottom: 1px solid var(--border);
   }
 
   .file-list {
@@ -100,7 +100,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     align-items: center;
     gap: 0.75rem;
     padding: 0.85rem 1.25rem;
-    border: 1px solid #1a1a1a;
+    border: 1px solid var(--border);
     border-radius: 0.75rem;
     color: var(--text-muted);
     text-decoration: none;
@@ -112,8 +112,8 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
   }
 
   .file-item:hover {
-    border-color: #2a2a2a;
-    background: #0f0f0f;
+    border-color: var(--border-hover);
+    background: var(--bg-hover);
     color: white;
   }
 
@@ -124,7 +124,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     text-transform: uppercase;
     color: var(--text-muted);
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid #1a1a1a;
+    border: 1px solid var(--border);
     border-radius: 4px;
     padding: 0.2rem 0.5rem;
     flex-shrink: 0;

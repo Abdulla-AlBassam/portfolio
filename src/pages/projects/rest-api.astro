@@ -205,7 +205,7 @@ const blueprint = scanProjectDir("architecture-blueprint");
     letter-spacing: 0.15em;
     margin: 0 0 2rem 0;
     padding-bottom: 1rem;
-    border-bottom: 1px solid #1a1a1a;
+    border-bottom: 1px solid var(--border);
   }
 
   .section-group {
@@ -228,7 +228,7 @@ const blueprint = scanProjectDir("architecture-blueprint");
 
   .gallery-item {
     display: block;
-    border: 1px solid #1a1a1a;
+    border: 1px solid var(--border);
     border-radius: 0.75rem;
     overflow: hidden;
     transition:
@@ -237,7 +237,7 @@ const blueprint = scanProjectDir("architecture-blueprint");
   }
 
   .gallery-item:hover {
-    border-color: #2a2a2a;
+    border-color: var(--border-hover);
     transform: scale(1.02);
   }
 
@@ -258,7 +258,7 @@ const blueprint = scanProjectDir("architecture-blueprint");
     align-items: center;
     gap: 0.75rem;
     padding: 0.85rem 1.25rem;
-    border: 1px solid #1a1a1a;
+    border: 1px solid var(--border);
     border-radius: 0.75rem;
     color: var(--text-muted);
     text-decoration: none;
@@ -270,8 +270,8 @@ const blueprint = scanProjectDir("architecture-blueprint");
   }
 
   .file-item:hover {
-    border-color: #2a2a2a;
-    background: #0f0f0f;
+    border-color: var(--border-hover);
+    background: var(--bg-hover);
     color: white;
   }
 
@@ -282,7 +282,7 @@ const blueprint = scanProjectDir("architecture-blueprint");
     text-transform: uppercase;
     color: var(--text-muted);
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid #1a1a1a;
+    border: 1px solid var(--border);
     border-radius: 4px;
     padding: 0.2rem 0.5rem;
     flex-shrink: 0;
@@ -298,7 +298,7 @@ const blueprint = scanProjectDir("architecture-blueprint");
     font-size: 0.85rem;
     font-style: italic;
     padding: 2rem;
-    border: 1px dashed #1a1a1a;
+    border: 1px dashed var(--border);
     border-radius: 0.75rem;
     text-align: center;
   }

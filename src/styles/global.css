@@ -16,6 +16,9 @@
     --border-hover: #2a2a2a;
     --border-active: #333333;
 
+    /* Hover background */
+    --bg-hover: #0f0f0f;
+
     /* Text scale — all AA compliant on --bg-primary */
     --text-primary: #fafafa;       /* 17.4:1 */
     --text-heading: white;         /* 18.1:1 */
@@ -79,6 +82,7 @@
   html.light-mode {
     --bg-primary: #fafafa;
     --bg-raised: #f0f0f0;
+    --bg-hover: #f5f5f5;
     --bg-overlay: rgba(255, 255, 255, 0.9);
     --bg-subtle: rgba(0, 0, 0, 0.03);
     --bg-subtle-hover: rgba(0, 0, 0, 0.06);
