@@ -2,13 +2,65 @@
   import { T, useTask } from '@threlte/core'
   import { Float } from '@threlte/extras'
   import { onMount, onDestroy } from 'svelte'
+  import * as THREE from 'three'
 
   let groupRef = $state(null)
   let mouseX = $state(0)
   let mouseY = $state(0)
   let isMobile = $state(false)
+  let geometries = $state([])
 
   let cleanup = () => {}
+
+  /**
+   * Creates a closed stadium/oval curve for a chain link.
+   * The shape is elongated along Y with semicircular caps.
+   */
+  function createChainLinkGeometry(width, height, tubeRadius, tubularSegments, radialSegments) {
+    const halfW = width / 2
+    const straightH = (height - width) / 2
+    const r = halfW
+
+    const sLen = 2 * straightH
+    const aLen = Math.PI * r
+    const totalPerim = 2 * sLen + 2 * aLen
+
+    const points = []
+    const numPoints = 200
+
+    for (let i = 0; i < numPoints; i++) {
+      const t = i / numPoints
+      const d = t * totalPerim
+      let x, y
+
+      if (d < sLen) {
+        // Right straight going up
+        x = r
+        y = -straightH + d
+      } else if (d < sLen + aLen) {
+        // Top semicircle
+        const angle = (d - sLen) / r
+        x = r * Math.cos(angle)
+        y = straightH + r * Math.sin(angle)
+      } else if (d < 2 * sLen + aLen) {
+        // Left straight going down
+        const dd = d - sLen - aLen
+        x = -r
+        y = straightH - dd
+      } else {
+        // Bottom semicircle
+        const dd = d - 2 * sLen - aLen
+        const angle = Math.PI + dd / r
+        x = r * Math.cos(angle)
+        y = -straightH + r * Math.sin(angle)
+      }
+
+      points.push(new THREE.Vector3(x, y, 0))
+    }
+
+    const curve = new THREE.CatmullRomCurve3(points, true)
+    return new THREE.TubeGeometry(curve, tubularSegments, tubeRadius, radialSegments, true)
+  }
 
   onMount(() => {
     isMobile = window.innerWidth < 768
@@ -23,9 +75,20 @@
     window.addEventListener('mousemove', handler)
     window.addEventListener('touchmove', handler, { passive: true })
 
+    // Generate chain link geometries
+    const linkWidth = 1.2
+    const linkHeight = 2.2
+    const tubeR = 0.08
+    const tSegs = isMobile ? 64 : 128
+    const rSegs = isMobile ? 8 : 12
+
+    const geom = createChainLinkGeometry(linkWidth, linkHeight, tubeR, tSegs, rSegs)
+    geometries = [geom, geom, geom]
+
     cleanup = () => {
       window.removeEventListener('mousemove', handler)
       window.removeEventListener('touchmove', handler)
+      geom.dispose()
     }
   })
 
@@ -38,23 +101,20 @@
     groupRef.rotation.x += (mouseY * 0.25 - groupRef.rotation.x) * lerpSpeed
   })
 
-  // Chain link config: 5 interlocking torus rings
-  // Each link alternates rotation 90 degrees and is spaced along X
-  const linkRadius = 1.0
-  const tubeRadius = 0.15
-  const segments = isMobile ? [32, 16] : [48, 24]
-  const spacing = 1.7
-
+  // Chain link positions and rotations
+  // Links alternate: flat (XY plane) vs perpendicular (rotated 90deg around Y)
+  // Spaced along X so each passes through its neighbor
+  const spacing = 1.15
   const links = [
-    { x: -spacing, rotZ: 0 },
-    { x: 0,        rotZ: Math.PI / 2 },
-    { x: spacing,  rotZ: 0 },
+    { x: -spacing, rotY: 0 },
+    { x: 0,        rotY: Math.PI / 2 },
+    { x: spacing,  rotY: 0 },
   ]
 </script>
 
 <T.PerspectiveCamera
   makeDefault
-  position.z={isMobile ? 6 : 4.5}
+  position.z={isMobile ? 7 : 5.5}
   fov={50}
 />
 
@@ -68,14 +128,16 @@
   speed={1.2}
 >
   <T.Group bind:ref={groupRef} scale={isMobile ? 0.8 : 1}>
-    {#each links as link}
-      <T.Mesh
-        position.x={link.x}
-        rotation.z={link.rotZ}
-      >
-        <T.TorusGeometry args={[linkRadius, tubeRadius, segments[1], segments[0]]} />
-        <T.MeshStandardMaterial color="#ffffff" wireframe />
-      </T.Mesh>
+    {#each links as link, i}
+      {#if geometries[i]}
+        <T.Mesh
+          position.x={link.x}
+          rotation.y={link.rotY}
+          geometry={geometries[i]}
+        >
+          <T.MeshStandardMaterial color="#ffffff" wireframe />
+        </T.Mesh>
+      {/if}
     {/each}
   </T.Group>
 </Float>

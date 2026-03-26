@@ -5,7 +5,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 <BaseLayout title="Contact — Abdulla AlBassam">
   <div class="page">
     <div class="page-header">
-      <h1>CONTACT</h1>
+      <h1 class="reveal" data-delay="0">CONTACT</h1>
     </div>
 
     <div class="contact-layout">
@@ -21,9 +21,10 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
             style="display:none"
             tabindex="-1"
             autocomplete="off"
+            aria-hidden="true"
           />
 
-          <div class="form-group">
+          <div class="form-group reveal" data-delay="80">
             <label for="name">Name</label>
             <input
               type="text"
@@ -34,7 +35,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
             />
           </div>
 
-          <div class="form-group">
+          <div class="form-group reveal" data-delay="160">
             <label for="email">Email</label>
             <input
               type="email"
@@ -45,7 +46,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
             />
           </div>
 
-          <div class="form-group">
+          <div class="form-group reveal" data-delay="240">
             <label for="message">Message</label>
             <textarea
               id="message"
@@ -55,18 +56,26 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
               placeholder="What's on your mind?"></textarea>
           </div>
 
-          <button type="submit" class="submit-btn">Send Message</button>
+          <div class="reveal" data-delay="320">
+            <button type="submit" class="submit-btn" id="submit-btn">
+              <span class="btn-text">Send Message</span>
+              <span class="btn-sending">Sending...</span>
+              <span class="btn-sent">Sent</span>
+              <span class="btn-error">Try again</span>
+            </button>
+          </div>
         </form>
       </div>
 
       <div class="contact-links">
-        <h3>FIND ME ON</h3>
+        <h3 class="reveal" data-delay="100">FIND ME ON</h3>
 
         <a
           href="https://linkedin.com/in/abdulla-albassam"
           target="_blank"
           rel="noopener noreferrer"
-          class="social-link"
+          class="social-link reveal"
+          data-delay="160"
         >
           <span class="social-name">LinkedIn</span>
           <span class="arrow">&nearr;</span>
@@ -76,28 +85,41 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
           href="https://github.com/Abdulla-AlBassam"
           target="_blank"
           rel="noopener noreferrer"
-          class="social-link"
+          class="social-link reveal"
+          data-delay="220"
         >
           <span class="social-name">GitHub</span>
           <span class="arrow">&nearr;</span>
         </a>
 
-        <a href="mailto:abdulla.a.albassam@gmail.com" class="social-link">
-          <span class="social-name">Email</span>
+        <a
+          href="https://tryhackme.com/p/AbdullaAlBassam"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="social-link reveal"
+          data-delay="280"
+        >
+          <span class="social-name">TryHackMe</span>
           <span class="arrow">&nearr;</span>
         </a>
+
+        <button type="button" class="social-link email-copy reveal" data-email="abdulla.a.albassam@gmail.com" data-delay="340">
+          <span class="social-name">Email</span>
+          <span class="arrow">&nearr;</span>
+        </button>
 
         <a
           href="https://letterboxd.com/3boodi/"
           target="_blank"
           rel="noopener noreferrer"
-          class="social-link"
+          class="social-link reveal"
+          data-delay="400"
         >
           <span class="social-name">Letterboxd</span>
           <span class="arrow">&nearr;</span>
         </a>
 
-        <a href="/cv.pdf" download class="cv-link">Download CV</a>
+        <a href="/cv.pdf" download class="cv-link reveal" data-delay="460">Download CV</a>
       </div>
     </div>
   </div>
@@ -111,20 +133,18 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     margin: 0 auto;
   }
 
+  .page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
   .page-header h1 {
     font-family: "Space Grotesk", sans-serif;
     font-size: clamp(2.5rem, 6vw, 5rem);
     font-weight: 700;
     letter-spacing: -0.03em;
-    color: white;
+    color: var(--text-heading);
     margin: 0;
-  }
-
-  .page-desc {
-    color: #666;
-    margin-top: 1rem;
-    font-size: 0.95rem;
-    margin-bottom: 4rem;
   }
 
   .contact-layout {
@@ -134,7 +154,20 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     align-items: start;
   }
 
-  /* Form */
+  /* ── Staggered reveal ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── Form ── */
   .form-group {
     margin-bottom: 1.5rem;
   }
@@ -143,71 +176,110 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     display: block;
     font-size: 0.8rem;
     font-weight: 500;
-    color: #888;
+    color: var(--text-muted);
     margin-bottom: 0.5rem;
     font-family: "Space Grotesk", sans-serif;
     letter-spacing: 0.05em;
+    transition: color 0.3s;
+  }
+
+  .form-group:focus-within label {
+    color: var(--text-secondary);
   }
 
   .form-group input,
   .form-group textarea {
     width: 100%;
     padding: 0.85rem 1rem;
-    background: #111;
-    border: 1px solid #1a1a1a;
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
     border-radius: 0.5rem;
-    color: white;
+    color: var(--text-heading);
     font-size: 0.9rem;
     font-family: "Inter", sans-serif;
-    transition: border-color 0.2s;
     outline: none;
+    transition: border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .form-group input::placeholder,
   .form-group textarea::placeholder {
-    color: #444;
+    color: var(--text-muted);
+    transition: opacity 0.2s;
+  }
+
+  .form-group input:focus::placeholder,
+  .form-group textarea:focus::placeholder {
+    opacity: 0.5;
   }
 
   .form-group input:focus,
   .form-group textarea:focus {
-    border-color: #333;
+    border-color: var(--border-active);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.03);
   }
 
   .form-group textarea {
     resize: none;
   }
 
+  /* ── Submit button ── */
   .submit-btn {
+    position: relative;
     width: 100%;
     padding: 0.85rem;
-    background: white;
-    color: #0a0a0a;
+    background: var(--text-primary);
+    color: var(--bg-primary);
     border: none;
     border-radius: 0.5rem;
     font-size: 0.9rem;
     font-weight: 600;
     font-family: "Space Grotesk", sans-serif;
     cursor: pointer;
-    transition:
-      background 0.2s,
-      transform 0.2s;
+    overflow: hidden;
+    transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1),
+                background 0.2s;
   }
 
   .submit-btn:hover {
     background: #e0e0e0;
-    transform: translateY(-1px);
   }
 
   .submit-btn:active {
-    transform: translateY(0);
+    transform: scale(0.985);
   }
 
-  /* Social links */
+  /* Button state text */
+  .btn-sending,
+  .btn-sent,
+  .btn-error {
+    display: none;
+  }
+
+  .submit-btn.sending .btn-text { display: none; }
+  .submit-btn.sending .btn-sending { display: inline; }
+
+  .submit-btn.sent {
+    background: #2a2a2a;
+    color: var(--text-secondary);
+    cursor: default;
+  }
+  .submit-btn.sent .btn-text { display: none; }
+  .submit-btn.sent .btn-sent { display: inline; }
+
+  .submit-btn.error {
+    background: #2a1a1a;
+    color: #ff8888;
+  }
+  .submit-btn.error .btn-text { display: none; }
+  .submit-btn.error .btn-error { display: inline; }
+
+  /* ── Social links ── */
   .contact-links h3 {
     font-family: "Space Grotesk", sans-serif;
     font-size: 0.7rem;
     font-weight: 600;
-    color: #555;
+    color: var(--text-muted);
     letter-spacing: 0.15em;
     margin: 0 0 1.25rem 0;
   }
@@ -217,58 +289,92 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     justify-content: space-between;
     align-items: center;
     padding: 1rem 1.25rem;
-    border: 1px solid #1a1a1a;
+    border: 1px solid var(--border);
     border-radius: 0.5rem;
     margin-bottom: 0.75rem;
-    transition:
-      border-color 0.2s,
-      background 0.2s;
     text-decoration: none;
-    color: white;
+    color: var(--text-heading);
+    transition: border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                background 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .social-link:hover {
-    border-color: #2a2a2a;
+    border-color: var(--border-hover);
     background: #0f0f0f;
   }
 
   .social-name {
     font-size: 0.9rem;
-    color: #ccc;
+    color: var(--text-secondary);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .social-link:hover .social-name {
+    transform: translateX(4px);
   }
 
   .arrow {
-    color: #555;
+    color: var(--text-muted);
     font-size: 1.1rem;
-    transition: transform 0.2s;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   .social-link:hover .arrow {
-    transform: translate(2px, -2px);
+    transform: translate(3px, -3px);
+  }
+
+  .email-copy {
+    position: relative;
+    cursor: pointer;
+    background: none;
+    font: inherit;
+    width: 100%;
   }
 
   .cv-link {
     display: block;
     text-align: center;
     padding: 1rem;
-    border: 1px solid #2a2a2a;
+    border: 1px solid var(--border-hover);
     border-radius: 0.5rem;
     margin-top: 1rem;
     font-size: 0.85rem;
     font-weight: 600;
     font-family: "Space Grotesk", sans-serif;
-    color: white;
-    transition:
-      background 0.2s,
-      border-color 0.2s;
+    color: var(--text-heading);
     text-decoration: none;
+    transition: background 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .cv-link:hover {
-    background: #111;
-    border-color: #333;
+    background: var(--bg-raised);
+    border-color: var(--border-active);
   }
 
+  /* ── Reduced motion ── */
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .submit-btn {
+      transition: background 0.2s;
+    }
+
+    .social-link,
+    .social-name,
+    .arrow,
+    .form-group input,
+    .form-group textarea,
+    .form-group label {
+      transition: none;
+    }
+  }
+
+  /* ── Mobile ── */
   @media (max-width: 768px) {
     .page {
       padding: 7rem 1.5rem 3rem;
@@ -280,3 +386,122 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     }
   }
 </style>
+
+<script>
+  // ── Staggered reveal on load ──
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll('.reveal').forEach((el) => {
+    if (prefersReduced) {
+      el.classList.add('visible');
+      return;
+    }
+    const delay = parseInt(el.dataset.delay || '0', 10);
+    setTimeout(() => el.classList.add('visible'), delay);
+  });
+
+  // ── Magnetic submit button ──
+  const submitBtn = document.getElementById('submit-btn');
+  if (submitBtn && !prefersReduced) {
+    const maxShift = 4; // px
+    const radius = 120; // activation radius in px
+
+    submitBtn.closest('.reveal')?.addEventListener('mousemove', (e) => {
+      const rect = submitBtn.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist < radius) {
+        const strength = 1 - dist / radius;
+        const tx = dx * strength * 0.15;
+        const ty = dy * strength * 0.15;
+        const clampedX = Math.max(-maxShift, Math.min(maxShift, tx));
+        const clampedY = Math.max(-maxShift, Math.min(maxShift, ty));
+        submitBtn.style.transform = `translate(${clampedX}px, ${clampedY}px)`;
+      } else {
+        submitBtn.style.transform = '';
+      }
+    });
+
+    submitBtn.closest('.reveal')?.addEventListener('mouseleave', () => {
+      submitBtn.style.transform = '';
+    });
+  }
+
+  // ── Form submission with state machine ──
+  const form = document.getElementById('contact-form');
+  if (form && submitBtn) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (submitBtn.classList.contains('sending') || submitBtn.classList.contains('sent')) return;
+
+      submitBtn.classList.remove('error');
+      submitBtn.classList.add('sending');
+
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' },
+        });
+
+        if (res.ok) {
+          submitBtn.classList.remove('sending');
+          submitBtn.classList.add('sent');
+          form.reset();
+        } else {
+          throw new Error('Submit failed');
+        }
+      } catch {
+        submitBtn.classList.remove('sending');
+        submitBtn.classList.add('error');
+        setTimeout(() => {
+          submitBtn.classList.remove('error');
+        }, 3000);
+      }
+    });
+  }
+
+  // ── Email copy ──
+  document.querySelector('.email-copy')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    const email = btn.dataset.email;
+    if (!email) return;
+
+    try {
+      await navigator.clipboard.writeText(email);
+    } catch {
+      return;
+    }
+
+    const existing = btn.querySelector('.copy-toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('span');
+    toast.className = 'copy-toast';
+    toast.textContent = 'Copied to clipboard';
+    Object.assign(toast.style, {
+      position: 'absolute',
+      right: '3.5rem',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      background: '#1a1a1a',
+      border: '1px solid #333',
+      color: '#aaa',
+      fontSize: '0.7rem',
+      padding: '0.3rem 0.65rem',
+      borderRadius: '0.35rem',
+      whiteSpace: 'nowrap',
+      pointerEvents: 'none',
+      opacity: '1',
+      transition: 'opacity 0.4s ease',
+    });
+    btn.appendChild(toast);
+
+    setTimeout(() => { toast.style.opacity = '0'; }, 1000);
+    setTimeout(() => toast.remove(), 1400);
+  });
+</script>

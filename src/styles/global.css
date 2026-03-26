@@ -3,6 +3,35 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* Background scale */
+    --bg-primary: #0a0a0a;
+    --bg-raised: #111111;
+    --bg-overlay: rgba(0, 0, 0, 0.85);
+    --bg-subtle: rgba(255, 255, 255, 0.03);
+    --bg-subtle-hover: rgba(255, 255, 255, 0.08);
+
+    /* Border scale */
+    --border: #1a1a1a;
+    --border-hover: #2a2a2a;
+    --border-active: #333333;
+
+    /* Text scale — all AA compliant on --bg-primary */
+    --text-primary: #fafafa;       /* 17.4:1 */
+    --text-heading: white;         /* 18.1:1 */
+    --text-secondary: #aaaaaa;     /* 7.5:1 */
+    --text-muted: #888888;         /* 4.84:1 — AA pass for normal text */
+    --text-faint: #888888;         /* 4.84:1 — floor for AA compliance */
+
+    /* Accent */
+    --accent: #ffffff;
+
+    /* Scrollbar */
+    --scrollbar-track: #0a0a0a;
+    --scrollbar-thumb: #1a1a1a;
+    --scrollbar-thumb-hover: #333333;
+  }
+
   html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
@@ -10,8 +39,8 @@
   }
 
   body {
-    background: #0a0a0a;
-    color: #fafafa;
+    background: var(--bg-primary);
+    color: var(--text-primary);
     font-family: "Inter", system-ui, sans-serif;
     overflow-x: hidden;
     margin: 0;
@@ -26,14 +55,14 @@
     width: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: #0a0a0a;
+    background: var(--bg-primary);
   }
   ::-webkit-scrollbar-thumb {
-    background: #1a1a1a;
+    background: var(--scrollbar-thumb);
     border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #333;
+    background: var(--scrollbar-thumb-hover);
   }
 
   ::selection {
@@ -44,5 +73,35 @@
   a {
     color: inherit;
     text-decoration: none;
+  }
+
+  /* ── Light mode overrides ── */
+  html.light-mode {
+    --bg-primary: #fafafa;
+    --bg-raised: #f0f0f0;
+    --bg-overlay: rgba(255, 255, 255, 0.9);
+    --bg-subtle: rgba(0, 0, 0, 0.03);
+    --bg-subtle-hover: rgba(0, 0, 0, 0.06);
+
+    --border: #e0e0e0;
+    --border-hover: #cccccc;
+    --border-active: #bbbbbb;
+
+    --text-primary: #1a1a1a;
+    --text-heading: #000000;
+    --text-secondary: #555555;
+    --text-muted: #777777;
+    --text-faint: #777777;
+
+    --accent: #000000;
+
+    --scrollbar-track: #fafafa;
+    --scrollbar-thumb: #dddddd;
+    --scrollbar-thumb-hover: #bbbbbb;
+  }
+
+  html.light-mode ::selection {
+    background: rgba(0, 0, 0, 0.1);
+    color: #000;
   }
 }

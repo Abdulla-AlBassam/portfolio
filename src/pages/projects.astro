@@ -5,7 +5,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 <BaseLayout title="Projects — Abdulla AlBassam">
   <div class="page">
     <div class="page-header">
-      <h1>PROJECTS</h1>
+      <h1 class="hero-title">PROJECTS</h1>
       <p class="page-desc">
         Hands-on projects across various fields.
       </p>
@@ -27,11 +27,11 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 
       <!-- Right: Project cards -->
       <div class="project-grid">
-        <a class="project-link" href="TODO_LINK_12" target="_blank" rel="noopener noreferrer" data-category="machine-learning in-progress">
+        <div class="project-link" data-category="machine-learning in-progress">
           <div class="project-card">
             <span class="in-progress-badge">In Progress</span>
             <div class="project-thumbnail">
-              <img src="/projects/12.jpg" alt="Spam Detection poster" class="project-poster" />
+              <img src="/projects/12.jpg" alt="Spam Detection poster" class="project-poster" loading="lazy" decoding="async" />
             </div>
             <h3>Secure Local Mail System with Machine Learning-Based Spam Detection Under Adversarial Conditions</h3>
             <p class="technical">
@@ -55,13 +55,13 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
               <span>Adversarial ML</span>
             </div>
           </div>
-        </a>
+        </div>
 
         <a class="project-link" href="https://www.linkedin.com/in/abdulla-albassam/overlay/experience/2864877680/multiple-media-viewer/?profileId=ACoAAF0wWosB-M5smshM0TcBM7F127DOES9M6N8&treasuryMediaId=1773201904530" target="_blank" rel="noopener noreferrer" data-category="development in-progress">
           <div class="project-card">
             <span class="in-progress-badge">In Progress</span>
             <div class="project-thumbnail">
-              <img src="/projects/11.jpg" alt="Sweaty poster" class="project-poster" />
+              <img src="/projects/11.jpg" alt="Sweaty poster" class="project-poster" loading="lazy" decoding="async" />
             </div>
             <h3>Sweaty: Social Game Diary & Discovery Platform</h3>
             <p class="technical">
@@ -90,11 +90,11 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
           </div>
         </a>
 
-        <a class="project-link" href="TODO_LINK_07" target="_blank" rel="noopener noreferrer" data-category="cybersecurity in-progress">
+        <div class="project-link" data-category="cybersecurity in-progress">
           <div class="project-card">
             <span class="in-progress-badge">In Progress</span>
             <div class="project-thumbnail">
-              <img src="/projects/07.jpg" alt="Penetration Testing poster" class="project-poster" />
+              <img src="/projects/07.jpg" alt="Penetration Testing poster" class="project-poster" loading="lazy" decoding="async" />
             </div>
             <h3>Penetration Testing: Vulnerable VM Pen Test</h3>
             <p class="technical">
@@ -115,13 +115,13 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
               <span>Enumeration</span>
             </div>
           </div>
-        </a>
+        </div>
 
-        <a class="project-link" href="TODO_LINK_09" target="_blank" rel="noopener noreferrer" data-category="cybersecurity in-progress">
+        <div class="project-link" data-category="cybersecurity in-progress">
           <div class="project-card">
             <span class="in-progress-badge">In Progress</span>
             <div class="project-thumbnail">
-              <img src="/projects/09.jpg" alt="Secure Transaction Protocol poster" class="project-poster" />
+              <img src="/projects/09.jpg" alt="Secure Transaction Protocol poster" class="project-poster" loading="lazy" decoding="async" />
             </div>
             <h3>Secure Transaction Protocol + Infrastructure Hardening Plan</h3>
             <p class="technical">
@@ -145,12 +145,12 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
               <span>Linux Hardening</span>
             </div>
           </div>
-        </a>
+        </div>
 
         <a class="project-link" href="/projects/docs/enterprise-wan.pdf" target="_blank" rel="noopener noreferrer" data-category="networking">
           <div class="project-card">
             <div class="project-thumbnail">
-              <img src="/projects/05.jpg" alt="Segmented WAN poster" class="project-poster" />
+              <img src="/projects/05.jpg" alt="Segmented WAN poster" class="project-poster" loading="lazy" decoding="async" />
             </div>
             <h3>Enterprise Networking: Segmented WAN with Selective IPsec</h3>
             <p class="technical">
@@ -179,7 +179,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
         <a class="project-link" href="/projects/docs/digital-forensics.pdf" target="_blank" rel="noopener noreferrer" data-category="cybersecurity">
           <div class="project-card">
             <div class="project-thumbnail">
-              <img src="/projects/03.jpg" alt="Digital Forensics poster" class="project-poster" />
+              <img src="/projects/03.jpg" alt="Digital Forensics poster" class="project-poster" loading="lazy" decoding="async" />
             </div>
             <h3>Digital Forensics: RAM-to-Disk Forensic Timeline Reconstruction</h3>
             <p class="technical">
@@ -203,10 +203,10 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
           </div>
         </a>
 
-        <a class="project-link" href="TODO_LINK_10" target="_blank" rel="noopener noreferrer" data-category="cybersecurity">
+        <div class="project-link" data-category="cybersecurity">
           <div class="project-card">
             <div class="project-thumbnail">
-              <img src="/projects/10.jpg" alt="Client Audit poster" class="project-poster" />
+              <img src="/projects/10.jpg" alt="Client Audit poster" class="project-poster" loading="lazy" decoding="async" />
             </div>
             <h3>Client Audit + Security Assessment Report</h3>
             <p class="technical">
@@ -229,12 +229,12 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
               <span>Client Communication</span>
             </div>
           </div>
-        </a>
+        </div>
 
         <a class="project-link" href="/projects/docs/secure-vlan.pdf" target="_blank" rel="noopener noreferrer" data-category="networking">
           <div class="project-card">
             <div class="project-thumbnail">
-              <img src="/projects/04.jpg" alt="VLAN Routing poster" class="project-poster" />
+              <img src="/projects/04.jpg" alt="VLAN Routing poster" class="project-poster" loading="lazy" decoding="async" />
             </div>
             <h3>Networking: Secure VLAN Routing + Layer-2 Hardening</h3>
             <p class="technical">
@@ -260,7 +260,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
         <a class="project-link" href="/projects/docs/qualitative-study.pdf" target="_blank" rel="noopener noreferrer" data-category="cybersecurity">
           <div class="project-card">
             <div class="project-thumbnail">
-              <img src="/projects/01.jpg" alt="Qualitative Study poster" class="project-poster" />
+              <img src="/projects/01.jpg" alt="Qualitative Study poster" class="project-poster" loading="lazy" decoding="async" />
             </div>
             <h3>Qualitative Study: Young-Adult Security Literacy Study</h3>
             <p class="technical">
@@ -285,7 +285,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
         <a class="project-link" href="/projects/rest-api" data-category="cybersecurity development">
           <div class="project-card">
             <div class="project-thumbnail">
-              <img src="/projects/02.jpg" alt="REST API poster" class="project-poster" />
+              <img src="/projects/02.jpg" alt="REST API poster" class="project-poster" loading="lazy" decoding="async" />
             </div>
             <h3>REST API Build + Architecture Blueprint</h3>
             <p class="technical">
@@ -314,7 +314,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
         <a class="project-link" href="/projects/operating-systems" data-category="development networking">
           <div class="project-card">
             <div class="project-thumbnail">
-              <img src="/projects/06.jpg" alt="Operating Systems poster" class="project-poster" />
+              <img src="/projects/06.jpg" alt="Operating Systems poster" class="project-poster" loading="lazy" decoding="async" />
             </div>
             <h3>Operating Systems: Concurrent C Systems + HA DNS/Web Infrastructure</h3>
             <p class="technical">
@@ -346,8 +346,29 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 
 <script>
   const filterLinks = document.querySelectorAll('.project-index a');
-  const projectLinks = document.querySelectorAll('.project-link');
+  const projectCards = document.querySelectorAll('.project-link');
 
+  // Staggered reveal on scroll
+  const revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const delay = Number((entry.target as HTMLElement).dataset.revealDelay || 0);
+          setTimeout(() => entry.target.classList.add('revealed'), delay);
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.08 }
+  );
+
+  projectCards.forEach((card, i) => {
+    (card as HTMLElement).dataset.revealDelay = String(i * 80);
+    card.classList.add('card-reveal');
+    revealObserver.observe(card);
+  });
+
+  // Animated filter transitions
   filterLinks.forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
@@ -356,12 +377,29 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
       filterLinks.forEach(l => l.classList.remove('active'));
       link.classList.add('active');
 
-      projectLinks.forEach(el => {
-        const categories = (el as HTMLElement).dataset.category || '';
-        if (filter === 'all' || categories.includes(filter)) {
-          (el as HTMLElement).style.display = '';
+      let visibleIndex = 0;
+      projectCards.forEach(el => {
+        const card = el as HTMLElement;
+        const categories = card.dataset.category || '';
+        const matches = filter === 'all' || categories.includes(filter);
+
+        if (matches) {
+          card.style.display = '';
+          card.style.transitionDelay = `${visibleIndex * 50}ms`;
+          // Force reflow then add class
+          requestAnimationFrame(() => {
+            card.classList.remove('filter-out');
+            card.classList.add('filter-in');
+          });
+          visibleIndex++;
         } else {
-          (el as HTMLElement).style.display = 'none';
+          card.classList.remove('filter-in');
+          card.classList.add('filter-out');
+          setTimeout(() => {
+            if (card.classList.contains('filter-out')) {
+              card.style.display = 'none';
+            }
+          }, 250);
         }
       });
     });
@@ -377,20 +415,37 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
   }
 
   .page-header {
+    text-align: center;
     margin-bottom: 4rem;
   }
 
-  .page-header h1 {
+  .page-header {
+    overflow: hidden;
+  }
+
+  .hero-title {
     font-family: "Space Grotesk", sans-serif;
     font-size: clamp(2.5rem, 6vw, 5rem);
     font-weight: 700;
     letter-spacing: -0.03em;
-    color: white;
+    color: var(--text-heading);
     margin: 0;
+    animation: title-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes title-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .page-desc {
-    color: #666;
+    color: var(--text-muted);
     margin-top: 1rem;
     font-size: 0.95rem;
   }
@@ -406,7 +461,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     font-family: "Space Grotesk", sans-serif;
     font-size: 0.7rem;
     font-weight: 600;
-    color: #555;
+    color: var(--text-muted);
     letter-spacing: 0.15em;
     margin: 0 0 1.25rem 0;
   }
@@ -422,15 +477,36 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
   }
 
   .project-index a {
-    color: #555;
+    color: var(--text-muted);
     font-size: 0.85rem;
     transition: color 0.2s;
     text-decoration: none;
+    position: relative;
+    padding-bottom: 2px;
+  }
+
+  .project-index a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 0;
+    height: 1px;
+    background: var(--text-heading);
+    transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .project-index a:hover,
   .project-index a.active {
-    color: white;
+    color: var(--text-heading);
+  }
+
+  .project-index a.active::after {
+    width: 100%;
+  }
+
+  .project-index a:hover::after {
+    width: 100%;
   }
 
   /* Project grid */
@@ -446,15 +522,43 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     color: inherit;
   }
 
+  /* Staggered card reveal */
+  .card-reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .card-reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Filter animation */
+  .filter-out {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .filter-in {
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
   .project-card {
     position: relative;
-    border: 1px solid #1a1a1a;
+    border: 1px solid var(--border);
     border-radius: 0.75rem;
     padding: 1.25rem;
     transition:
       border-color 0.3s,
       background 0.3s,
-      transform 0.3s;
+      transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.35s;
   }
 
   .project-card::after {
@@ -464,26 +568,27 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     right: 0.7rem;
     font-size: 1.5rem;
     font-weight: 700;
-    color: white;
+    color: var(--text-heading);
     opacity: 0;
     transform: translate(4px, 4px);
-    transition: opacity 0.25s, transform 0.25s;
+    transition: opacity 0.25s, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .project-link:hover .project-card {
-    border-color: #2a2a2a;
+  a.project-link:hover .project-card {
+    border-color: var(--border-hover);
     background: #0f0f0f;
-    transform: scale(1.03);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   }
 
-  .project-link:hover .project-card::after {
+  a.project-link:hover .project-card::after {
     opacity: 1;
     transform: translate(0, 0);
   }
 
   .project-thumbnail {
     aspect-ratio: 16 / 10;
-    background: #111;
+    background: var(--bg-raised);
     border-radius: 0.5rem;
     display: flex;
     align-items: center;
@@ -496,31 +601,36 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .project-link:hover .project-poster {
+    transform: scale(1.05);
   }
 
   .project-card h3 {
     font-family: "Space Grotesk", sans-serif;
     font-size: 1.1rem;
     font-weight: 600;
-    color: white;
+    color: var(--text-heading);
     margin: 0 0 0.5rem 0;
   }
 
   .project-card p {
     font-size: 0.85rem;
-    color: #888;
+    color: var(--text-muted);
     line-height: 1.5;
     margin: 0 0 1rem 0;
   }
 
   .project-card .technical {
-    color: #666;
+    color: var(--text-muted);
     font-size: 0.8rem;
     line-height: 1.6;
   }
 
   .project-card .plain {
-    color: #aaa;
+    color: var(--text-secondary);
     font-size: 0.85rem;
     font-style: italic;
   }
@@ -536,9 +646,9 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     letter-spacing: 0.05em;
     text-transform: uppercase;
     padding: 0.3rem 0.65rem;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--bg-subtle-hover);
     border: 1px solid #333;
-    color: #aaa;
+    color: var(--text-secondary);
     border-radius: 999px;
   }
 
@@ -552,10 +662,10 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     font-size: 0.7rem;
     font-family: "Inter", sans-serif;
     padding: 0.25rem 0.75rem;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid #1a1a1a;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
     border-radius: 999px;
-    color: #888;
+    color: var(--text-muted);
   }
 
   @media (max-width: 768px) {

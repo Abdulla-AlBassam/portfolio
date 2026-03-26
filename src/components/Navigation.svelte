@@ -1,6 +1,9 @@
 <script>
   let menuOpen = false;
   let hoveredCell = -1;
+  let hamburgerEl;
+  let overlayEl;
+  let closeEl;
 
   const sections = [
     { num: "02", name: "Projects", href: "/projects" },
@@ -9,13 +12,52 @@
     { num: "05", name: "Contact", href: "/contact" },
   ];
 
+  function openMenu() {
+    menuOpen = true;
+    document.body.style.overflow = "hidden";
+    // Focus the close button after the overlay becomes visible
+    requestAnimationFrame(() => {
+      if (closeEl) closeEl.focus();
+    });
+  }
+
+  function closeMenu() {
+    menuOpen = false;
+    document.body.style.overflow = "";
+    hoveredCell = -1;
+    // Return focus to the hamburger
+    if (hamburgerEl) hamburgerEl.focus();
+  }
+
   function toggleMenu() {
-    menuOpen = !menuOpen;
-    if (menuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-      hoveredCell = -1;
+    if (menuOpen) closeMenu();
+    else openMenu();
+  }
+
+  function handleOverlayKeydown(e) {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      closeMenu();
+      return;
+    }
+
+    // Focus trap: keep Tab cycling within the overlay
+    if (e.key === "Tab" && overlayEl) {
+      const focusable = overlayEl.querySelectorAll(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     }
   }
 
@@ -44,7 +86,10 @@
   <button
     class="hamburger"
     on:click={toggleMenu}
-    aria-label="Open menu"
+    aria-label="Menu"
+    aria-expanded={menuOpen}
+    aria-controls="nav-overlay"
+    bind:this={hamburgerEl}
   >
     <span class="hamburger-line"></span>
     <span class="hamburger-line"></span>
@@ -53,13 +98,23 @@
 </header>
 
 <!-- Menu overlay -->
-<div class="menu-overlay" class:open={menuOpen}>
+<div
+  id="nav-overlay"
+  class="menu-overlay"
+  class:open={menuOpen}
+  role="dialog"
+  aria-modal="true"
+  aria-label="Site navigation"
+  on:keydown={handleOverlayKeydown}
+  bind:this={overlayEl}
+>
   <div class="menu-top">
-    <a href="/" class="logo" on:click={toggleMenu}>A.</a>
+    <a href="/" class="logo" on:click={closeMenu}>A.</a>
     <button
       class="close-btn"
-      on:click={toggleMenu}
+      on:click={closeMenu}
       aria-label="Close menu"
+      bind:this={closeEl}
     >
       <svg
         width="28"
@@ -75,8 +130,9 @@
     </button>
   </div>
 
-  <div
+  <nav
     class="menu-grid"
+    aria-label="Main navigation"
     style="grid-template-columns: {colTemplate}; grid-template-rows: {rowTemplate};"
   >
     {#each sections as section, i}
@@ -85,7 +141,7 @@
         class="menu-cell"
         on:mouseenter={() => (hoveredCell = i)}
         on:mouseleave={() => (hoveredCell = -1)}
-        on:click={toggleMenu}
+        on:click={closeMenu}
       >
         <span class="cell-number">{section.num}</span>
         <span class="cell-name">{section.name}.</span>
@@ -97,12 +153,12 @@
       class="menu-cell me-cell"
       on:mouseenter={() => (hoveredCell = 4)}
       on:mouseleave={() => (hoveredCell = -1)}
-      on:click={toggleMenu}
+      on:click={closeMenu}
     >
       <span class="cell-number">01</span>
       <span class="cell-name me-name">Me.</span>
     </a>
-  </div>
+  </nav>
 
   <div class="menu-footer">
     <p>&copy; 2026 Abdulla AlBassam</p>
@@ -133,7 +189,7 @@
     font-family: "Space Grotesk", sans-serif;
     font-size: 1.6rem;
     font-weight: 700;
-    color: white;
+    color: var(--text-heading);
     text-decoration: none;
     letter-spacing: -0.02em;
     transition: opacity 0.2s;
@@ -153,11 +209,16 @@
     padding: 8px;
   }
 
+  .hamburger:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
   .hamburger-line {
     display: block;
     width: 26px;
     height: 2px;
-    background: white;
+    background: var(--text-heading);
     border-radius: 1px;
     transition: transform 0.3s, opacity 0.3s;
   }
@@ -167,7 +228,7 @@
     position: fixed;
     inset: 0;
     z-index: 100;
-    background: #0a0a0a;
+    background: var(--bg-primary);
     display: flex;
     flex-direction: column;
     opacity: 0;
@@ -193,7 +254,7 @@
   .close-btn {
     background: none;
     border: none;
-    color: white;
+    color: var(--text-heading);
     cursor: pointer;
     padding: 8px;
     transition: opacity 0.2s;
@@ -201,6 +262,11 @@
 
   .close-btn:hover {
     opacity: 0.6;
+  }
+
+  .close-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
 
   /* Grid — 3 columns (left, center hub, right) × 2 rows */
@@ -229,9 +295,9 @@
     flex-direction: column;
     justify-content: flex-end;
     padding: 2.5rem;
-    border: 1px solid #1a1a1a;
+    border: 1px solid var(--border);
     text-decoration: none;
-    color: white;
+    color: var(--text-heading);
     transition:
       background-color 0.4s ease,
       border-color 0.4s ease;
@@ -239,15 +305,21 @@
     position: relative;
   }
 
-  .menu-cell:hover {
-    background-color: #111111;
-    border-color: #2a2a2a;
+  .menu-cell:hover,
+  .menu-cell:focus-visible {
+    background-color: var(--bg-raised);
+    border-color: var(--border-hover);
+  }
+
+  .menu-cell:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
   }
 
   .cell-number {
     font-family: "Space Grotesk", sans-serif;
     font-size: 0.75rem;
-    color: #555;
+    color: var(--text-muted);
     letter-spacing: 0.12em;
     margin-bottom: 1rem;
   }
@@ -272,7 +344,7 @@
     display: flex;
     justify-content: space-between;
     padding: 1.5rem 2.5rem;
-    color: #444;
+    color: var(--text-muted);
     font-size: 0.75rem;
     font-family: "Inter", sans-serif;
     flex-shrink: 0;

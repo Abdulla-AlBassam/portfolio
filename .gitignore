@@ -21,6 +21,7 @@ dist/
 # astro
 .astro/
 
-# generated thumbnails (rebuilt on deploy)
+# generated thumbnails + mid-res (rebuilt on deploy)
 public/photography/thumbs/
+public/photography/mid/
 

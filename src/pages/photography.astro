@@ -6,13 +6,16 @@ import PhotographyGrid from "@/components/PhotographyGrid.svelte";
 
 const photographyDir = path.join(process.cwd(), "public", "photography");
 const thumbDir = path.join(photographyDir, "thumbs");
+const midDir = path.join(photographyDir, "mid");
 const validExtensions = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif", ".gif"]);
 
-let photos: { src: string; thumb: string }[] = [];
+let photos: { src: string; thumb: string; mid: string }[] = [];
 
 if (fs.existsSync(photographyDir)) {
   const hasThumbDir = fs.existsSync(thumbDir);
+  const hasMidDir = fs.existsSync(midDir);
   const thumbFiles = hasThumbDir ? new Set(fs.readdirSync(thumbDir)) : new Set<string>();
+  const midFiles = hasMidDir ? new Set(fs.readdirSync(midDir)) : new Set<string>();
 
   photos = fs
     .readdirSync(photographyDir)
@@ -22,11 +25,13 @@ if (fs.existsSync(photographyDir)) {
     })
     .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
     .map((file) => {
-      const thumbName = file.replace(/\.\w+$/, ".webp");
-      const hasThumb = thumbFiles.has(thumbName);
+      const webpName = file.replace(/\.\w+$/, ".webp");
+      const hasThumb = thumbFiles.has(webpName);
+      const hasMid = midFiles.has(webpName);
       return {
         src: `/photography/${file}`,
-        thumb: hasThumb ? `/photography/thumbs/${thumbName}` : `/photography/${file}`,
+        thumb: hasThumb ? `/photography/thumbs/${webpName}` : `/photography/${file}`,
+        mid: hasMid ? `/photography/mid/${webpName}` : `/photography/${file}`,
       };
     });
 }
@@ -34,7 +39,10 @@ if (fs.existsSync(photographyDir)) {
 
 <BaseLayout title="Photography — Abdulla AlBassam">
   <div class="photography-page">
-    <p class="photography-description">Unfiltered, unedited stills. Captured on 35mm Film.</p>
+    <div class="page-header">
+      <h1>PHOTOGRAPHY</h1>
+      <p class="page-desc">Unfiltered, unedited stills. Captured on 35mm film.</p>
+    </div>
     {photos.length > 0 ? (
       <PhotographyGrid client:load photos={photos} />
     ) : (
@@ -46,21 +54,43 @@ if (fs.existsSync(photographyDir)) {
 <style>
   .photography-page {
     min-height: 100vh;
-    padding: 5rem 0.5rem 2rem;
+    padding: 8rem 0 4rem;
   }
 
-  .photography-description {
+  .page-header {
     text-align: center;
-    color: #888;
+    padding: 0 2rem 2rem;
+  }
+
+  .page-header h1 {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--text-heading);
+    margin: 0;
+  }
+
+  .page-desc {
+    color: var(--text-muted);
+    margin-top: 1rem;
     font-size: 0.95rem;
-    margin-bottom: 1.5rem;
-    letter-spacing: 0.02em;
   }
 
   .empty-state {
     text-align: center;
-    color: #555;
+    color: var(--text-muted);
     font-size: 0.9rem;
     padding-top: 4rem;
+  }
+
+  @media (max-width: 768px) {
+    .photography-page {
+      padding: 7rem 0 3rem;
+    }
+
+    .page-header {
+      padding: 0 1.5rem 1.5rem;
+    }
   }
 </style>
