@@ -3,66 +3,17 @@
   import { Float } from '@threlte/extras'
   import { onMount, onDestroy } from 'svelte'
   import * as THREE from 'three'
+  import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
   let groupRef = $state(null)
   let mouseX = $state(0)
   let mouseY = $state(0)
   let isMobile = $state(false)
-  let geometries = $state([])
+  let particleGeo = $state(null)
+  let tvScene = $state(null)
+  let mixer = $state(null)
 
   let cleanup = () => {}
-
-  /**
-   * Creates a closed stadium/oval curve for a chain link.
-   * The shape is elongated along Y with semicircular caps.
-   */
-  function createChainLinkGeometry(width, height, tubeRadius, tubularSegments, radialSegments) {
-    const halfW = width / 2
-    const straightH = (height - width) / 2
-    const r = halfW
-
-    const sLen = 2 * straightH
-    const aLen = Math.PI * r
-    const totalPerim = 2 * sLen + 2 * aLen
-
-    const points = []
-    const numPoints = 200
-
-    for (let i = 0; i < numPoints; i++) {
-      const t = i / numPoints
-      const d = t * totalPerim
-      let x, y
-
-      if (d < sLen) {
-        // Right straight going up
-        x = r
-        y = -straightH + d
-      } else if (d < sLen + aLen) {
-        // Top semicircle
-        const angle = (d - sLen) / r
-        x = r * Math.cos(angle)
-        y = straightH + r * Math.sin(angle)
-      } else if (d < 2 * sLen + aLen) {
-        // Left straight going down
-        const dd = d - sLen - aLen
-        x = -r
-        y = straightH - dd
-      } else {
-        // Bottom semicircle
-        const dd = d - 2 * sLen - aLen
-        const angle = Math.PI + dd / r
-        x = r * Math.cos(angle)
-        y = -straightH + r * Math.sin(angle)
-      }
-
-      points.push(new THREE.Vector3(x, y, 0))
-    }
-
-    const curve = new THREE.CatmullRomCurve3(points, true)
-    return new THREE.TubeGeometry(curve, tubularSegments, tubeRadius, radialSegments, true)
-  }
-
-  let particleGeo = $state(null)
 
   onMount(() => {
     isMobile = window.innerWidth < 768
@@ -77,15 +28,28 @@
     window.addEventListener('mousemove', handler)
     window.addEventListener('touchmove', handler, { passive: true })
 
-    // Generate chain link geometries
-    const linkWidth = 1.2
-    const linkHeight = 2.2
-    const tubeR = 0.08
-    const tSegs = isMobile ? 64 : 128
-    const rSegs = isMobile ? 8 : 12
-
-    const geom = createChainLinkGeometry(linkWidth, linkHeight, tubeR, tSegs, rSegs)
-    geometries = [geom, geom, geom]
+    // Load TV model — add directly to the Three.js group (bypasses Svelte reactivity)
+    const loader = new GLTFLoader()
+    const waitForGroup = () => {
+      if (!groupRef) return requestAnimationFrame(waitForGroup)
+      loader.load(
+        '/models/tv/scene.gltf',
+        (gltf) => {
+          groupRef.add(gltf.scene)
+          if (gltf.animations.length > 0) {
+            mixer = new THREE.AnimationMixer(gltf.scene)
+            for (const clip of gltf.animations) {
+              mixer.clipAction(clip).play()
+            }
+          }
+        },
+        undefined,
+        (err) => {
+          console.error('GLTF load error:', err)
+        }
+      )
+    }
+    waitForGroup()
 
     // Atmospheric particles
     const particleCount = isMobile ? 80 : 200
@@ -103,20 +67,18 @@
     cleanup = () => {
       window.removeEventListener('mousemove', handler)
       window.removeEventListener('touchmove', handler)
-      geom.dispose()
       pGeo.dispose()
     }
   })
 
   onDestroy(() => cleanup())
 
-  let elapsed = 0
-
   useTask((delta) => {
+    if (mixer) mixer.update(delta)
+
     if (!groupRef) return
-    elapsed += delta
     const lerpSpeed = 1 - Math.pow(0.03, delta)
-    groupRef.rotation.y += (mouseX * 0.4 - groupRef.rotation.y) * lerpSpeed
+    groupRef.rotation.y += (mouseX * 0.4 + Math.PI - groupRef.rotation.y) * lerpSpeed
     groupRef.rotation.x += (mouseY * 0.25 - groupRef.rotation.x) * lerpSpeed
 
     // Drift particles slowly
@@ -124,31 +86,21 @@
       const pos = particleGeo.attributes.position
       for (let i = 0; i < pos.count; i++) {
         pos.array[i * 3 + 1] += delta * 0.08
-        // Wrap around when drifting too high
         if (pos.array[i * 3 + 1] > 6) pos.array[i * 3 + 1] = -6
       }
       pos.needsUpdate = true
     }
   })
-
-  // Chain link positions and rotations
-  // Links alternate: flat (XY plane) vs perpendicular (rotated 90deg around Y)
-  // Spaced along X so each passes through its neighbor
-  const spacing = 1.15
-  const links = [
-    { x: -spacing, rotY: 0 },
-    { x: 0,        rotY: Math.PI / 2 },
-    { x: spacing,  rotY: 0 },
-  ]
 </script>
 
 <T.PerspectiveCamera
   makeDefault
-  position.z={isMobile ? 7 : 5.5}
+  position.z={isMobile ? 9 : 7}
   fov={50}
 />
 
-<T.AmbientLight intensity={0.5} />
+<T.AmbientLight intensity={0.8} />
+<T.DirectionalLight position={[3, 4, 5]} intensity={0.5} />
 
 <Float
   floatingRange={[-0.12, 0.12]}
@@ -157,19 +109,7 @@
   floatIntensity={0.5}
   speed={1.2}
 >
-  <T.Group bind:ref={groupRef} scale={isMobile ? 0.8 : 1}>
-    {#each links as link, i}
-      {#if geometries[i]}
-        <T.Mesh
-          position.x={link.x}
-          rotation.y={link.rotY}
-          geometry={geometries[i]}
-        >
-          <T.MeshStandardMaterial color="#ffffff" wireframe />
-        </T.Mesh>
-      {/if}
-    {/each}
-  </T.Group>
+  <T.Group bind:ref={groupRef} scale={isMobile ? 0.005 : 0.007} position.x={0} position.y={-1.2} rotation.y={Math.PI}></T.Group>
 </Float>
 
 {#if particleGeo}

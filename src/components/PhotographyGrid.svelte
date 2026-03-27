@@ -11,6 +11,36 @@
   let overlayImageStyle = "";
   let lastOpenedEl = null;
 
+  // Split photos into columns for the vertical carousel
+  let columnCount = 10;
+  let columns = [];
+
+  function getColumnCount() {
+    if (typeof window === "undefined") return 10;
+    const w = window.innerWidth;
+    if (w <= 480) return 3;
+    if (w <= 768) return 4;
+    if (w <= 1023) return 6;
+    return 10;
+  }
+
+  function buildColumns() {
+    columnCount = getColumnCount();
+    columns = Array.from({ length: columnCount }, () => []);
+    photos.forEach((photo, i) => {
+      columns[i % columnCount].push({ photo, originalIndex: i });
+    });
+  }
+
+  buildColumns();
+
+  // Varying scroll durations per column for parallax feel
+  function getScrollDuration(colIndex) {
+    const base = 30;
+    const offsets = [0, 4, -2, 6, -3, 2, 5, -1, 3, -4];
+    return base + (offsets[colIndex % offsets.length] || 0);
+  }
+
   function altFromSrc(src) {
     const name = src.split("/").pop().replace(/\.\w+$/, "");
     return `Film photograph ${name}`;
@@ -91,7 +121,6 @@
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         phase = "expanded";
-        // Move focus into the lightbox
         if (overlayEl) overlayEl.focus();
       });
     });
@@ -112,7 +141,6 @@
       phase = "idle";
       thumbRect = null;
       document.body.style.overflow = "";
-      // Return focus to the thumbnail that opened the lightbox
       if (lastOpenedEl) {
         lastOpenedEl.focus();
         lastOpenedEl = null;
@@ -167,25 +195,43 @@
 </script>
 
 <div class="photo-grid" role="list" aria-label="Photography gallery">
-  {#each photos as photo, i}
-    <div
-      class="photo-item"
-      role="listitem"
-    >
-      <button
-        class="photo-button"
-        on:click={() => handleClick(i)}
-        on:keydown={(e) => handleItemKeydown(e, i)}
-        aria-label="View {altFromSrc(photo.src)} in lightbox"
-      >
-        <img
-          src={photo.thumb}
-          alt={altFromSrc(photo.src)}
-          loading="lazy"
-          decoding="async"
-          bind:this={imageEls[i]}
-        />
-      </button>
+  {#each columns as column, colIndex}
+    <div class="photo-column" style="--scroll-duration: {getScrollDuration(colIndex)}s">
+      <div class="column-inner">
+        {#each column as { photo, originalIndex }}
+          <div class="photo-item" role="listitem">
+            <button
+              class="photo-button"
+              on:click={() => handleClick(originalIndex)}
+              on:keydown={(e) => handleItemKeydown(e, originalIndex)}
+              aria-label="View {altFromSrc(photo.src)} in lightbox"
+            >
+              <img
+                src={photo.thumb}
+                alt={altFromSrc(photo.src)}
+                decoding="async"
+                bind:this={imageEls[originalIndex]}
+              />
+            </button>
+          </div>
+        {/each}
+        <!-- Duplicate for seamless loop -->
+        {#each column as { photo, originalIndex }}
+          <div class="photo-item" aria-hidden="true">
+            <button
+              class="photo-button"
+              on:click={() => handleClick(originalIndex)}
+              tabindex="-1"
+            >
+              <img
+                src={photo.thumb}
+                alt=""
+                decoding="async"
+              />
+            </button>
+          </div>
+        {/each}
+      </div>
     </div>
   {/each}
 </div>
@@ -234,14 +280,40 @@
 
 <style>
   .photo-grid {
-    columns: 10;
-    column-gap: 4px;
+    display: flex;
+    gap: 4px;
     padding: 0 0.5rem;
-    line-height: 0;
+    height: 70vh;
+    overflow: hidden;
+  }
+
+  .photo-column {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .column-inner {
+    animation: scroll-up var(--scroll-duration, 30s) linear infinite;
+  }
+
+  .column-inner {
+    transition: animation-duration 0.5s ease;
+  }
+
+  .photo-grid:hover .column-inner {
+    animation-duration: 120s;
+  }
+
+  @keyframes scroll-up {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-50%);
+    }
   }
 
   .photo-item {
-    break-inside: avoid;
     margin-bottom: 4px;
     overflow: hidden;
     line-height: 0;
@@ -266,13 +338,19 @@
   .photo-button img {
     width: 100%;
     display: block;
-    opacity: 0.85;
-    transition: opacity 0.3s ease;
+    opacity: 0.8;
+    transition:
+      opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+      transform 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+      filter 0.4s;
+    filter: brightness(0.92);
   }
 
   .photo-button:hover img,
   .photo-button:focus-visible img {
     opacity: 1;
+    transform: scale(1.04);
+    filter: brightness(1);
   }
 
   /* Overlay */
@@ -287,11 +365,18 @@
     position: absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0);
-    transition: background 0.4s ease;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    transition:
+      background 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+      backdrop-filter 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+      -webkit-backdrop-filter 0.5s cubic-bezier(0.25, 1, 0.5, 1);
   }
 
   .overlay.visible .overlay-backdrop {
-    background: var(--bg-overlay);
+    background: rgba(0, 0, 0, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
 
   .overlay:focus {
@@ -308,13 +393,22 @@
     color: var(--text-primary);
     cursor: pointer;
     padding: 8px;
+    opacity: 0;
+    transform: rotate(-90deg);
+    transition:
+      opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1) 0.3s,
+      transform 0.4s cubic-bezier(0.25, 1, 0.5, 1) 0.3s;
+  }
+
+  .overlay.visible .close-button {
     opacity: 0.7;
-    transition: opacity 0.2s ease;
+    transform: rotate(0deg);
   }
 
   .close-button:hover,
   .close-button:focus-visible {
     opacity: 1;
+    transform: rotate(90deg);
   }
 
   .close-button:focus-visible {
@@ -329,9 +423,16 @@
     transform: translateX(-50%);
     z-index: 3;
     color: var(--text-muted);
+    font-family: "Space Grotesk", sans-serif;
     font-size: 0.8rem;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.15em;
     pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s 0.5s;
+  }
+
+  .overlay.visible .lightbox-counter {
+    opacity: 1;
   }
 
   .overlay-image {
@@ -344,26 +445,37 @@
   .nav-button {
     position: fixed;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-50%) scale(0.8);
     z-index: 3;
-    background: none;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 50%;
     color: var(--text-primary);
     cursor: pointer;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0.5;
-    transition: opacity 0.2s ease, border-color 0.2s ease;
+    opacity: 0;
+    transition:
+      opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1) 0.35s,
+      transform 0.35s cubic-bezier(0.25, 1, 0.5, 1) 0.35s,
+      border-color 0.2s,
+      background 0.2s;
+  }
+
+  .overlay.visible .nav-button {
+    opacity: 0.6;
+    transform: translateY(-50%) scale(1);
   }
 
   .nav-button:hover,
   .nav-button:focus-visible {
     opacity: 1;
     border-color: rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-50%) scale(1.1);
   }
 
   .nav-button:focus-visible {
@@ -382,19 +494,14 @@
   /* Responsive */
   @media (max-width: 1023px) {
     .photo-grid {
-      columns: 6;
-      column-gap: 4px;
-    }
-
-    .photo-item {
-      margin-bottom: 4px;
+      gap: 4px;
     }
   }
 
   @media (max-width: 768px) {
     .photo-grid {
-      columns: 4;
-      column-gap: 3px;
+      gap: 3px;
+      height: 60vh;
     }
 
     .photo-item {
@@ -417,12 +524,71 @@
 
   @media (max-width: 480px) {
     .photo-grid {
-      columns: 3;
-      column-gap: 2px;
+      gap: 2px;
     }
 
     .photo-item {
       margin-bottom: 2px;
+    }
+  }
+
+  /* --- Reduced motion --- */
+  @media (prefers-reduced-motion: reduce) {
+    .column-inner {
+      animation: none;
+    }
+
+    .photo-button img {
+      transition: opacity 0.2s;
+    }
+
+    .photo-button:hover img,
+    .photo-button:focus-visible img {
+      transform: none;
+    }
+
+    .overlay-backdrop {
+      transition: background 0.2s;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+
+    .overlay.visible .overlay-backdrop {
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+
+    .close-button {
+      opacity: 0.7;
+      transform: none;
+      transition: opacity 0.2s;
+    }
+
+    .overlay.visible .close-button {
+      transform: none;
+    }
+
+    .close-button:hover {
+      transform: none;
+    }
+
+    .nav-button {
+      opacity: 0.5;
+      transform: translateY(-50%);
+      transition: opacity 0.2s, border-color 0.2s;
+    }
+
+    .overlay.visible .nav-button {
+      transform: translateY(-50%);
+    }
+
+    .nav-button:hover {
+      transform: translateY(-50%);
+    }
+
+    .lightbox-counter {
+      opacity: 1;
+      transition: none;
     }
   }
 </style>

@@ -448,6 +448,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     color: var(--text-muted);
     margin-top: 1rem;
     font-size: 0.95rem;
+    animation: title-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
   }
 
   .projects-layout {
@@ -464,6 +465,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     color: var(--text-muted);
     letter-spacing: 0.15em;
     margin: 0 0 1.25rem 0;
+    animation: fade-up 0.5s cubic-bezier(0.25, 1, 0.5, 1) 0.3s both;
   }
 
   .project-index ul {
@@ -474,7 +476,15 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 
   .project-index li {
     margin-bottom: 0.6rem;
+    animation: fade-up 0.5s cubic-bezier(0.25, 1, 0.5, 1) both;
   }
+
+  .project-index li:nth-child(1) { animation-delay: 0.35s; }
+  .project-index li:nth-child(2) { animation-delay: 0.4s; }
+  .project-index li:nth-child(3) { animation-delay: 0.45s; }
+  .project-index li:nth-child(4) { animation-delay: 0.5s; }
+  .project-index li:nth-child(5) { animation-delay: 0.55s; }
+  .project-index li:nth-child(6) { animation-delay: 0.6s; }
 
   .project-index a {
     color: var(--text-muted);
@@ -581,6 +591,13 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   }
 
+  div.project-link:hover .project-card {
+    border-color: var(--border-hover);
+    background: var(--bg-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+  }
+
   a.project-link:hover .project-card::after {
     opacity: 1;
     transform: translate(0, 0);
@@ -650,6 +667,12 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     border: 1px solid var(--border-active);
     color: var(--text-secondary);
     border-radius: 999px;
+    animation: badge-pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes badge-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
   }
 
   .tags {
@@ -666,6 +689,29 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     border: 1px solid var(--border);
     border-radius: 999px;
     color: var(--text-muted);
+    transition:
+      color 0.2s,
+      border-color 0.2s,
+      background 0.2s,
+      transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .tags span:hover {
+    color: var(--text-heading);
+    border-color: var(--border-active);
+    background: var(--bg-subtle-hover);
+    transform: translateY(-1px);
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   @media (max-width: 768px) {
@@ -686,6 +732,48 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 
     .project-index li {
       margin-bottom: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-title,
+    .page-desc,
+    .project-index h3,
+    .project-index li {
+      animation: none;
+    }
+
+    .card-reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .filter-out,
+    .filter-in {
+      transition: none;
+    }
+
+    .project-card {
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    .project-poster {
+      transition: none;
+    }
+
+    .in-progress-badge {
+      animation: none;
+    }
+
+    .tags span:hover {
+      transform: none;
+    }
+
+    a.project-link:hover .project-card,
+    div.project-link:hover .project-card {
+      transform: none;
+      box-shadow: none;
     }
   }
 </style>
