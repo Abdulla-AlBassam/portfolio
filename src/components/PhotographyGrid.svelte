@@ -183,20 +183,78 @@
   }
 
   let cleanupKeydown;
+  let gridEl;
+  let isHovered = false;
+  let columnInners = [];
+  let columnOffsets = []; // current translateY offset in px
+  let columnHeights = []; // half-height of column-inner (the loop point)
+  let animFrame;
+
+  function initScrollAnimation() {
+    columnInners = gridEl ? Array.from(gridEl.querySelectorAll('.column-inner')) : [];
+    columnOffsets = columnInners.map(() => 0);
+    columnHeights = columnInners.map(el => el.scrollHeight / 2);
+  }
+
+  let lastTime = 0;
+  function tick(time) {
+    if (!lastTime) lastTime = time;
+    const dt = (time - lastTime) / 1000; // seconds
+    lastTime = time;
+
+    columnInners.forEach((el, i) => {
+      const totalHeight = columnHeights[i];
+      if (totalHeight <= 0) return;
+
+      // Speed: pixels per second — normal vs slowed on hover
+      const normalDuration = getScrollDuration(i);
+      const duration = isHovered ? 120 : normalDuration;
+      const speed = totalHeight / duration;
+
+      columnOffsets[i] -= speed * dt;
+
+      // Wrap around seamlessly
+      if (columnOffsets[i] <= -totalHeight) {
+        columnOffsets[i] += totalHeight;
+      }
+
+      el.style.transform = `translateY(${columnOffsets[i]}px)`;
+    });
+
+    animFrame = requestAnimationFrame(tick);
+  }
+
+  function handleMouseEnter() {
+    isHovered = true;
+  }
+
+  function handleMouseLeave() {
+    isHovered = false;
+  }
 
   onMount(() => {
     document.addEventListener("keydown", handleKeydown);
     cleanupKeydown = () => document.removeEventListener("keydown", handleKeydown);
+
+    // Wait a frame for DOM to be ready, then init JS-driven scroll
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!prefersReducedMotion) {
+      requestAnimationFrame(() => {
+        initScrollAnimation();
+        animFrame = requestAnimationFrame(tick);
+      });
+    }
   });
 
   onDestroy(() => {
     if (cleanupKeydown) cleanupKeydown();
+    if (animFrame) cancelAnimationFrame(animFrame);
   });
 </script>
 
-<div class="photo-grid" role="list" aria-label="Photography gallery">
+<div class="photo-grid" role="list" aria-label="Photography gallery" bind:this={gridEl} on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
   {#each columns as column, colIndex}
-    <div class="photo-column" style="--scroll-duration: {getScrollDuration(colIndex)}s">
+    <div class="photo-column">
       <div class="column-inner">
         {#each column as { photo, originalIndex }}
           <div class="photo-item" role="listitem">
@@ -283,7 +341,8 @@
     display: flex;
     gap: 4px;
     padding: 0 0.5rem;
-    height: 70vh;
+    flex: 1;
+    min-height: 0;
     overflow: hidden;
   }
 
@@ -293,24 +352,7 @@
   }
 
   .column-inner {
-    animation: scroll-up var(--scroll-duration, 30s) linear infinite;
-  }
-
-  .column-inner {
-    transition: animation-duration 0.5s ease;
-  }
-
-  .photo-grid:hover .column-inner {
-    animation-duration: 120s;
-  }
-
-  @keyframes scroll-up {
-    0% {
-      transform: translateY(0);
-    }
-    100% {
-      transform: translateY(-50%);
-    }
+    will-change: transform;
   }
 
   .photo-item {
@@ -501,7 +543,6 @@
   @media (max-width: 768px) {
     .photo-grid {
       gap: 3px;
-      height: 60vh;
     }
 
     .photo-item {
@@ -535,7 +576,7 @@
   /* --- Reduced motion --- */
   @media (prefers-reduced-motion: reduce) {
     .column-inner {
-      animation: none;
+      transform: none !important;
     }
 
     .photo-button img {

@@ -117,48 +117,65 @@ import ImageWarp from "@/components/ImageWarp.svelte";
 
         <div class="education reveal">
           <h2>EDUCATION</h2>
-          <div class="edu-card">
-            <span class="period">2023 — 2026</span>
-            <h3>BSc (Honours) Networks &amp; Cyber Security</h3>
-            <p class="institution">Northumbria University, Newcastle</p>
-            <p class="institution">Predicted grade: 1st Class Honours</p>
-            <p class="description">
-              Studying network architecture, ethical hacking, digital forensics,
-              and security operations. Hands-on labs in penetration testing and
-              incident response.
-            </p>
-            <div class="modules">
-              <span>Network Security</span>
-              <span>Ethical Hacking</span>
-              <span>Digital Forensics</span>
-              <span>Cryptography</span>
-              <span>Operating Systems</span>
-              <span>Routing &amp; Switching</span>
+          <div class="timeline" id="education-timeline">
+            <div class="timeline-track">
+              <div class="timeline-progress"></div>
             </div>
-          </div>
-          <div class="edu-card">
-            <span class="period">2022 — 2023</span>
-            <h3>Foundation Year — Economics &amp; Mathematics</h3>
-            <p class="institution">King's College London</p>
-            <p class="institution">Grade: 2:1</p>
-            <p class="description">
-              Combined economics and mathematics, covering essential mathematical
-              topics for university-level business and economics study. The Economics
-              module explored macroeconomics and microeconomics, examining how
-              economic and social environments influence government and
-              organisational decision-making.
-            </p>
-            <div class="modules">
-              <span>Economics</span>
-              <span>Mathematics</span>
-              <span>Business &amp; Society</span>
+
+            <div class="timeline-entry">
+              <div class="timeline-node"></div>
+              <div class="edu-card">
+                <span class="period">2023 — 2026</span>
+                <h3>BSc (Honours) Networks &amp; Cyber Security</h3>
+                <p class="institution">Northumbria University, Newcastle</p>
+                <p class="institution">Predicted grade: 1st Class Honours</p>
+                <p class="description">
+                  Studying network architecture, ethical hacking, digital forensics,
+                  and security operations. Hands-on labs in penetration testing and
+                  incident response.
+                </p>
+                <div class="modules">
+                  <span>Network Security</span>
+                  <span>Ethical Hacking</span>
+                  <span>Digital Forensics</span>
+                  <span>Cryptography</span>
+                  <span>Operating Systems</span>
+                  <span>Routing &amp; Switching</span>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="edu-card">
-            <span class="period">2008 — 2022</span>
-            <h3>American Diploma with Honours</h3>
-            <p class="institution">Modern Knowledge Schools, Manama, Bahrain</p>
-            <p class="institution">98% Overall GPA</p>
+
+            <div class="timeline-entry">
+              <div class="timeline-node"></div>
+              <div class="edu-card">
+                <span class="period">2022 — 2023</span>
+                <h3>Foundation Year — Economics &amp; Mathematics</h3>
+                <p class="institution">King's College London</p>
+                <p class="institution">Grade: 2:1</p>
+                <p class="description">
+                  Combined economics and mathematics, covering essential mathematical
+                  topics for university-level business and economics study. The Economics
+                  module explored macroeconomics and microeconomics, examining how
+                  economic and social environments influence government and
+                  organisational decision-making.
+                </p>
+                <div class="modules">
+                  <span>Economics</span>
+                  <span>Mathematics</span>
+                  <span>Business &amp; Society</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="timeline-entry">
+              <div class="timeline-node"></div>
+              <div class="edu-card">
+                <span class="period">2008 — 2022</span>
+                <h3>American Diploma with Honours</h3>
+                <p class="institution">Modern Knowledge Schools, Manama, Bahrain</p>
+                <p class="institution">98% Overall GPA</p>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -354,14 +371,83 @@ import ImageWarp from "@/components/ImageWarp.svelte";
     margin: 0 0 1.5rem 0;
   }
 
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding-left: 40px;
+  }
+
+  .timeline-track {
+    position: absolute;
+    left: 5px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+    border-radius: 1px;
+  }
+
+  .timeline-progress {
+    width: 100%;
+    height: 0;
+    background: linear-gradient(to bottom, var(--border-active), var(--text-heading));
+    border-radius: 1px;
+  }
+
+  .timeline-entry {
+    position: relative;
+    padding-bottom: 2.5rem;
+  }
+
+  .timeline-entry:last-child {
+    padding-bottom: 0;
+  }
+
+  .timeline-node {
+    position: absolute;
+    left: -40px;
+    top: 1.2rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--bg-primary);
+    border: 2px solid var(--border);
+    transform: translateX(-0.5px);
+    z-index: 1;
+    transition:
+      border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+      background 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .timeline-node.active {
+    border-color: var(--text-heading);
+    background: var(--text-heading);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+  }
+
+  .timeline-entry .edu-card {
+    opacity: 0;
+    transform: translateX(16px);
+    transition:
+      opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.3s,
+      box-shadow 0.3s;
+  }
+
+  .timeline-entry.active .edu-card {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
   .edu-card {
     border: 1px solid var(--border);
     border-radius: 0.75rem;
     padding: 1.5rem;
-    transition: border-color 0.3s, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
   }
 
-  .edu-card:hover {
+  .timeline-entry.active .edu-card:hover {
     border-color: var(--border-hover);
     transform: translateY(-2px);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
@@ -499,6 +585,51 @@ import ImageWarp from "@/components/ImageWarp.svelte";
     .photo {
       aspect-ratio: 1;
     }
+
+    .timeline {
+      padding-left: 28px;
+    }
+
+    .timeline-track {
+      left: 3px;
+    }
+
+    .timeline-node {
+      left: -28px;
+      width: 8px;
+      height: 8px;
+      transform: translateX(-0.5px);
+    }
+
+    .timeline-entry .edu-card {
+      transform: translateY(12px);
+    }
+
+    .timeline-entry.active .edu-card {
+      transform: translateY(0);
+    }
+
+    .timeline-entry.active .edu-card:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .timeline-progress {
+      height: 100% !important;
+    }
+
+    .timeline-node {
+      border-color: var(--text-heading);
+      background: var(--text-heading);
+      transition: none;
+    }
+
+    .timeline-entry .edu-card {
+      opacity: 1;
+      transform: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
   }
 </style>
 
@@ -545,4 +676,57 @@ import ImageWarp from "@/components/ImageWarp.svelte";
       }
     });
   });
+
+  // ── Scroll-driven education timeline ──
+  (function initTimeline() {
+    const timeline = document.getElementById('education-timeline');
+    if (!timeline) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      timeline.querySelectorAll('.timeline-entry').forEach(entry => {
+        entry.classList.add('active');
+        entry.querySelector('.timeline-node')?.classList.add('active');
+      });
+      return;
+    }
+
+    const progress = timeline.querySelector('.timeline-progress');
+    const entries = [...timeline.querySelectorAll('.timeline-entry')];
+    const nodes = entries.map(e => e.querySelector('.timeline-node'));
+    let ticking = false;
+
+    function updateTimeline() {
+      const rect = timeline.getBoundingClientRect();
+      const triggerY = window.innerHeight * 0.6;
+      let ratio = (triggerY - rect.top) / rect.height;
+      ratio = Math.max(0, Math.min(1, ratio));
+
+      progress.style.height = `${ratio * 100}%`;
+
+      entries.forEach((entry, i) => {
+        const node = nodes[i];
+        const nodeY = node.getBoundingClientRect().top + node.offsetHeight / 2;
+
+        if (nodeY <= triggerY) {
+          entry.classList.add('active');
+          node.classList.add('active');
+        } else {
+          entry.classList.remove('active');
+          node.classList.remove('active');
+        }
+      });
+
+      ticking = false;
+    }
+
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(updateTimeline);
+        ticking = true;
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    updateTimeline();
+  })();
 </script>

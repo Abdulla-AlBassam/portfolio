@@ -57,10 +57,12 @@ if (fs.existsSync(photographyDir)) {
 
 <style>
   .photography-page {
-    min-height: 100vh;
-    padding: 8rem 0 4rem;
+    height: 100vh;
+    padding: 8rem 0 0;
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
 
   /* --- Film grain overlay --- */
@@ -165,7 +167,7 @@ if (fs.existsSync(photographyDir)) {
 
   @media (max-width: 768px) {
     .photography-page {
-      padding: 7rem 0 3rem;
+      padding: 7rem 0 0;
     }
 
     .page-header {

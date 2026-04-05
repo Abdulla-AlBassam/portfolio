@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import InProgressCard from "@/components/InProgressCard.svelte";
 ---
 
 <BaseLayout title="Projects — Abdulla AlBassam">
@@ -29,10 +30,9 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
       <div class="project-grid">
         <div class="project-link" data-category="machine-learning in-progress">
           <div class="project-card">
-            <span class="in-progress-badge">In Progress</span>
-            <div class="project-thumbnail">
+            <InProgressCard client:visible>
               <img src="/projects/12.jpg" alt="Spam Detection poster" class="project-poster" loading="lazy" decoding="async" />
-            </div>
+            </InProgressCard>
             <h3>Secure Local Mail System with Machine Learning-Based Spam Detection Under Adversarial Conditions</h3>
             <p class="technical">
               Implemented a local SMTP mail system, integrated spam-filtering
@@ -59,10 +59,9 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 
         <a class="project-link" href="https://www.linkedin.com/in/abdulla-albassam/overlay/experience/2864877680/multiple-media-viewer/?profileId=ACoAAF0wWosB-M5smshM0TcBM7F127DOES9M6N8&treasuryMediaId=1773201904530" target="_blank" rel="noopener noreferrer" data-category="development in-progress">
           <div class="project-card">
-            <span class="in-progress-badge">In Progress</span>
-            <div class="project-thumbnail">
+            <InProgressCard client:visible>
               <img src="/projects/11.jpg" alt="Sweaty poster" class="project-poster" loading="lazy" decoding="async" />
-            </div>
+            </InProgressCard>
             <h3>Sweaty: Social Game Diary & Discovery Platform</h3>
             <p class="technical">
               Building a mobile "Letterboxd for games" application with React
@@ -92,10 +91,9 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 
         <div class="project-link" data-category="cybersecurity in-progress">
           <div class="project-card">
-            <span class="in-progress-badge">In Progress</span>
-            <div class="project-thumbnail">
+            <InProgressCard client:visible>
               <img src="/projects/07.jpg" alt="Penetration Testing poster" class="project-poster" loading="lazy" decoding="async" />
-            </div>
+            </InProgressCard>
             <h3>Penetration Testing: Vulnerable VM Pen Test</h3>
             <p class="technical">
               Planned and executed a structured penetration test against a
@@ -119,10 +117,9 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 
         <div class="project-link" data-category="cybersecurity in-progress">
           <div class="project-card">
-            <span class="in-progress-badge">In Progress</span>
-            <div class="project-thumbnail">
+            <InProgressCard client:visible>
               <img src="/projects/09.jpg" alt="Secure Transaction Protocol poster" class="project-poster" loading="lazy" decoding="async" />
-            </div>
+            </InProgressCard>
             <h3>Secure Transaction Protocol + Infrastructure Hardening Plan</h3>
             <p class="technical">
               Designed a practical cryptographic transaction flow for customer
@@ -652,28 +649,6 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     font-style: italic;
   }
 
-  .in-progress-badge {
-    position: absolute;
-    top: 0.75rem;
-    left: 0.75rem;
-    z-index: 2;
-    font-size: 0.65rem;
-    font-family: "Space Grotesk", sans-serif;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    padding: 0.3rem 0.65rem;
-    background: var(--bg-subtle-hover);
-    border: 1px solid var(--border-active);
-    color: var(--text-secondary);
-    border-radius: 999px;
-    animation: badge-pulse 3s ease-in-out infinite;
-  }
-
-  @keyframes badge-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
-  }
 
   .tags {
     display: flex;
@@ -762,9 +737,6 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
       transition: none;
     }
 
-    .in-progress-badge {
-      animation: none;
-    }
 
     .tags span:hover {
       transform: none;
