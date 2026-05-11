@@ -25,3 +25,6 @@ dist/
 public/photography/thumbs/
 public/photography/mid/
 
+.claude/
+.vercel
+.env*.local

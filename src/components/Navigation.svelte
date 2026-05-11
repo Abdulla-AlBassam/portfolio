@@ -6,10 +6,10 @@
   let closeEl;
 
   const sections = [
-    { num: "02", name: "Projects", href: "/projects" },
-    { num: "03", name: "Photography", href: "/photography" },
-    { num: "04", name: "Skills", href: "/skills" },
-    { num: "05", name: "Contact", href: "/contact" },
+    { num: "02", name: "Projects", href: "/showcase/projects" },
+    { num: "03", name: "Photography", href: "/showcase/photography" },
+    { num: "04", name: "Skills", href: "/showcase/skills" },
+    { num: "05", name: "Contact", href: "/showcase/contact" },
   ];
 
   function openMenu() {
@@ -149,7 +149,7 @@
     {/each}
 
     <a
-      href="/me"
+      href="/showcase/me"
       class="menu-cell me-cell"
       on:mouseenter={() => (hoveredCell = 4)}
       on:mouseleave={() => (hoveredCell = -1)}

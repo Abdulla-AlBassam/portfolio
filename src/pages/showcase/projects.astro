@@ -1,0 +1,751 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import InProgressCard from "@/components/InProgressCard.svelte";
+---
+
+<BaseLayout title="Projects — Abdulla AlBassam">
+  <div class="page">
+    <div class="page-header">
+      <h1 class="hero-title">PROJECTS</h1>
+      <p class="page-desc">
+        Hands-on projects across various fields.
+      </p>
+    </div>
+
+    <div class="projects-layout">
+      <!-- Left: Index -->
+      <aside class="project-index">
+        <h3>INDEX</h3>
+        <ul>
+          <li><a href="#all" class="active">All</a></li>
+          <li><a href="#in-progress" class="filter-in-progress"><em>In Progress</em></a></li>
+          <li><a href="#cybersecurity">Cybersecurity</a></li>
+          <li><a href="#networking">Networking</a></li>
+          <li><a href="#development">Development</a></li>
+          <li><a href="#machine-learning">Machine Learning</a></li>
+        </ul>
+      </aside>
+
+      <!-- Right: Project cards -->
+      <div class="project-grid">
+        <div class="project-link" data-category="machine-learning in-progress">
+          <div class="project-card">
+            <InProgressCard client:visible>
+              <img src="/projects/12.jpg" alt="Spam Detection poster" class="project-poster" loading="lazy" decoding="async" />
+            </InProgressCard>
+            <h3>Secure Local Mail System with Machine Learning-Based Spam Detection Under Adversarial Conditions</h3>
+            <p class="technical">
+              Implemented a local SMTP mail system, integrated spam-filtering
+              pipeline to evaluate ML spam detection under adversarial
+              manipulation. Trained and compared a classical baseline (TF-IDF +
+              LR) against a transformer (DistilBERT), and stress-tested both with
+              automated evasion attacks (char edits, synonym swaps, and text
+              dilution) to measure robustness loss with standard classification
+              metrics and structured experiment reporting.
+            </p>
+            <p class="plain">
+              Set up a secure email environment and tested whether spam detection
+              models still work when spam messages are slightly rewritten to slip
+              past filters.
+            </p>
+            <div class="tags">
+              <span>DistilBERT</span>
+              <span>TF-IDF</span>
+              <span>SMTP</span>
+              <span>Adversarial ML</span>
+            </div>
+          </div>
+        </div>
+
+        <a class="project-link" href="https://www.linkedin.com/in/abdulla-albassam/overlay/experience/2864877680/multiple-media-viewer/?profileId=ACoAAF0wWosB-M5smshM0TcBM7F127DOES9M6N8&treasuryMediaId=1773201904530" target="_blank" rel="noopener noreferrer" data-category="development in-progress">
+          <div class="project-card">
+            <InProgressCard client:visible>
+              <img src="/projects/11.jpg" alt="Sweaty poster" class="project-poster" loading="lazy" decoding="async" />
+            </InProgressCard>
+            <h3>Sweaty: Social Game Diary & Discovery Platform</h3>
+            <p class="technical">
+              Building a mobile "Letterboxd for games" application with React
+              Native (Expo) + TypeScript, backed by Supabase/PostgreSQL secured
+              via Row Level Security, and a Next.js API layer for IGDB
+              proxying/admin operations. Implemented game logging (statuses,
+              ratings/stars, reviews, favourites), social features (followers +
+              activity feed), and discovery (curated lists + personalised
+              recommendations + news), with performance-focused caching for
+              external data (e.g., OpenCritic score TTL caching) and
+              mobile-optimised UX/UI.
+            </p>
+            <p class="plain">
+              I'm building a game-tracking app where you can log what you play,
+              rate and review games, follow friends, and discover new titles
+              through curated lists and dynamic recommendations — it's currently
+              in development and will be released soon.
+            </p>
+            <div class="tags">
+              <span>React Native</span>
+              <span>TypeScript</span>
+              <span>Supabase</span>
+              <span>Next.js</span>
+            </div>
+          </div>
+        </a>
+
+        <div class="project-link" data-category="cybersecurity in-progress">
+          <div class="project-card">
+            <InProgressCard client:visible>
+              <img src="/projects/07.jpg" alt="Penetration Testing poster" class="project-poster" loading="lazy" decoding="async" />
+            </InProgressCard>
+            <h3>Penetration Testing: Vulnerable VM Pen Test</h3>
+            <p class="technical">
+              Planned and executed a structured penetration test against a
+              vulnerable VM, covering recon and service discovery, identification
+              of insecure legacy services (e.g., FTP/Telnet), and web-layer
+              testing with request interception/manipulation to validate
+              exploitability. Produced a professional pentest-style write-up with
+              prioritised findings, evidence, and remediation guidance.
+            </p>
+            <p class="plain">
+              I ethically hacked a practice machine to find real weaknesses,
+              proved what could be exploited, and wrote clear fixes to prevent it.
+            </p>
+            <div class="tags">
+              <span>Nmap</span>
+              <span>Burp Suite</span>
+              <span>Enumeration</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-link" data-category="cybersecurity in-progress">
+          <div class="project-card">
+            <InProgressCard client:visible>
+              <img src="/projects/09.jpg" alt="Secure Transaction Protocol poster" class="project-poster" loading="lazy" decoding="async" />
+            </InProgressCard>
+            <h3>Secure Transaction Protocol + Infrastructure Hardening Plan</h3>
+            <p class="technical">
+              Designed a practical cryptographic transaction flow for customer
+              orders and payments, ensuring confidentiality, integrity, and
+              authentication under realistic operational/compliance constraints.
+              Developed a defence-in-depth hardening plan including a segmented
+              firewall policy (3-tier rules), IDS/IPS detection logic (Snort
+              rules), and an Ubuntu server hardening checklist aligned to common
+              web/app/database threat models.
+            </p>
+            <p class="plain">
+              I designed how an online shop should protect payments and customer
+              data, then mapped out the security controls needed to prevent
+              attacks and detect suspicious activity.
+            </p>
+            <div class="tags">
+              <span>Applied Cryptography</span>
+              <span>Firewall Segmentation</span>
+              <span>Snort</span>
+              <span>Linux Hardening</span>
+            </div>
+          </div>
+        </div>
+
+        <a class="project-link" href="/projects/docs/enterprise-wan.pdf" target="_blank" rel="noopener noreferrer" data-category="networking">
+          <div class="project-card">
+            <div class="project-thumbnail">
+              <img src="/projects/05.jpg" alt="Segmented WAN poster" class="project-poster" loading="lazy" decoding="async" />
+            </div>
+            <h3>Enterprise Networking: Segmented WAN with Selective IPsec</h3>
+            <p class="technical">
+              Designed and implemented an enterprise WAN in GNS3 using MPLS VPN
+              segmentation (P/PE model with OSPF in the core and VRF-based
+              isolation), plus selective IPSec protection for sensitive traffic
+              only (balancing security vs performance). Added access-control
+              constraints between departments, justified SQL service placement
+              using performance modelling, and delivered structured implementation
+              + verification evidence (show/ping/traceroute/crypto
+              state/DHCP validation).
+            </p>
+            <p class="plain">
+              I simulated a company-wide private network that keeps departments
+              separated, encrypts the right traffic, and still performs well, then
+              tested it end-to-end.
+            </p>
+            <div class="tags">
+              <span>GNS3</span>
+              <span>MPLS VPN/VRF</span>
+              <span>IPsec</span>
+            </div>
+          </div>
+        </a>
+
+        <a class="project-link" href="/projects/docs/digital-forensics.pdf" target="_blank" rel="noopener noreferrer" data-category="cybersecurity">
+          <div class="project-card">
+            <div class="project-thumbnail">
+              <img src="/projects/03.jpg" alt="Digital Forensics poster" class="project-poster" loading="lazy" decoding="async" />
+            </div>
+            <h3>Digital Forensics: RAM-to-Disk Forensic Timeline Reconstruction</h3>
+            <p class="technical">
+              Conducted an end-to-end DFIR investigation across a RAM dump and
+              HDD image, correlating volatile artefacts with persistent evidence
+              to rebuild user activity, intent, and a defensible timeline;
+              produced an investigative report with structured evidence tagging
+              and clear findings aligned to forensic process and reporting
+              standards.
+            </p>
+            <p class="plain">
+              I analysed a computer's memory and hard drive to piece together what
+              happened, when it happened, and what it meant for the accused, then
+              wrote it up like a real investigation.
+            </p>
+            <div class="tags">
+              <span>Autopsy/FTK</span>
+              <span>Memory Forensics</span>
+              <span>Timeline Analysis</span>
+            </div>
+          </div>
+        </a>
+
+        <div class="project-link" data-category="cybersecurity">
+          <div class="project-card">
+            <div class="project-thumbnail">
+              <img src="/projects/10.jpg" alt="Client Audit poster" class="project-poster" loading="lazy" decoding="async" />
+            </div>
+            <h3>Client Audit + Security Assessment Report</h3>
+            <p class="technical">
+              Conducted a small-business security audit for a client in Newcastle,
+              assessing real-world risks across users, devices, network setup, and
+              operational practices. Translated technical findings into a
+              client-friendly security improvement plan, delivering a structured
+              report with a risk-rated breakdown of issues, prioritised
+              recommendations, and practical implementation guidance communicated
+              in accessible language for non-technical stakeholders.
+            </p>
+            <p class="plain">
+              I reviewed a small business's security, found what could go wrong,
+              and explained exactly how to fix it in a way the client could
+              understand and act on.
+            </p>
+            <div class="tags">
+              <span>Security Audit</span>
+              <span>Risk Assessment</span>
+              <span>Client Communication</span>
+            </div>
+          </div>
+        </div>
+
+        <a class="project-link" href="/projects/docs/secure-vlan.pdf" target="_blank" rel="noopener noreferrer" data-category="networking">
+          <div class="project-card">
+            <div class="project-thumbnail">
+              <img src="/projects/04.jpg" alt="VLAN Routing poster" class="project-poster" loading="lazy" decoding="async" />
+            </div>
+            <h3>Networking: Secure VLAN Routing + Layer-2 Hardening</h3>
+            <p class="technical">
+              Designed efficient VLSM subnetting and implemented a routed VLAN
+              network with inter-VLAN routing, streamlined dynamic routing
+              behaviour, device hardening (password controls + management access),
+              and validation via show/ping/traceroute evidence. Extended the work
+              with spanning-tree reasoning and STP attack mitigation, plus
+              hands-on Packet Tracer implementation and narrated verification.
+            </p>
+            <p class="plain">
+              I built a realistic small enterprise network, made it secure and
+              reliable, and proved it works through testing and troubleshooting.
+            </p>
+            <div class="tags">
+              <span>Cisco IOS</span>
+              <span>Packet Tracer</span>
+              <span>VLAN/RSTP</span>
+            </div>
+          </div>
+        </a>
+
+        <a class="project-link" href="/projects/docs/qualitative-study.pdf" target="_blank" rel="noopener noreferrer" data-category="cybersecurity">
+          <div class="project-card">
+            <div class="project-thumbnail">
+              <img src="/projects/01.jpg" alt="Qualitative Study poster" class="project-poster" loading="lazy" decoding="async" />
+            </div>
+            <h3>Qualitative Study: Young-Adult Security Literacy Study</h3>
+            <p class="technical">
+              Designed and delivered a qualitative usable-security study on young
+              adults' password hygiene and safeguard adoption, using
+              semi-structured interviews, ethics-aware data handling, and rigorous
+              literature synthesis to extract actionable security UX insights.
+            </p>
+            <p class="plain">
+              I interviewed young adults to understand how they actually handle
+              passwords and online safety, then turned the patterns into practical
+              recommendations.
+            </p>
+            <div class="tags">
+              <span>Qualitative Research</span>
+              <span>Usable Security</span>
+              <span>Thematic Analysis</span>
+            </div>
+          </div>
+        </a>
+
+        <a class="project-link" href="/showcase/projects/rest-api" data-category="cybersecurity development">
+          <div class="project-card">
+            <div class="project-thumbnail">
+              <img src="/projects/02.jpg" alt="REST API poster" class="project-poster" loading="lazy" decoding="async" />
+            </div>
+            <h3>REST API Build + Architecture Blueprint</h3>
+            <p class="technical">
+              Engineered an object-oriented PHP REST API (front-controller
+              routing, clean URLs, JSON-first responses) backed by SQLite, with
+              API-key header auth, input sanitisation, robust error handling, and
+              documented endpoints (search + pagination + CRUD where required).
+              Then produced a future-proof architecture spec for scaling to
+              multiple conferences with per-conference DB isolation, admin
+              workflows, user accounts, personal notes, schedule support, and
+              engagement analytics (4+1 views).
+            </p>
+            <p class="plain">
+              I built the backend that powers a conference app (like the data
+              engine), then designed how the whole system should scale safely as
+              features and users grow.
+            </p>
+            <div class="tags">
+              <span>PHP</span>
+              <span>REST API</span>
+              <span>System Architecture</span>
+            </div>
+          </div>
+        </a>
+
+        <a class="project-link" href="/showcase/projects/operating-systems" data-category="development networking">
+          <div class="project-card">
+            <div class="project-thumbnail">
+              <img src="/projects/06.jpg" alt="Operating Systems poster" class="project-poster" loading="lazy" decoding="async" />
+            </div>
+            <h3>Operating Systems: Concurrent C Systems + HA DNS/Web Infrastructure</h3>
+            <p class="technical">
+              Built an OS-focused C implementation demonstrating process creation,
+              POSIX threading, scheduling behaviour, and safe synchronisation
+              (mutex + semaphore) in a producer/consumer style workflow. Then
+              designed a replicated DNS setup with BIND9 and delivered a secure,
+              load-balanced Apache web service architecture suitable for high
+              availability, including integration of DNS records to route traffic
+              via the load balancer.
+            </p>
+            <p class="plain">
+              I coded a mini "operating-systems" program that handles processes
+              and threads safely, and I also designed a real company-style setup
+              where DNS and multiple web servers work together securely with load
+              balancing.
+            </p>
+            <div class="tags">
+              <span>C/POSIX</span>
+              <span>BIND9</span>
+              <span>Load Balancing</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const filterLinks = document.querySelectorAll('.project-index a');
+  const projectCards = document.querySelectorAll('.project-link');
+
+  // Staggered reveal on scroll
+  const revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const delay = Number((entry.target as HTMLElement).dataset.revealDelay || 0);
+          setTimeout(() => entry.target.classList.add('revealed'), delay);
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.08 }
+  );
+
+  projectCards.forEach((card, i) => {
+    (card as HTMLElement).dataset.revealDelay = String(i * 80);
+    card.classList.add('card-reveal');
+    revealObserver.observe(card);
+  });
+
+  // Animated filter transitions
+  filterLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const filter = link.getAttribute('href')!.replace('#', '');
+
+      filterLinks.forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+
+      let visibleIndex = 0;
+      projectCards.forEach(el => {
+        const card = el as HTMLElement;
+        const categories = card.dataset.category || '';
+        const matches = filter === 'all' || categories.includes(filter);
+
+        if (matches) {
+          card.style.display = '';
+          card.style.transitionDelay = `${visibleIndex * 50}ms`;
+          // Force reflow then add class
+          requestAnimationFrame(() => {
+            card.classList.remove('filter-out');
+            card.classList.add('filter-in');
+          });
+          visibleIndex++;
+        } else {
+          card.classList.remove('filter-in');
+          card.classList.add('filter-out');
+          setTimeout(() => {
+            if (card.classList.contains('filter-out')) {
+              card.style.display = 'none';
+            }
+          }, 250);
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .page {
+    min-height: 100vh;
+    padding: 8rem 2rem 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .page-header {
+    overflow: hidden;
+  }
+
+  .hero-title {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--text-heading);
+    margin: 0;
+    animation: title-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes title-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .page-desc {
+    color: var(--text-muted);
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    animation: title-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+  }
+
+  .projects-layout {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 3rem;
+  }
+
+  /* Index sidebar */
+  .project-index h3 {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+    margin: 0 0 1.25rem 0;
+    animation: fade-up 0.5s cubic-bezier(0.25, 1, 0.5, 1) 0.3s both;
+  }
+
+  .project-index ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .project-index li {
+    margin-bottom: 0.6rem;
+    animation: fade-up 0.5s cubic-bezier(0.25, 1, 0.5, 1) both;
+  }
+
+  .project-index li:nth-child(1) { animation-delay: 0.35s; }
+  .project-index li:nth-child(2) { animation-delay: 0.4s; }
+  .project-index li:nth-child(3) { animation-delay: 0.45s; }
+  .project-index li:nth-child(4) { animation-delay: 0.5s; }
+  .project-index li:nth-child(5) { animation-delay: 0.55s; }
+  .project-index li:nth-child(6) { animation-delay: 0.6s; }
+
+  .project-index a {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    transition: color 0.2s;
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 2px;
+  }
+
+  .project-index a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 0;
+    height: 1px;
+    background: var(--text-heading);
+    transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .project-index a:hover,
+  .project-index a.active {
+    color: var(--text-heading);
+  }
+
+  .project-index a.active::after {
+    width: 100%;
+  }
+
+  .project-index a:hover::after {
+    width: 100%;
+  }
+
+  /* Project grid */
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .project-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* Staggered card reveal */
+  .card-reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .card-reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Filter animation */
+  .filter-out {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .filter-in {
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .project-card {
+    position: relative;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    transition:
+      border-color 0.3s,
+      background 0.3s,
+      transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.35s;
+  }
+
+  .project-card::after {
+    content: '↗';
+    position: absolute;
+    top: 0.6rem;
+    right: 0.7rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-heading);
+    opacity: 0;
+    transform: translate(4px, 4px);
+    transition: opacity 0.25s, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  a.project-link:hover .project-card {
+    border-color: var(--border-hover);
+    background: var(--bg-hover);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+
+  div.project-link:hover .project-card {
+    border-color: var(--border-hover);
+    background: var(--bg-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  a.project-link:hover .project-card::after {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  .project-thumbnail {
+    aspect-ratio: 16 / 10;
+    background: var(--bg-raised);
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    overflow: hidden;
+  }
+
+  .project-poster {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .project-link:hover .project-poster {
+    transform: scale(1.05);
+  }
+
+  .project-card h3 {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-heading);
+    margin: 0 0 0.5rem 0;
+  }
+
+  .project-card p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin: 0 0 1rem 0;
+  }
+
+  .project-card .technical {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+
+  .project-card .plain {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-style: italic;
+  }
+
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tags span {
+    font-size: 0.7rem;
+    font-family: "Inter", sans-serif;
+    padding: 0.25rem 0.75rem;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text-muted);
+    transition:
+      color 0.2s,
+      border-color 0.2s,
+      background 0.2s,
+      transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .tags span:hover {
+    color: var(--text-heading);
+    border-color: var(--border-active);
+    background: var(--bg-subtle-hover);
+    transform: translateY(-1px);
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .page {
+      padding: 7rem 1.5rem 3rem;
+    }
+
+    .projects-layout {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .project-index ul {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .project-index li {
+      margin-bottom: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-title,
+    .page-desc,
+    .project-index h3,
+    .project-index li {
+      animation: none;
+    }
+
+    .card-reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .filter-out,
+    .filter-in {
+      transition: none;
+    }
+
+    .project-card {
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    .project-poster {
+      transition: none;
+    }
+
+
+    .tags span:hover {
+      transform: none;
+    }
+
+    a.project-link:hover .project-card,
+    div.project-link:hover .project-card {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+</style>
