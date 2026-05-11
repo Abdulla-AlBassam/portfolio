@@ -25,3 +25,4 @@ dist/
 public/photography/thumbs/
 public/photography/mid/
 
+.claude/worktrees/

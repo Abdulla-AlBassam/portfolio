@@ -1,0 +1,382 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  active: "about" | "projects" | "photography" | "skills";
+}
+
+const {
+  title,
+  description = "Abdulla Al Bassam — Cybersecurity & Networking student. Final-year BSc at Northumbria University.",
+  active,
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const nav = [
+  { id: "about", label: "About", href: "/" },
+  { id: "projects", label: "Projects", href: "/projects" },
+  { id: "photography", label: "Photography", href: "/photography" },
+  { id: "skills", label: "Skills & Certs", href: "/skills" },
+];
+
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="8c977691-5137-4260-bd4b-9abd81c35a1a"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="brand">
+      <h1 class="wordmark">ABDULLA AL BASSAM</h1>
+    </header>
+
+    <div class="frame">
+      <aside class="sidebar" aria-label="Section navigation">
+        <ul>
+          {
+            nav.map((item) => (
+              <li class:list={[{ active: item.id === active }]}>
+                <a href={item.href} aria-current={item.id === active ? "page" : undefined}>
+                  <span class="dot" aria-hidden="true"></span>
+                  <span class="label">{item.label}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+
+        <a href="/showcase" class="showcase-link" aria-label="View Portfolio V1">
+          <span class="label">Portfolio V1</span>
+          <span class="arrow" aria-hidden="true">&gt;</span>
+        </a>
+      </aside>
+
+      <main class="content">
+        <slot />
+      </main>
+    </div>
+
+    <footer class="site-footer">
+      <p class="copy">© {year} Abdulla Al Bassam.</p>
+      <ul class="socials" aria-label="Social links">
+        <li>
+          <a href="mailto:albassam.004@gmail.com" aria-label="Email" title="Email">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="5" width="18" height="14" rx="2" />
+              <path d="m3 7 9 6 9-6" />
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a href="https://linkedin.com/in/abdulla-albassam" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z" />
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a href="https://github.com/Abdulla-AlBassam" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-1.97c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.18-3.08-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.62 1.58.23 2.75.11 3.04.74.8 1.18 1.82 1.18 3.08 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.13v3.16c0 .31.21.67.8.55C20.21 21.39 23.5 17.07 23.5 12 23.5 5.65 18.35.5 12 .5z" />
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a href="https://tryhackme.com/p/AbdullaAlBassam" target="_blank" rel="noopener noreferrer" aria-label="TryHackMe" title="TryHackMe">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M14.79 9.05c0 .76-.62 1.38-1.39 1.38a1.39 1.39 0 1 1 1.39-1.38zm-5.94 0a1.39 1.39 0 1 1-2.77 0 1.39 1.39 0 0 1 2.77 0zM12 0C5.37 0 0 5.37 0 12c0 6.62 5.37 12 12 12s12-5.38 12-12c0-6.63-5.37-12-12-12zm0 21.65c-5.32 0-9.65-4.33-9.65-9.65 0-5.33 4.33-9.65 9.65-9.65 5.33 0 9.65 4.32 9.65 9.65 0 5.32-4.32 9.65-9.65 9.65zm-4.62-7.18a4.62 4.62 0 0 0 9.24 0H7.38z" />
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a href="https://letterboxd.com/3boodi/" target="_blank" rel="noopener noreferrer" aria-label="Letterboxd" title="Letterboxd">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2.4a9.6 9.6 0 1 0 0 19.2 9.6 9.6 0 0 0 0-19.2zm-4.32 12.66a3.06 3.06 0 1 1 0-6.12 3.06 3.06 0 0 1 0 6.12zm4.32 0a3.06 3.06 0 1 1 0-6.12 3.06 3.06 0 0 1 0 6.12zm4.32 0a3.06 3.06 0 1 1 0-6.12 3.06 3.06 0 0 1 0 6.12z" />
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a href="/cv.pdf" download aria-label="Download CV" title="Download CV">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
+              <path d="M14 3v6h6" />
+              <path d="M12 12v6" />
+              <path d="m9 15 3 3 3-3" />
+            </svg>
+          </a>
+        </li>
+      </ul>
+    </footer>
+
+    <style is:global>
+      :root {
+        --pampas: #f4f3ee;
+        --pampas-deep: #ece9e0;
+        --crail: #c15f3c;
+        --crail-soft: #d27a59;
+        --cloudy: #b1ada1;
+        --cloudy-deep: #8c8a82;
+        --ink: #1a1816;
+        --ink-soft: #3a3733;
+        --rule: #d8d4c8;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html, body {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--pampas);
+        color: var(--ink);
+        font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-size: 15px;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        min-height: 100vh;
+      }
+
+      a {
+        color: var(--crail);
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 3px;
+        transition: color 0.15s ease;
+      }
+
+      a:hover {
+        color: var(--crail-soft);
+      }
+
+      p {
+        margin: 0 0 1.1em 0;
+      }
+
+      h1, h2, h3 {
+        font-family: "Space Grotesk", "Inter", sans-serif;
+        color: var(--ink);
+      }
+    </style>
+
+    <style>
+      .showcase-link {
+        --bg: var(--ink);
+        --hover-bg: var(--crail);
+        --hover-text: var(--pampas);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.45rem;
+        width: fit-content;
+        margin-top: 1.5rem;
+        font-family: "JetBrains Mono", "SF Mono", monospace;
+        font-size: 0.66rem;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        color: var(--pampas);
+        background: var(--bg);
+        border: 1px solid var(--bg);
+        border-radius: 3px;
+        padding: 0.4rem 0.75rem;
+        text-decoration: none;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+
+      .showcase-link .arrow {
+        font-size: 0.78rem;
+        line-height: 1;
+        transition: transform 0.2s ease;
+      }
+
+      .showcase-link:hover {
+        color: var(--hover-text);
+        background: var(--hover-bg);
+        border-color: var(--hover-bg);
+        transform: translate(-0.25rem, -0.25rem);
+        box-shadow: 0.25rem 0.25rem var(--bg);
+      }
+
+      .showcase-link:active {
+        transform: translate(0);
+        box-shadow: none;
+      }
+
+      .showcase-link:hover .arrow {
+        transform: translateX(2px);
+      }
+
+      .brand {
+        text-align: center;
+        padding: 3rem 1.5rem 0;
+      }
+
+      .wordmark {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.22em;
+        margin: 0;
+        color: var(--ink);
+      }
+
+      .frame {
+        display: grid;
+        grid-template-columns: 180px minmax(0, 580px);
+        gap: 3rem;
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 3rem 2rem 4rem;
+      }
+
+      .sidebar {
+        position: sticky;
+        top: 3rem;
+        align-self: start;
+      }
+
+      .sidebar ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+      }
+
+      .sidebar a {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.15rem 0;
+        font-family: "Inter", sans-serif;
+        font-size: 0.85rem;
+        color: var(--cloudy-deep);
+        text-decoration: none;
+        transition: color 0.15s ease;
+      }
+
+      .sidebar a:hover {
+        color: var(--ink);
+      }
+
+      .sidebar .dot {
+        width: 0.35rem;
+        height: 0.35rem;
+        border-radius: 50%;
+        background: transparent;
+        flex-shrink: 0;
+        transition: background 0.2s ease;
+      }
+
+      .sidebar li.active .dot {
+        background: var(--crail);
+      }
+
+      .sidebar li.active a {
+        color: var(--ink);
+        font-weight: 500;
+      }
+
+      .content {
+        min-width: 0;
+      }
+
+      .site-footer {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 0 2rem 2.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.75rem;
+        color: var(--cloudy-deep);
+      }
+
+      .site-footer .copy {
+        margin: 0;
+      }
+
+      .site-footer .socials {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        gap: 0.95rem;
+      }
+
+      .site-footer .socials a {
+        color: var(--cloudy-deep);
+        display: inline-flex;
+        text-decoration: none;
+        transition: color 0.15s ease;
+      }
+
+      .site-footer .socials svg {
+        width: 15px;
+        height: 15px;
+      }
+
+      .site-footer .socials a:hover {
+        color: var(--crail);
+      }
+
+      @media (max-width: 860px) {
+        .frame {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+          padding: 3rem 1.5rem 4rem;
+        }
+
+        .sidebar {
+          position: static;
+        }
+
+        .sidebar ul {
+          flex-direction: row;
+          flex-wrap: wrap;
+          gap: 1.2rem;
+        }
+
+        .showcase-link {
+          margin-top: 0;
+          font-size: 0.68rem;
+        }
+
+        .site-footer {
+          flex-direction: column;
+          gap: 1.2rem;
+          padding: 0 1.5rem 2.5rem;
+          text-align: center;
+        }
+      }
+    </style>
+  </body>
+</html>

@@ -1,371 +1,208 @@
 ---
-import BaseLayout from "@/layouts/BaseLayout.astro";
+import MinimalLayout from "@/layouts/MinimalLayout.astro";
+
+const groups = [
+  {
+    name: "Cybersecurity",
+    items: [
+      "Penetration Testing",
+      "Threat Modeling",
+      "Network Security",
+      "OSINT",
+      "Snort",
+      "iptables",
+      "Hydra",
+      "Burp Suite",
+      "Nmap",
+      "Metasploit",
+      "Autopsy",
+      "FTK Imager",
+      "Volatility 3",
+    ],
+  },
+  {
+    name: "Networking",
+    items: [
+      "OSPF",
+      "VPNs",
+      "ACLs",
+      "MPLS",
+      "Cisco Packet Tracer",
+      "GNS3",
+      "Wireshark",
+      "UTM",
+    ],
+  },
+  {
+    name: "Development",
+    items: [
+      "Next.js",
+      "React Native",
+      "Python",
+      "PHP",
+      "JavaScript / TypeScript",
+      "SQL",
+      "HTML",
+      "Tailwind CSS",
+      "Supabase",
+      "Git",
+      "Docker",
+      "Postman",
+      "Figma",
+    ],
+  },
+  {
+    name: "Machine Learning",
+    items: [
+      "Jupyter",
+      "pandas",
+      "NumPy",
+      "scikit-learn",
+      "PyTorch",
+      "Transformers",
+      "TextAttack",
+    ],
+  },
+];
+
+const certs = [
+  { name: "INE eJPT — Junior Penetration Tester", issuer: "INE Security", status: "In progress" },
+  { name: "Cisco CCNA — Enterprise Networking, Security and Automation", issuer: "Cisco" },
+  { name: "ISC2 CC — Certified in Cybersecurity", issuer: "ISC2" },
+  { name: "Develop AI-Powered Prototypes in Google AI Studio", issuer: "Google" },
+];
 ---
 
-<BaseLayout title="Skills — Abdulla AlBassam">
-  <div class="page">
-    <div class="page-header">
-      <h1>SKILLS</h1>
-      <p class="page-desc">
-        A blend of cybersecurity, networking, and development — built through
-        hands-on projects.
-      </p>
-    </div>
+<MinimalLayout title="Skills & Certs — Abdulla Al Bassam" active="skills">
+  <section class="skills">
+    <p class="lede">
+      A blend of cybersecurity, networking, machine learning, and software
+      engineering — built through degree work, certifications, and personal
+      projects.
+    </p>
 
-    <div class="skills-grid">
-      <div class="skill-category featured">
-        <div class="category-header">
-          <span class="category-number">01</span>
-          <h2>Cybersecurity</h2>
+    {
+      groups.map((g) => (
+        <div class="group">
+          <h2 class="block-heading">{g.name}</h2>
+          <ul class="tags">
+            {g.items.map((s) => (
+              <li>{s}</li>
+            ))}
+          </ul>
         </div>
-        <div class="skill-tags">
-          <span>Penetration Testing</span>
-          <span>Threat Modeling</span>
-          <span>Network Security</span>
-          <span>OSINT</span>
-          <span>Snort</span>
-          <span>iptables</span>
-          <span>Hydra</span>
-          <span>Burp Suite</span>
-          <span>Nmap</span>
-          <span>Metasploit</span>
-          <span>Autopsy</span>
-          <span>FTK Imager</span>
-          <span>Volatility 3</span>
-        </div>
-      </div>
+      ))
+    }
 
-      <div class="skill-category">
-        <div class="category-header">
-          <span class="category-number">02</span>
-          <h2>Networking</h2>
-        </div>
-        <div class="skill-tags">
-          <span>CCNA</span>
-          <span>OSPF</span>
-          <span>VPNs</span>
-          <span>ACLs</span>
-          <span>MPLS</span>
-          <span>Cisco Packet Tracer</span>
-          <span>GNS3</span>
-          <span>Wireshark</span>
-          <span>UTM</span>
-        </div>
-      </div>
-
-      <div class="skill-category">
-        <div class="category-header">
-          <span class="category-number">03</span>
-          <h2>Development</h2>
-        </div>
-        <div class="skill-tags">
-          <span>Next.js</span>
-          <span>Python</span>
-          <span>PHP</span>
-          <span>JavaScript/TypeScript</span>
-          <span>SQL</span>
-          <span>HTML</span>
-          <span>Tailwind CSS</span>
-          <span>Supabase</span>
-          <span>Git</span>
-          <span>Docker</span>
-          <span>Postman</span>
-          <span>Figma</span>
-        </div>
-      </div>
-
-      <div class="skill-category">
-        <div class="category-header">
-          <span class="category-number">04</span>
-          <h2>Machine Learning</h2>
-        </div>
-        <div class="skill-tags">
-          <span>Jupyter</span>
-          <span>pandas</span>
-          <span>NumPy</span>
-          <span>scikit-learn</span>
-          <span>PyTorch</span>
-          <span>Transformers</span>
-          <span>TextAttack</span>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</BaseLayout>
-
-<script>
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("in-view");
-          observer.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
-  );
-
-  document.querySelectorAll(".skill-category").forEach((el) => {
-    observer.observe(el);
-  });
-</script>
+    <h2 class="block-heading certs-heading">Certifications</h2>
+    <ul class="cert-list">
+      {
+        certs.map((c) => (
+          <li>
+            <div class="cert-row">
+              <div>
+                <strong>{c.name}</strong>
+                <span class="muted"> · {c.issuer}</span>
+              </div>
+              {c.status && <span class="cert-status">{c.status}</span>}
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</MinimalLayout>
 
 <style>
-  .page {
-    min-height: 100vh;
-    padding: 8rem 2rem 4rem;
-    max-width: 1000px;
-    margin: 0 auto;
+  .skills {
+    color: var(--ink-soft);
   }
 
-  .page-header {
-    text-align: center;
+  .lede {
+    color: var(--cloudy-deep);
+    font-size: 0.88rem;
+    margin-bottom: 2rem;
   }
 
-  .page-header h1 {
+  .group {
+    margin-bottom: 2rem;
+  }
+
+  .block-heading {
     font-family: "Space Grotesk", sans-serif;
-    font-size: clamp(2.5rem, 6vw, 5rem);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    color: var(--text-heading);
-    margin: 0;
-    animation: fade-up 0.6s cubic-bezier(0.25, 1, 0.5, 1) both;
-  }
-
-  .page-desc {
-    color: var(--text-muted);
-    margin-top: 1rem;
-    font-size: 0.95rem;
-    margin-bottom: 4rem;
-    animation: fade-up 0.6s cubic-bezier(0.25, 1, 0.5, 1) 0.12s both;
-  }
-
-  .skills-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    margin-bottom: 4rem;
-  }
-
-  /* --- Card base --- */
-  .skill-category {
-    border: 1px solid var(--border);
-    border-radius: 0.75rem;
-    padding: 2rem;
-    opacity: 0;
-    transform: translateY(24px);
-    transition:
-      opacity 0.55s cubic-bezier(0.25, 1, 0.5, 1),
-      transform 0.55s cubic-bezier(0.25, 1, 0.5, 1),
-      border-color 0.3s,
-      background 0.3s,
-      box-shadow 0.3s;
-  }
-
-  .skill-category.in-view {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* Stagger cards */
-  .skill-category:nth-child(1) { transition-delay: 0s; }
-  .skill-category:nth-child(2) { transition-delay: 0.1s; }
-  .skill-category:nth-child(3) { transition-delay: 0.2s; }
-  .skill-category:nth-child(4) { transition-delay: 0.3s; }
-
-  .skill-category.in-view:hover {
-    border-color: var(--border-hover);
-    background: var(--bg-hover);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  }
-
-  /* --- Featured cards span full width --- */
-  .skill-category.featured {
-    grid-column: 1 / -1;
-    border-color: var(--border-hover);
-    padding: 2.5rem;
-  }
-
-  .skill-category.featured:hover {
-    border-color: var(--border-active);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
-  }
-
-  /* --- Category header --- */
-  .category-header {
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: baseline;
-    gap: 1.25rem;
-  }
-
-  .category-number {
-    font-family: "Space Grotesk", sans-serif;
-    font-size: 2.5rem;
-    font-weight: 700;
-    letter-spacing: -0.04em;
-    line-height: 1;
-    color: var(--text-heading);
-    opacity: 0.15;
-    transition: opacity 0.4s, text-shadow 0.4s;
-  }
-
-  .skill-category:hover .category-number {
-    opacity: 0.3;
-    text-shadow: 0 0 30px rgba(255, 255, 255, 0.08);
-  }
-
-  .featured .category-number {
-    font-size: 3.5rem;
-    opacity: 0.2;
-  }
-
-  .skill-category.featured:hover .category-number {
-    opacity: 0.3;
-  }
-
-  .category-header h2 {
-    font-family: "Space Grotesk", sans-serif;
-    font-size: 1.5rem;
+    font-size: 0.68rem;
     font-weight: 600;
-    color: var(--text-heading);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cloudy-deep);
+    margin: 0 0 0.85rem;
+  }
+
+  .certs-heading {
+    margin-top: 2.5rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .tags {
+    list-style: none;
+    padding: 0;
     margin: 0;
-  }
-
-  .featured .category-header h2 {
-    font-size: 2rem;
-  }
-
-  /* --- Tags --- */
-  .skill-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.35rem;
   }
 
-  .skill-tags span {
-    font-size: 0.8rem;
-    padding: 0.4rem 1rem;
-    background: var(--bg-subtle);
-    border: 1px solid var(--border);
+  .tags li {
+    font-size: 0.75rem;
+    color: var(--ink);
+    background: var(--pampas-deep);
+    border: 1px solid var(--rule);
+    padding: 0.25rem 0.65rem;
     border-radius: 999px;
-    color: var(--text-muted);
-    opacity: 0;
-    transform: translateY(8px);
-    transition:
-      color 0.2s,
-      border-color 0.2s,
-      background 0.2s,
-      transform 0.2s cubic-bezier(0.25, 1, 0.5, 1),
-      opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: border-color 0.15s ease, background 0.15s ease;
   }
 
-  .skill-category.in-view .skill-tags span {
-    opacity: 1;
-    transform: translateY(0);
+  .tags li:hover {
+    border-color: var(--cloudy);
   }
 
-  /* Stagger tag reveals within each card */
-  .skill-category.in-view .skill-tags span:nth-child(1) { transition-delay: 0.15s; }
-  .skill-category.in-view .skill-tags span:nth-child(2) { transition-delay: 0.19s; }
-  .skill-category.in-view .skill-tags span:nth-child(3) { transition-delay: 0.23s; }
-  .skill-category.in-view .skill-tags span:nth-child(4) { transition-delay: 0.27s; }
-  .skill-category.in-view .skill-tags span:nth-child(5) { transition-delay: 0.31s; }
-  .skill-category.in-view .skill-tags span:nth-child(6) { transition-delay: 0.35s; }
-  .skill-category.in-view .skill-tags span:nth-child(7) { transition-delay: 0.39s; }
-  .skill-category.in-view .skill-tags span:nth-child(8) { transition-delay: 0.43s; }
-  .skill-category.in-view .skill-tags span:nth-child(9) { transition-delay: 0.47s; }
-  .skill-category.in-view .skill-tags span:nth-child(10) { transition-delay: 0.51s; }
-  .skill-category.in-view .skill-tags span:nth-child(11) { transition-delay: 0.55s; }
-  .skill-category.in-view .skill-tags span:nth-child(12) { transition-delay: 0.59s; }
-  .skill-category.in-view .skill-tags span:nth-child(13) { transition-delay: 0.63s; }
-
-  .skill-tags span:hover {
-    color: var(--text-heading);
-    border-color: var(--border-active);
-    background: var(--bg-subtle-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 2px 12px rgba(255, 255, 255, 0.04);
+  .cert-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
   }
 
-  .featured .skill-tags span {
-    padding: 0.5rem 1.15rem;
-    font-size: 0.85rem;
+  .cert-list > li {
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--rule);
   }
 
-  /* --- Mobile --- */
-  @media (max-width: 768px) {
-    .page {
-      padding: 7rem 1.5rem 3rem;
-    }
-
-    .skills-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .skill-category.featured {
-      padding: 2rem;
-    }
-
-    .category-number {
-      font-size: 2rem;
-    }
-
-    .featured .category-number {
-      font-size: 2.5rem;
-    }
-
-    .featured .category-header h2 {
-      font-size: 1.5rem;
-    }
+  .cert-list > li:last-child {
+    border-bottom: none;
   }
 
-  /* --- Keyframes --- */
-  @keyframes fade-up {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  .cert-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
   }
 
-  /* --- Reduced motion --- */
-  @media (prefers-reduced-motion: reduce) {
-    .page-header h1,
-    .page-desc {
-      animation: none;
-    }
+  .cert-row strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
 
-    .skill-category {
-      opacity: 1;
-      transform: none;
-      transition: border-color 0.3s, background 0.3s;
-    }
+  .muted {
+    color: var(--cloudy-deep);
+  }
 
-    .skill-tags span {
-      opacity: 1;
-      transform: none;
-      transition: color 0.2s, border-color 0.2s, background 0.2s;
-    }
-
-    .skill-tags span:hover {
-      transform: none;
-      box-shadow: none;
-    }
-
-    .skill-category:hover .category-number {
-      text-shadow: none;
-    }
-
-    .skill-category.in-view:hover {
-      transform: none;
-      box-shadow: none;
-    }
+  .cert-status {
+    font-family: "JetBrains Mono", "SF Mono", monospace;
+    font-size: 0.68rem;
+    color: var(--crail);
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
   }
 </style>

@@ -1,0 +1,129 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ThreeScene from "@/components/ThreeScene.svelte";
+---
+
+<BaseLayout title="Abdulla AlBassam — Cybersecurity & Builder">
+  <div class="home">
+    <ThreeScene client:idle />
+    <div class="hero-text">
+      <h1 class="name">
+        <span class="line-mask"><span class="line line-1">ABDULLA</span></span>
+        <span class="line-mask"><span class="line line-2">ALBASSAM</span></span>
+      </h1>
+      <p class="subtitle">CYBERSECURITY · MACHINE LEARNING · DEVELOPMENT</p>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .home {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--bg-primary);
+    transition: background 0.4s ease;
+  }
+
+  .hero-text {
+    position: absolute;
+    bottom: 2.5rem;
+    right: 2.5rem;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    pointer-events: none;
+    text-align: right;
+  }
+
+  .name {
+    font-family: "Space Grotesk", sans-serif;
+    font-weight: 700;
+    font-size: clamp(3rem, 8vw, 7rem);
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    color: var(--text-heading);
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+  }
+
+  .line-mask {
+    display: block;
+    overflow: hidden;
+  }
+
+  .line {
+    display: block;
+    animation: line-reveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .line-1 {
+    animation-delay: 0.2s;
+  }
+
+  .line-2 {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes line-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(110%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .subtitle {
+    font-family: "Inter", sans-serif;
+    font-size: clamp(0.7rem, 1.2vw, 1rem);
+    letter-spacing: 0.35em;
+    color: var(--text-secondary);
+    margin-top: 1rem;
+    font-weight: 300;
+    transition: color 0.4s ease;
+    opacity: 0;
+    animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.7s both;
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+/* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .line, .subtitle {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero-text {
+      bottom: 1.5rem;
+      right: 1.5rem;
+    }
+
+    .name {
+      font-size: clamp(1.5rem, 8vw, 2.5rem);
+    }
+
+    .subtitle {
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+    }
+  }
+</style>

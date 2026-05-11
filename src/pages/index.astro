@@ -1,129 +1,172 @@
 ---
-import BaseLayout from "@/layouts/BaseLayout.astro";
-import ThreeScene from "@/components/ThreeScene.svelte";
+import MinimalLayout from "@/layouts/MinimalLayout.astro";
 ---
 
-<BaseLayout title="Abdulla AlBassam — Cybersecurity & Builder">
-  <div class="home">
-    <ThreeScene client:idle />
-    <div class="hero-text">
-      <h1 class="name">
-        <span class="line-mask"><span class="line line-1">ABDULLA</span></span>
-        <span class="line-mask"><span class="line line-2">ALBASSAM</span></span>
-      </h1>
-      <p class="subtitle">CYBERSECURITY · MACHINE LEARNING · DEVELOPMENT</p>
-    </div>
-  </div>
-</BaseLayout>
+<MinimalLayout title="Abdulla Al Bassam" active="about">
+  <section class="about">
+    <p>
+      I'm Abdulla Al Bassam, a final-year Cybersecurity and Networking student at
+      <a href="https://www.northumbria.ac.uk/" target="_blank" rel="noopener noreferrer">Northumbria University</a>,
+      Newcastle, on track for a First Class Honours degree. I'm a recipient of
+      the Saudi government's <em>Emdad</em> Scholarship.
+    </p>
+
+    <p>
+      My final-year project sits at the intersection of machine learning and
+      cybersecurity: an adversarially robust spam detection system using a
+      fine-tuned <strong>DistilBERT</strong> transformer deployed inside a
+      secure mail server pipeline, evaluating how intelligent systems can be
+      hardened against manipulation.
+    </p>
+
+    <p>
+      Across my degree I've worked hands-on in penetration testing, defensive
+      security, enterprise networking, digital forensics, and secure software
+      architecture — vulnerability assessments with Nmap and Burp Suite,
+      defensive controls with iptables and Snort, multi-site WANs with MPLS VPN
+      and IPsec in GNS3, forensic investigations with Autopsy and Volatility 3,
+      and a secure REST API built from scratch. Outside of university I sharpen
+      offensive skills through CTF challenges on <strong>TryHackMe</strong> and
+      <strong>Hack The Box</strong>.
+    </p>
+
+    <p>
+      On the side, I founded <strong>Sweaty</strong>, a social platform for
+      gamers that I designed and developed end-to-end with React Native —
+      reviews, ratings, curated lists, a real-time social feed, AI-powered
+      recommendations, and game-library importing. The app is currently in
+      pilot testing before public release.
+    </p>
+
+    <p>
+      I'm a member of the <strong>Claude Builder Club</strong> at Northumbria,
+      where I work on agentic AI development and automation projects, and I
+      hold certifications from Anthropic and Google in AI prototyping and
+      agentic development. Whether it's security, software, or AI, I'm drawn
+      to building things that work, breaking things that don't, and
+      understanding the theory behind both.
+    </p>
+
+    <h2 class="block-heading">Education</h2>
+    <ul class="entries">
+      <li>
+        <div class="entry-row">
+          <div>
+            <strong>BSc (Hons) Networks &amp; Cyber Security</strong>
+            <span class="muted"> · Northumbria University</span>
+          </div>
+          <span class="meta">2023 — 2026</span>
+        </div>
+        <p class="muted small">Predicted: First Class Honours.</p>
+      </li>
+      <li>
+        <div class="entry-row">
+          <div>
+            <strong>Foundation Year — Economics &amp; Mathematics</strong>
+            <span class="muted"> · King's College London</span>
+          </div>
+          <span class="meta">2022 — 2023</span>
+        </div>
+        <p class="muted small">Grade: 2:1.</p>
+      </li>
+      <li>
+        <div class="entry-row">
+          <div>
+            <strong>American Diploma with Honours</strong>
+            <span class="muted"> · Modern Knowledge Schools, Bahrain</span>
+          </div>
+          <span class="meta">2008 — 2022</span>
+        </div>
+        <p class="muted small">98% Overall GPA.</p>
+      </li>
+    </ul>
+
+    <h2 class="block-heading">Currently</h2>
+    <ul class="bullets">
+      <li>Finishing my dissertation on adversarially robust spam detection.</li>
+      <li>Pilot-testing <strong>Sweaty</strong> ahead of its public release.</li>
+      <li>Working through the <strong>eJPT</strong>, with <strong>OSCP</strong> on the longer-term roadmap.</li>
+    </ul>
+  </section>
+</MinimalLayout>
 
 <style>
-  .home {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    background: var(--bg-primary);
-    transition: background 0.4s ease;
+  .about {
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    line-height: 1.65;
   }
 
-  .hero-text {
-    position: absolute;
-    bottom: 2.5rem;
-    right: 2.5rem;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    pointer-events: none;
-    text-align: right;
+  .about strong {
+    color: var(--ink);
+    font-weight: 600;
   }
 
-  .name {
+  .about em {
+    color: var(--ink);
+    font-style: normal;
+    font-weight: 500;
+  }
+
+  .block-heading {
     font-family: "Space Grotesk", sans-serif;
-    font-weight: 700;
-    font-size: clamp(3rem, 8vw, 7rem);
-    letter-spacing: -0.04em;
-    line-height: 0.9;
-    color: var(--text-heading);
-    display: flex;
-    flex-direction: column;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cloudy-deep);
+    margin: 2.5rem 0 1rem;
+  }
+
+  .entries {
+    list-style: none;
+    padding: 0;
     margin: 0;
   }
 
-  .line-mask {
-    display: block;
-    overflow: hidden;
+  .entries > li {
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--rule);
   }
 
-  .line {
-    display: block;
-    animation: line-reveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  .entries > li:last-child {
+    border-bottom: none;
   }
 
-  .line-1 {
-    animation-delay: 0.2s;
+  .entry-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
   }
 
-  .line-2 {
-    animation-delay: 0.4s;
+  .entry-row strong {
+    color: var(--ink);
+    font-weight: 600;
   }
 
-  @keyframes line-reveal {
-    from {
-      opacity: 0;
-      transform: translateY(110%);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  .meta {
+    font-family: "JetBrains Mono", "SF Mono", monospace;
+    font-size: 0.72rem;
+    color: var(--cloudy-deep);
+    white-space: nowrap;
   }
 
-  .subtitle {
-    font-family: "Inter", sans-serif;
-    font-size: clamp(0.7rem, 1.2vw, 1rem);
-    letter-spacing: 0.35em;
-    color: var(--text-secondary);
-    margin-top: 1rem;
-    font-weight: 300;
-    transition: color 0.4s ease;
-    opacity: 0;
-    animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.7s both;
+  .muted {
+    color: var(--cloudy-deep);
   }
 
-  @keyframes fade-up {
-    from {
-      opacity: 0;
-      transform: translateY(16px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  .small {
+    font-size: 0.8rem;
+    margin: 0.3rem 0 0;
   }
 
-/* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    .line, .subtitle {
-      animation: none;
-      opacity: 1;
-      transform: none;
-    }
+  .bullets {
+    margin: 0;
+    padding-left: 1.1rem;
   }
 
-  @media (max-width: 768px) {
-    .hero-text {
-      bottom: 1.5rem;
-      right: 1.5rem;
-    }
-
-    .name {
-      font-size: clamp(1.5rem, 8vw, 2.5rem);
-    }
-
-    .subtitle {
-      font-size: 0.55rem;
-      letter-spacing: 0.2em;
-    }
+  .bullets li {
+    margin-bottom: 0.5rem;
   }
 </style>
