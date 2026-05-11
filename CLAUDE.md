@@ -15,7 +15,7 @@ No test runner or linter is configured.
 
 ## Architecture
 
-Astro v4 static site with Svelte v5 interactive islands, Tailwind CSS v3, and Three.js for 3D/shader effects. TypeScript throughout. Deployed on Vercel at abdulla.dev.
+Astro v4 static site with Svelte v5 interactive islands, Tailwind CSS v3, and Three.js for 3D/shader effects. TypeScript throughout. Deployed on Vercel at www.abdullaalbassam.com (Vercel project: `portfolio`).
 
 **The site has two parallel surfaces:**
 1. **V2 (current, in-progress)** — A minimal text-forward site at `/`, `/projects`, `/photography`, `/skills`. Uses `MinimalLayout.astro`. Pampas (#f4f3ee) + Crail (#c15f3c) palette. No 3D, no shaders, no heavy JS.

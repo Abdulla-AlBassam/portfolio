@@ -1,3 +1,9 @@
 {
-  "framework": "astro"
+  "framework": "astro",
+  "redirects": [
+    { "source": "/me", "destination": "/", "permanent": true },
+    { "source": "/contact", "destination": "/", "permanent": true },
+    { "source": "/projects/rest-api", "destination": "/showcase/projects/rest-api", "permanent": true },
+    { "source": "/projects/operating-systems", "destination": "/showcase/projects/operating-systems", "permanent": true }
+  ]
 }
