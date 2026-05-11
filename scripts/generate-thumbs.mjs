@@ -7,7 +7,7 @@ const THUMB_DIR = join(PHOTO_DIR, "thumbs");
 const MID_DIR = join(PHOTO_DIR, "mid");
 const THUMB_WIDTH = 400;
 const MID_WIDTH = 1200;
-const VALID_EXTS = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif"]);
+const VALID_EXTS = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif", ".tif", ".tiff"]);
 
 mkdirSync(THUMB_DIR, { recursive: true });
 mkdirSync(MID_DIR, { recursive: true });

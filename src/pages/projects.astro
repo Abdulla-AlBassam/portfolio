@@ -14,13 +14,13 @@ interface Project {
 
 const projects: Project[] = [
   {
-    title: "Adversarially Robust Spam Detection (DistilBERT + SMTP pipeline)",
+    title: "Local Email Server with a Cascade AI Spam Filter",
     year: "2026",
     inProgress: true,
     categories: ["ml", "cybersecurity"],
   },
   {
-    title: "Sweaty — Social Game Diary & Discovery Platform",
+    title: "Sweaty — Social Gaming Platform",
     year: "2024",
     href: "https://www.linkedin.com/in/abdulla-albassam/overlay/experience/2864877680/multiple-media-viewer/?profileId=ACoAAF0wWosB-M5smshM0TcBM7F127DOES9M6N8&treasuryMediaId=1773201904530",
     external: true,
@@ -28,13 +28,13 @@ const projects: Project[] = [
     categories: ["development"],
   },
   {
-    title: "Penetration Testing: Vulnerable VM Pen Test",
+    title: "Penetration Testing: Vulnerable VM",
     year: "2025",
     inProgress: true,
     categories: ["cybersecurity"],
   },
   {
-    title: "Secure Transaction Protocol + Infrastructure Hardening Plan",
+    title: "Cryptographic Transaction Protocol Design",
     year: "2025",
     inProgress: true,
     categories: ["cybersecurity"],
@@ -47,7 +47,7 @@ const projects: Project[] = [
     categories: ["networking"],
   },
   {
-    title: "Digital Forensics: RAM-to-Disk Forensic Timeline Reconstruction",
+    title: "Digital Forensics: Timeline Reconstruction",
     year: "2025",
     href: "/projects/docs/digital-forensics.pdf",
     external: true,
@@ -88,7 +88,6 @@ const projects: Project[] = [
 
 const filters = [
   { id: "all", label: "All" },
-  { id: "in-progress", label: "In Progress" },
   { id: "cybersecurity", label: "Cybersecurity" },
   { id: "networking", label: "Networking" },
   { id: "development", label: "Development" },
@@ -96,7 +95,8 @@ const filters = [
 ];
 ---
 
-<MinimalLayout title="Projects — Abdulla Al Bassam" active="projects">
+<MinimalLayout title="Projects — Abdulla AlBassam" active="projects">
+  <img slot="sidebar-extra" src="/cat.webp" alt="" class="sidebar-cartoon" />
   <section class="projects">
     <p class="lede">
       Hands-on work across cybersecurity, networking, machine learning, and
@@ -106,7 +106,7 @@ const filters = [
 
     <div class="filter-bar" role="tablist" aria-label="Filter projects by category">
       {
-        filters.map((f, i) => (
+        filters.map((f) => (
           <button
             class:list={["filter", { active: f.id === "all" }]}
             data-filter={f.id}
@@ -170,7 +170,7 @@ const filters = [
       items.forEach((item) => {
         const cats = (item.dataset.categories || "").split(" ");
         const show = target === "all" || cats.includes(target);
-        item.style.display = show ? "" : "none";
+        (item as HTMLElement).style.display = show ? "" : "none";
       });
     });
   });
@@ -197,7 +197,7 @@ const filters = [
   }
 
   .filter {
-    font-family: "Inter", sans-serif;
+    font-family: "Montserrat", sans-serif;
     font-size: 0.72rem;
     font-weight: 500;
     color: var(--cloudy-deep);
@@ -206,10 +206,7 @@ const filters = [
     padding: 0.3rem 0.7rem;
     border-radius: 999px;
     cursor: pointer;
-    transition:
-      color 0.15s ease,
-      background 0.15s ease,
-      border-color 0.15s ease;
+    transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
   }
 
   .filter:hover {
@@ -257,7 +254,7 @@ const filters = [
   }
 
   .project-title {
-    font-family: "Space Grotesk", sans-serif;
+    font-family: "Montserrat", sans-serif;
     font-size: 0.92rem;
     font-weight: 500;
     line-height: 1.4;
@@ -271,8 +268,10 @@ const filters = [
   }
 
   .project-year {
-    font-family: "JetBrains Mono", "SF Mono", monospace;
+    font-family: "Montserrat", sans-serif;
     font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
     color: var(--cloudy-deep);
     transition: color 0.15s ease;
   }
@@ -283,14 +282,14 @@ const filters = [
   }
 
   .in-progress {
-    font-family: "JetBrains Mono", "SF Mono", monospace;
+    font-family: "Montserrat", sans-serif;
     font-size: 0.68rem;
+    font-weight: 600;
     color: var(--crail);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
   }
 
-  /* Linkless rows (div, not anchor) — no hover, no pointer */
   div.project-row {
     cursor: default;
   }

@@ -4,86 +4,90 @@ import MinimalLayout from "@/layouts/MinimalLayout.astro";
 const groups = [
   {
     name: "Cybersecurity",
-    items: [
-      "Penetration Testing",
-      "Threat Modeling",
-      "Network Security",
-      "OSINT",
-      "Snort",
-      "iptables",
-      "Hydra",
-      "Burp Suite",
-      "Nmap",
-      "Metasploit",
-      "Autopsy",
-      "FTK Imager",
-      "Volatility 3",
-    ],
+    items: ["Penetration Testing", "Threat Modeling", "Network Security", "OSINT", "Snort", "iptables", "Hydra", "Burp Suite", "Nmap", "Metasploit", "Autopsy", "FTK Imager", "Volatility 3"],
   },
   {
     name: "Networking",
-    items: [
-      "OSPF",
-      "VPNs",
-      "ACLs",
-      "MPLS",
-      "Cisco Packet Tracer",
-      "GNS3",
-      "Wireshark",
-      "UTM",
-    ],
+    items: ["OSPF", "VPNs", "ACLs", "MPLS", "VLSM", "SMTP", "BIND9", "Cisco Packet Tracer", "GNS3", "Wireshark"],
   },
   {
-    name: "Development",
-    items: [
-      "Next.js",
-      "React Native",
-      "Python",
-      "PHP",
-      "JavaScript / TypeScript",
-      "SQL",
-      "HTML",
-      "Tailwind CSS",
-      "Supabase",
-      "Git",
-      "Docker",
-      "Postman",
-      "Figma",
-    ],
+    name: "Languages",
+    items: ["Python", "JavaScript / TypeScript", "PHP", "C", "SQL", "HTML"],
+  },
+  {
+    name: "Frameworks",
+    items: ["Next.js", "React Native", "Astro", "Svelte", "Three.js", "Tailwind CSS", "Flask", "FastAPI"],
+  },
+  {
+    name: "Databases",
+    items: ["PostgreSQL", "SQLite", "Supabase"],
+  },
+  {
+    name: "Operating Systems",
+    items: ["Linux", "Ubuntu", "macOS", "Windows"],
+  },
+  {
+    name: "DevOps",
+    items: ["Git / GitHub", "Docker", "Virtual Machines", "Apache", "Vercel", "Figma"],
   },
   {
     name: "Machine Learning",
-    items: [
-      "Jupyter",
-      "pandas",
-      "NumPy",
-      "scikit-learn",
-      "PyTorch",
-      "Transformers",
-      "TextAttack",
-    ],
+    items: ["Jupyter", "Google Colab", "pandas", "NumPy", "scikit-learn", "PyTorch", "Transformers"],
   },
 ];
 
-const certs = [
+interface Cert {
+  name: string;
+  issuer: string;
+  status?: string;
+  href?: string;
+}
+
+const linkedInCerts = "https://www.linkedin.com/in/abdulla-albassam/details/certifications/";
+
+const certs: Cert[] = [
   { name: "INE eJPT — Junior Penetration Tester", issuer: "INE Security", status: "In progress" },
-  { name: "Cisco CCNA — Enterprise Networking, Security and Automation", issuer: "Cisco" },
-  { name: "ISC2 CC — Certified in Cybersecurity", issuer: "ISC2" },
-  { name: "Develop AI-Powered Prototypes in Google AI Studio", issuer: "Google" },
+  { name: "Cisco CCNA — Enterprise Networking, Security and Automation", issuer: "Cisco", href: linkedInCerts },
+  { name: "ISC2 CC — Certified in Cybersecurity", issuer: "ISC2", href: linkedInCerts },
+  { name: "Develop AI-Powered Prototypes in Google AI Studio", issuer: "Google", href: linkedInCerts },
+  { name: "Anthropic AI Fluency Courses", issuer: "Anthropic", href: "https://anthropic.skilljar.com/" },
 ];
 ---
 
-<MinimalLayout title="Skills & Certs — Abdulla Al Bassam" active="skills">
+<MinimalLayout title="Skills & Certs — Abdulla AlBassam" active="skills">
   <section class="skills">
-    <p class="lede">
-      A blend of cybersecurity, networking, machine learning, and software
-      engineering — built through degree work, certifications, and personal
-      projects.
-    </p>
+    <h2 class="block-heading">Certifications</h2>
+    <ul class="cert-list">
+      {
+        certs.map((c) => {
+          const Tag = c.href ? "a" : "div";
+          const linkProps = c.href ? { href: c.href, target: "_blank", rel: "noopener noreferrer" } : {};
+          return (
+            <li>
+              <Tag class="cert-row" {...linkProps}>
+                <div>
+                  <strong>{c.name}</strong>
+                  <span class="muted"> · {c.issuer}</span>
+                </div>
+                {c.status && <span class="cert-status">{c.status}</span>}
+                {c.href && !c.status && (
+                  <span class="cert-arrow" aria-hidden="true">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="7" y1="17" x2="17" y2="7" />
+                      <polyline points="7 7 17 7 17 17" />
+                    </svg>
+                  </span>
+                )}
+              </Tag>
+            </li>
+          );
+        })
+      }
+    </ul>
 
     {
-      groups.map((g) => (
-        <div class="group">
+      groups.map((g, i) => (
+        <div class:list={["group", { "first-group": i === 0 }]}>
           <h2 class="block-heading">{g.name}</h2>
           <ul class="tags">
             {g.items.map((s) => (
@@ -93,29 +97,13 @@ const certs = [
         </div>
       ))
     }
-
-    <h2 class="block-heading certs-heading">Certifications</h2>
-    <ul class="cert-list">
-      {
-        certs.map((c) => (
-          <li>
-            <div class="cert-row">
-              <div>
-                <strong>{c.name}</strong>
-                <span class="muted"> · {c.issuer}</span>
-              </div>
-              {c.status && <span class="cert-status">{c.status}</span>}
-            </div>
-          </li>
-        ))
-      }
-    </ul>
   </section>
 </MinimalLayout>
 
 <style>
   .skills {
     color: var(--ink-soft);
+    position: relative;
   }
 
   .lede {
@@ -128,19 +116,18 @@ const certs = [
     margin-bottom: 2rem;
   }
 
+  .group.first-group {
+    margin-top: 2.5rem;
+  }
+
   .block-heading {
-    font-family: "Space Grotesk", sans-serif;
+    font-family: "Montserrat", sans-serif;
     font-size: 0.68rem;
     font-weight: 600;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--cloudy-deep);
     margin: 0 0 0.85rem;
-  }
-
-  .certs-heading {
-    margin-top: 2.5rem;
-    margin-bottom: 0.85rem;
   }
 
   .tags {
@@ -186,11 +173,34 @@ const certs = [
     justify-content: space-between;
     align-items: baseline;
     gap: 1rem;
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  a.cert-row:hover {
+    color: var(--crail);
+  }
+
+  a.cert-row:hover strong {
+    color: var(--crail);
   }
 
   .cert-row strong {
     color: var(--ink);
     font-weight: 600;
+    transition: color 0.15s ease;
+  }
+
+  .cert-arrow {
+    color: var(--cloudy-deep);
+    display: inline-flex;
+    transition: color 0.15s ease, transform 0.15s ease;
+  }
+
+  a.cert-row:hover .cert-arrow {
+    color: var(--crail);
+    transform: translate(2px, -2px);
   }
 
   .muted {
@@ -198,11 +208,12 @@ const certs = [
   }
 
   .cert-status {
-    font-family: "JetBrains Mono", "SF Mono", monospace;
+    font-family: "Montserrat", sans-serif;
     font-size: 0.68rem;
+    font-weight: 600;
     color: var(--crail);
     white-space: nowrap;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
   }
 </style>

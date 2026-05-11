@@ -7,7 +7,7 @@ interface Props {
 
 const {
   title,
-  description = "Abdulla Al Bassam — Cybersecurity & Networking student. Final-year BSc at Northumbria University.",
+  description = "Abdulla AlBassam — Cybersecurity & Networking student. Final-year BSc at Northumbria University.",
   active,
 } = Astro.props;
 
@@ -16,8 +16,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const nav = [
   { id: "about", label: "About", href: "/" },
   { id: "projects", label: "Projects", href: "/projects" },
-  { id: "photography", label: "Photography", href: "/photography" },
   { id: "skills", label: "Skills & Certs", href: "/skills" },
+  { id: "photography", label: "Photography", href: "/photography" },
 ];
 
 const year = new Date().getFullYear();
@@ -43,13 +43,33 @@ const year = new Date().getFullYear();
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
   </head>
   <body>
     <header class="brand">
-      <h1 class="wordmark">ABDULLA AL BASSAM</h1>
+      <h1 class="signature-mark">
+        <a href="/" class="signature-link" aria-label="Home — Abdulla AlBassam">
+          <img
+            src="/signature.webp"
+            alt="Abdulla AlBassam"
+            class="signature signature-en"
+            width="1288"
+            height="273"
+          />
+          {/* Arabic signature placeholder — uncomment when the Arabic file is added:
+          <span class="signature-divider" aria-hidden="true"></span>
+          <img
+            src="/signature-ar.webp"
+            alt="عبدالله البسام"
+            class="signature signature-ar"
+            width="1288"
+            height="273"
+          />
+          */}
+        </a>
+      </h1>
     </header>
 
     <div class="frame">
@@ -59,75 +79,119 @@ const year = new Date().getFullYear();
             nav.map((item) => (
               <li class:list={[{ active: item.id === active }]}>
                 <a href={item.href} aria-current={item.id === active ? "page" : undefined}>
-                  <span class="dot" aria-hidden="true"></span>
+                  <span class="dot" aria-hidden="true" />
                   <span class="label">{item.label}</span>
                 </a>
               </li>
             ))
           }
         </ul>
-
-        <a href="/showcase" class="showcase-link" aria-label="View Portfolio V1">
-          <span class="label">Portfolio V1</span>
-          <span class="arrow" aria-hidden="true">&gt;</span>
-        </a>
       </aside>
 
       <main class="content">
         <slot />
       </main>
+
+      <div class="sidebar-extra-slot">
+        <slot name="sidebar-extra" />
+      </div>
     </div>
 
     <footer class="site-footer">
-      <p class="copy">© {year} Abdulla Al Bassam.</p>
-      <ul class="socials" aria-label="Social links">
-        <li>
-          <a href="mailto:albassam.004@gmail.com" aria-label="Email" title="Email">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="5" width="18" height="14" rx="2" />
-              <path d="m3 7 9 6 9-6" />
-            </svg>
-          </a>
-        </li>
-        <li>
-          <a href="https://linkedin.com/in/abdulla-albassam" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z" />
-            </svg>
-          </a>
-        </li>
-        <li>
-          <a href="https://github.com/Abdulla-AlBassam" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-1.97c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.18-3.08-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.62 1.58.23 2.75.11 3.04.74.8 1.18 1.82 1.18 3.08 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.13v3.16c0 .31.21.67.8.55C20.21 21.39 23.5 17.07 23.5 12 23.5 5.65 18.35.5 12 .5z" />
-            </svg>
-          </a>
-        </li>
-        <li>
-          <a href="https://tryhackme.com/p/AbdullaAlBassam" target="_blank" rel="noopener noreferrer" aria-label="TryHackMe" title="TryHackMe">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M14.79 9.05c0 .76-.62 1.38-1.39 1.38a1.39 1.39 0 1 1 1.39-1.38zm-5.94 0a1.39 1.39 0 1 1-2.77 0 1.39 1.39 0 0 1 2.77 0zM12 0C5.37 0 0 5.37 0 12c0 6.62 5.37 12 12 12s12-5.38 12-12c0-6.63-5.37-12-12-12zm0 21.65c-5.32 0-9.65-4.33-9.65-9.65 0-5.33 4.33-9.65 9.65-9.65 5.33 0 9.65 4.32 9.65 9.65 0 5.32-4.32 9.65-9.65 9.65zm-4.62-7.18a4.62 4.62 0 0 0 9.24 0H7.38z" />
-            </svg>
-          </a>
-        </li>
-        <li>
-          <a href="https://letterboxd.com/3boodi/" target="_blank" rel="noopener noreferrer" aria-label="Letterboxd" title="Letterboxd">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2.4a9.6 9.6 0 1 0 0 19.2 9.6 9.6 0 0 0 0-19.2zm-4.32 12.66a3.06 3.06 0 1 1 0-6.12 3.06 3.06 0 0 1 0 6.12zm4.32 0a3.06 3.06 0 1 1 0-6.12 3.06 3.06 0 0 1 0 6.12zm4.32 0a3.06 3.06 0 1 1 0-6.12 3.06 3.06 0 0 1 0 6.12z" />
-            </svg>
-          </a>
-        </li>
-        <li>
-          <a href="/cv.pdf" download aria-label="Download CV" title="Download CV">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
-              <path d="M14 3v6h6" />
-              <path d="M12 12v6" />
-              <path d="m9 15 3 3 3-3" />
-            </svg>
-          </a>
-        </li>
-      </ul>
+      <p class="copy">
+        © {year} Abdulla AlBassam <span class="sep" aria-hidden="true">·</span>
+        <span class="v1-wrap">
+          <a href="/showcase" class="v1-link">v1</a>
+          <svg class="v1-arrow" viewBox="0 0 90 56" aria-hidden="true">
+            <path
+              d="M 78 50 C 64 54, 50 50, 42 42 C 34 34, 36 24, 44 24 C 51 24, 50 36, 40 32 C 28 30, 16 32, 6 28"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M 12 22 L 6 28 L 12 34"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </span>
+      </p>
+      <div class="socials-wrap">
+        <svg class="socials-arrow" viewBox="0 0 90 56" aria-hidden="true">
+          <path
+            d="M 12 50 C 26 54, 40 50, 48 42 C 56 34, 54 24, 46 24 C 39 24, 40 36, 50 32 C 62 30, 74 32, 84 28"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M 78 22 L 84 28 L 78 34"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <ul class="socials" aria-label="Social links">
+          <li>
+            <a class="social social-email" href="mailto:albassam.004@gmail.com" aria-label="Email" title="Email">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="5" width="18" height="14" rx="2" />
+                <path d="m3 7 9 6 9-6" />
+              </svg>
+            </a>
+          </li>
+          <li>
+            <a class="social social-linkedin" href="https://linkedin.com/in/abdulla-albassam" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z" />
+              </svg>
+            </a>
+          </li>
+          <li>
+            <a class="social social-github" href="https://github.com/Abdulla-AlBassam" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-1.97c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.18-3.08-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.62 1.58.23 2.75.11 3.04.74.8 1.18 1.82 1.18 3.08 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.13v3.16c0 .31.21.67.8.55C20.21 21.39 23.5 17.07 23.5 12 23.5 5.65 18.35.5 12 .5z" />
+              </svg>
+            </a>
+          </li>
+          <li>
+            <a class="social social-tryhackme" href="https://tryhackme.com/p/AbdullaAlBassam" target="_blank" rel="noopener noreferrer" aria-label="TryHackMe" title="TryHackMe">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14.79 9.05c0 .76-.62 1.38-1.39 1.38a1.39 1.39 0 1 1 1.39-1.38zm-5.94 0a1.39 1.39 0 1 1-2.77 0 1.39 1.39 0 0 1 2.77 0zM12 0C5.37 0 0 5.37 0 12c0 6.62 5.37 12 12 12s12-5.38 12-12c0-6.63-5.37-12-12-12zm0 21.65c-5.32 0-9.65-4.33-9.65-9.65 0-5.33 4.33-9.65 9.65-9.65 5.33 0 9.65 4.32 9.65 9.65 0 5.32-4.32 9.65-9.65 9.65zm-4.62-7.18a4.62 4.62 0 0 0 9.24 0H7.38z" />
+              </svg>
+            </a>
+          </li>
+          <li>
+            <a class="social social-letterboxd" href="https://letterboxd.com/3boodi/" target="_blank" rel="noopener noreferrer" aria-label="Letterboxd" title="Letterboxd">
+              <svg viewBox="0 0 24 24" fill="none">
+                <circle cx="5" cy="12" r="3.5" fill="#00E054" />
+                <circle cx="12" cy="12" r="3.5" fill="#40BCF4" />
+                <circle cx="19" cy="12" r="3.5" fill="#F89132" />
+              </svg>
+            </a>
+          </li>
+          <li>
+            <a class="social social-cv" href="/cv.pdf" download aria-label="Download CV" title="Download CV">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
+                <path d="M14 3v6h6" />
+                <path d="M12 12v6" />
+                <path d="m9 15 3 3 3-3" />
+              </svg>
+            </a>
+          </li>
+        </ul>
+      </div>
     </footer>
 
     <style is:global>
@@ -155,7 +219,7 @@ const year = new Date().getFullYear();
       body {
         background: var(--pampas);
         color: var(--ink);
-        font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-family: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
         font-size: 15px;
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;
@@ -180,71 +244,59 @@ const year = new Date().getFullYear();
       }
 
       h1, h2, h3 {
-        font-family: "Space Grotesk", "Inter", sans-serif;
+        font-family: "Montserrat", sans-serif;
         color: var(--ink);
       }
     </style>
 
     <style>
-      .showcase-link {
-        --bg: var(--ink);
-        --hover-bg: var(--crail);
-        --hover-text: var(--pampas);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.45rem;
-        width: fit-content;
-        margin-top: 1.5rem;
-        font-family: "JetBrains Mono", "SF Mono", monospace;
-        font-size: 0.66rem;
-        font-weight: 500;
-        letter-spacing: 0.04em;
-        color: var(--pampas);
-        background: var(--bg);
-        border: 1px solid var(--bg);
-        border-radius: 3px;
-        padding: 0.4rem 0.75rem;
-        text-decoration: none;
-        cursor: pointer;
-        transition: 0.2s;
-      }
-
-      .showcase-link .arrow {
-        font-size: 0.78rem;
-        line-height: 1;
-        transition: transform 0.2s ease;
-      }
-
-      .showcase-link:hover {
-        color: var(--hover-text);
-        background: var(--hover-bg);
-        border-color: var(--hover-bg);
-        transform: translate(-0.25rem, -0.25rem);
-        box-shadow: 0.25rem 0.25rem var(--bg);
-      }
-
-      .showcase-link:active {
-        transform: translate(0);
-        box-shadow: none;
-      }
-
-      .showcase-link:hover .arrow {
-        transform: translateX(2px);
-      }
-
       .brand {
         text-align: center;
         padding: 3rem 1.5rem 0;
       }
 
-      .wordmark {
-        font-family: "Space Grotesk", sans-serif;
-        font-size: 0.8rem;
-        font-weight: 600;
-        letter-spacing: 0.22em;
+      .signature-mark {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.85rem;
         margin: 0;
-        color: var(--ink);
+        line-height: 1;
+      }
+
+      .signature-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.85rem;
+        text-decoration: none;
+        color: inherit;
+        border-radius: 4px;
+        transition: opacity 0.15s ease;
+      }
+
+      .signature-link:hover {
+        opacity: 0.7;
+      }
+
+      .signature-link:focus-visible {
+        outline: 2px solid var(--crail);
+        outline-offset: 6px;
+      }
+
+      .signature {
+        display: block;
+        height: 56px;
+        width: auto;
+        user-select: none;
+        pointer-events: none;
+      }
+
+      .signature-divider {
+        display: inline-block;
+        width: 1px;
+        height: 56px;
+        background: var(--crail);
+        flex-shrink: 0;
       }
 
       .frame {
@@ -254,6 +306,7 @@ const year = new Date().getFullYear();
         max-width: 880px;
         margin: 0 auto;
         padding: 3rem 2rem 4rem;
+        position: relative;
       }
 
       .sidebar {
@@ -276,7 +329,7 @@ const year = new Date().getFullYear();
         align-items: center;
         gap: 0.55rem;
         padding: 0.15rem 0;
-        font-family: "Inter", sans-serif;
+        font-family: "Montserrat", sans-serif;
         font-size: 0.85rem;
         color: var(--cloudy-deep);
         text-decoration: none;
@@ -284,7 +337,7 @@ const year = new Date().getFullYear();
       }
 
       .sidebar a:hover {
-        color: var(--ink);
+        color: var(--crail);
       }
 
       .sidebar .dot {
@@ -301,8 +354,23 @@ const year = new Date().getFullYear();
       }
 
       .sidebar li.active a {
-        color: var(--ink);
+        color: var(--crail);
         font-weight: 500;
+      }
+
+      .sidebar-extra-slot {
+        position: absolute;
+        bottom: 4rem;
+        left: 2rem;
+        width: 180px;
+        pointer-events: none;
+        user-select: none;
+      }
+
+      .sidebar-extra-slot :global(.sidebar-cartoon) {
+        display: block;
+        width: 100%;
+        height: auto;
       }
 
       .content {
@@ -310,7 +378,7 @@ const year = new Date().getFullYear();
       }
 
       .site-footer {
-        max-width: 880px;
+        max-width: 1100px;
         margin: 0 auto;
         padding: 0 2rem 2.5rem;
         display: flex;
@@ -324,29 +392,97 @@ const year = new Date().getFullYear();
         margin: 0;
       }
 
+      .site-footer .sep {
+        margin: 0 0.4rem;
+        color: var(--cloudy);
+      }
+
+      .site-footer .v1-link {
+        color: var(--cloudy-deep);
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.72rem;
+        font-weight: 500;
+        text-decoration: none;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--rule);
+        padding-bottom: 1px;
+        transition: color 0.15s ease, border-color 0.15s ease;
+      }
+
+      .site-footer .v1-link:hover {
+        color: var(--crail);
+        border-color: var(--crail);
+      }
+
+      .v1-wrap {
+        position: relative;
+        display: inline-block;
+      }
+
+      .v1-arrow {
+        position: absolute;
+        left: 100%;
+        top: 50%;
+        margin-left: 0.4rem;
+        transform: translateY(-50%);
+        width: 70px;
+        height: 44px;
+        color: var(--crail);
+        overflow: visible;
+        pointer-events: none;
+      }
+
+      .socials-wrap {
+        position: relative;
+        display: inline-block;
+      }
+
+      .socials-arrow {
+        position: absolute;
+        right: 100%;
+        top: 50%;
+        margin-right: 0.4rem;
+        transform: translateY(-50%);
+        width: 70px;
+        height: 44px;
+        color: var(--crail);
+        overflow: visible;
+        pointer-events: none;
+      }
+
       .site-footer .socials {
         list-style: none;
         margin: 0;
         padding: 0;
         display: flex;
-        gap: 0.95rem;
+        align-items: center;
+        gap: 1.1rem;
       }
 
       .site-footer .socials a {
-        color: var(--cloudy-deep);
         display: inline-flex;
         text-decoration: none;
-        transition: color 0.15s ease;
-      }
-
-      .site-footer .socials svg {
-        width: 15px;
-        height: 15px;
+        transition: opacity 0.15s ease, transform 0.15s ease;
+        opacity: 0.92;
       }
 
       .site-footer .socials a:hover {
-        color: var(--crail);
+        opacity: 1;
+        transform: translateY(-1px);
       }
+
+      .site-footer .socials svg {
+        width: 22px;
+        height: 22px;
+        display: block;
+      }
+
+      .social-email     { color: var(--ink-soft); }
+      .social-linkedin  { color: #0A66C2; }
+      .social-github    { color: #1a1816; }
+      .social-tryhackme { color: #88CC14; }
+      .social-cv        { color: var(--crail); }
 
       @media (max-width: 860px) {
         .frame {
@@ -361,13 +497,28 @@ const year = new Date().getFullYear();
 
         .sidebar ul {
           flex-direction: row;
-          flex-wrap: wrap;
-          gap: 1.2rem;
+          flex-wrap: nowrap;
+          justify-content: space-between;
+          gap: 0.5rem;
         }
 
-        .showcase-link {
-          margin-top: 0;
-          font-size: 0.68rem;
+        .sidebar a {
+          font-size: 0.78rem;
+          gap: 0;
+          white-space: nowrap;
+        }
+
+        .sidebar .dot {
+          display: none;
+        }
+
+        .sidebar-extra-slot {
+          display: none;
+        }
+
+        .v1-arrow,
+        .socials-arrow {
+          display: none;
         }
 
         .site-footer {

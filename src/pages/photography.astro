@@ -37,11 +37,10 @@ const photos = files.map((name) => {
 });
 ---
 
-<MinimalLayout title="Photography — Abdulla Al Bassam" active="photography">
+<MinimalLayout title="Photography — Abdulla AlBassam" active="photography">
   <section class="photography">
     <p class="lede">
-      A selection of frames I've taken on film and digital, mostly while
-      travelling. Click any image to view it full-size.
+      A selection of shots I've taken on film.
     </p>
 
     <div class="grid">
@@ -54,14 +53,7 @@ const photos = files.map((name) => {
             data-full={p.full}
             aria-label={`Open photo ${i + 1} of ${photos.length}`}
           >
-            <img
-              src={p.thumb}
-              alt=""
-              loading="lazy"
-              decoding="async"
-              width="400"
-              height="400"
-            />
+            <img src={p.thumb} alt="" loading="lazy" decoding="async" width="400" height="400" />
           </button>
         ))
       }
@@ -199,7 +191,6 @@ const photos = files.map((name) => {
     }
   }
 
-  /* Lightbox */
   .lightbox {
     position: fixed;
     inset: 0;
@@ -262,8 +253,10 @@ const photos = files.map((name) => {
     bottom: 1.5rem;
     left: 50%;
     transform: translateX(-50%);
-    font-family: "JetBrains Mono", "SF Mono", monospace;
+    font-family: "Montserrat", sans-serif;
     font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
     color: rgba(244, 243, 238, 0.7);
   }
 
