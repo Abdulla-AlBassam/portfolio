@@ -522,11 +522,12 @@ const year = new Date().getFullYear();
         user-select: none;
         z-index: 5;
         transform-origin: bottom right;
+        transform: translateX(-44px) scale(1);
         transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       }
 
       .social-cv:hover .cv-callout {
-        transform: scale(5);
+        transform: translateX(0) scale(5);
       }
 
       @media (max-width: 860px) {
