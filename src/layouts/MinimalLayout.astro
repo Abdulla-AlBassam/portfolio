@@ -95,6 +95,10 @@ const year = new Date().getFullYear();
       <div class="sidebar-extra-slot">
         <slot name="sidebar-extra" />
       </div>
+
+      <div class="sidebar-extra-slot sidebar-extra-bottom">
+        <slot name="sidebar-extra-bottom" />
+      </div>
     </div>
 
     <footer class="site-footer">
@@ -318,6 +322,8 @@ const year = new Date().getFullYear();
         position: sticky;
         top: 3rem;
         align-self: start;
+        z-index: 2;
+        background: var(--pampas);
       }
 
       .sidebar ul {
@@ -370,6 +376,11 @@ const year = new Date().getFullYear();
         width: 180px;
         pointer-events: none;
         user-select: none;
+        z-index: 1;
+      }
+
+      .sidebar-extra-bottom {
+        top: 38rem;
       }
 
       .sidebar-extra-slot :global(.sidebar-cartoon) {
