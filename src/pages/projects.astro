@@ -14,6 +14,13 @@ interface Project {
 
 const projects: Project[] = [
   {
+    title: "This Portfolio",
+    year: "2026",
+    href: "https://github.com/Abdulla-AlBassam/Portfolio",
+    external: true,
+    categories: ["development"],
+  },
+  {
     title: "Local Email Server with a Cascade AI Spam Filter",
     year: "2026",
     inProgress: true,
@@ -84,7 +91,7 @@ const projects: Project[] = [
     href: "/showcase/projects/operating-systems",
     categories: ["development", "networking"],
   },
-];
+].sort((a, b) => Number(b.year) - Number(a.year));
 
 const filters = [
   { id: "all", label: "All" },
