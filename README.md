@@ -1,4 +1,4 @@
-# abdulla.dev — Personal Portfolio
+# Personal Portfolio
 
 My personal portfolio website built with Astro, Svelte, and Tailwind CSS.
 
