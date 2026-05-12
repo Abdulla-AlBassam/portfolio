@@ -1,0 +1,398 @@
+---
+type IconKey = "github" | "linkedin" | "twitter" | "external" | "pdf" | "globe";
+
+interface ModalLink {
+  label: string;
+  href: string;
+  icon?: IconKey;
+}
+
+interface Cert {
+  src: string;
+  alt: string;
+}
+
+interface Props {
+  id: string;
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  links: ModalLink[];
+  cert?: Cert;
+}
+
+const { id, eyebrow = "View project", title, subtitle, links, cert } = Astro.props;
+const dialogId = `${id}-modal`;
+const titleId = `${id}-modal-title`;
+const certLightboxId = `${id}-cert-lightbox`;
+---
+
+<dialog class="link-modal" id={dialogId} aria-labelledby={titleId}>
+  <button type="button" class="modal-close" aria-label="Close" data-modal-close>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  </button>
+
+  <p class="modal-eyebrow">{eyebrow}</p>
+  <h3 class="modal-title" id={titleId}>{title}</h3>
+  {subtitle && <p class="modal-sub">{subtitle}</p>}
+
+  <div class="modal-actions">
+    {links.map((l) => (
+      <a href={l.href} target="_blank" rel="noopener noreferrer" class="modal-btn">
+        {l.icon === "github" && (
+          <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-1.97c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.18-3.08-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.62 1.58.23 2.75.11 3.04.74.8 1.18 1.82 1.18 3.08 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.13v3.16c0 .31.21.67.8.55C20.21 21.39 23.5 17.07 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
+        )}
+        {l.icon === "linkedin" && (
+          <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+        )}
+        {l.icon === "twitter" && (
+          <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25h6.829l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>
+        )}
+        {l.icon === "pdf" && (
+          <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M9 14h6"/><path d="M9 17h6"/></svg>
+        )}
+        {l.icon === "globe" && (
+          <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18"/><path d="M12 3a14 14 0 0 0 0 18"/></svg>
+        )}
+        {(!l.icon || l.icon === "external") && (
+          <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        )}
+        <span class="label">{l.label}</span>
+        <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12" />
+          <polyline points="12 5 19 12 12 19" />
+        </svg>
+      </a>
+    ))}
+  </div>
+
+  {cert && (
+    <figure class="modal-cert">
+      <button type="button" class="cert-trigger" data-cert-trigger={certLightboxId} aria-label="Open certificate full-size">
+        <img src={cert.src} alt={cert.alt} loading="lazy" decoding="async" />
+        <span class="cert-zoom-hint" aria-hidden="true">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 3 21 3 21 9" />
+            <polyline points="9 21 3 21 3 15" />
+            <line x1="21" y1="3" x2="14" y2="10" />
+            <line x1="3" y1="21" x2="10" y2="14" />
+          </svg>
+        </span>
+      </button>
+    </figure>
+  )}
+</dialog>
+
+{cert && (
+  <dialog class="cert-lightbox" id={certLightboxId} aria-label="Certificate, full size">
+    <button type="button" class="lightbox-close" aria-label="Close" data-modal-close>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+    </button>
+    <img src={cert.src} alt={cert.alt} />
+  </dialog>
+)}
+
+<script>
+  // Hoisted by Astro — runs once per page even when multiple LinkModals exist.
+  document.querySelectorAll<HTMLElement>('[data-modal-trigger]').forEach((trigger) => {
+    trigger.addEventListener('click', () => {
+      const id = trigger.getAttribute('data-modal-trigger');
+      if (!id) return;
+      const dialog = document.getElementById(`${id}-modal`) as HTMLDialogElement | null;
+      dialog?.showModal();
+    });
+  });
+
+  document.querySelectorAll<HTMLDialogElement>('dialog.link-modal, dialog.cert-lightbox').forEach((dialog) => {
+    dialog.querySelectorAll<HTMLButtonElement>('[data-modal-close]').forEach((btn) =>
+      btn.addEventListener('click', () => dialog.close())
+    );
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+  });
+
+  document.querySelectorAll<HTMLButtonElement>('[data-cert-trigger]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const lightboxId = btn.getAttribute('data-cert-trigger');
+      if (!lightboxId) return;
+      const lightbox = document.getElementById(lightboxId) as HTMLDialogElement | null;
+      lightbox?.showModal();
+    });
+  });
+</script>
+
+<style is:global>
+  /* ============ Trigger style (consumers use <button data-modal-trigger="…" class="link-button">) ============ */
+  .link-button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: var(--crail);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+  .link-button:hover { color: var(--crail-soft); }
+  .link-button:focus-visible {
+    outline: 2px solid var(--crail);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  .link-button.strong-link {
+    color: var(--crail);
+    font-weight: 600;
+  }
+
+  /* ============ Primary modal ============ */
+  .link-modal {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: min(92vw, 380px);
+    max-height: 86vh;
+    overflow-y: auto;
+    padding: 1.75rem 1.75rem 1.5rem;
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    background: var(--pampas);
+    color: var(--ink);
+    font-family: "Montserrat", sans-serif;
+    box-shadow: 0 30px 80px rgba(20, 18, 16, 0.28), 0 2px 8px rgba(20, 18, 16, 0.08);
+    will-change: transform, opacity, filter, border-radius;
+  }
+  .link-modal::backdrop {
+    background: rgba(20, 18, 16, 0.32);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+  }
+
+  /* Goo-morph entrance — irregular blob deforms into a rounded square. */
+  .link-modal[open] {
+    animation: link-modal-in 0.55s cubic-bezier(0.34, 1.4, 0.5, 1) both;
+  }
+  .link-modal[open]::backdrop {
+    animation: link-modal-backdrop-in 0.32s ease-out both;
+  }
+  @keyframes link-modal-in {
+    0%   { opacity: 0; transform: scale(0.4);  filter: blur(4px);   border-radius: 50% 42% 58% 50%; }
+    45%  { opacity: 1; filter: blur(1.5px); border-radius: 38% 50% 42% 56%; }
+    75%  { filter: blur(0.3px); border-radius: 22% 18% 24% 20%; }
+    100% { opacity: 1; transform: scale(1);   filter: blur(0);   border-radius: 14px; }
+  }
+  @keyframes link-modal-backdrop-in {
+    from { opacity: 0; } to { opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .link-modal[open] { animation: link-modal-fade 0.18s ease-out both; }
+    @keyframes link-modal-fade { from { opacity: 0; } to { opacity: 1; } }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 0.7rem;
+    right: 0.7rem;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: var(--cloudy-deep);
+    cursor: pointer;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+  .modal-close:hover {
+    color: var(--ink);
+    background: var(--pampas-deep);
+  }
+
+  .modal-eyebrow {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cloudy-deep);
+    margin: 0 0 0.55rem;
+  }
+  .modal-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 0 0 0.3rem;
+  }
+  .modal-sub {
+    font-size: 0.78rem;
+    color: var(--cloudy-deep);
+    margin: 0 0 1.25rem;
+  }
+
+  .modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .modal-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0.95rem;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    color: var(--ink);
+    text-decoration: none;
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+    background: transparent;
+    transition: 0.18s ease;
+  }
+  .modal-btn .icon,
+  .modal-btn .arrow {
+    flex-shrink: 0;
+    color: var(--ink-soft);
+    transition: color 0.18s ease, transform 0.18s ease;
+  }
+  .modal-btn .label { flex: 1; }
+  .modal-btn .arrow { color: var(--cloudy-deep); }
+  .modal-btn:hover {
+    background: var(--crail);
+    color: var(--pampas);
+    border-color: var(--crail);
+  }
+  .modal-btn:hover .icon,
+  .modal-btn:hover .arrow { color: var(--pampas); }
+  .modal-btn:hover .arrow { transform: translateX(3px); }
+  .modal-btn:focus-visible {
+    outline: 2px solid var(--crail);
+    outline-offset: 2px;
+  }
+
+  /* ============ Embedded cert preview ============ */
+  .modal-cert {
+    margin: 1.1rem 0 0;
+  }
+  .cert-trigger {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0.45rem;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    background: #fff;
+    cursor: zoom-in;
+    transition: border-color 0.18s ease, transform 0.18s ease;
+  }
+  .cert-trigger img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 3px;
+  }
+  .cert-trigger:hover {
+    border-color: var(--crail);
+    transform: translateY(-1px);
+  }
+  .cert-trigger:focus-visible {
+    outline: 2px solid var(--crail);
+    outline-offset: 2px;
+  }
+  .cert-zoom-hint {
+    position: absolute;
+    top: 0.55rem;
+    right: 0.55rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    background: rgba(20, 18, 16, 0.55);
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.18s ease;
+  }
+  .cert-trigger:hover .cert-zoom-hint,
+  .cert-trigger:focus-visible .cert-zoom-hint {
+    opacity: 1;
+  }
+
+  /* ============ Fullscreen cert lightbox ============ */
+  .cert-lightbox {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: min(96vw, 1200px);
+    max-height: 92vh;
+    padding: 0;
+    border: none;
+    background: transparent;
+    overflow: visible;
+  }
+  .cert-lightbox::backdrop {
+    background: rgba(10, 9, 8, 0.78);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  .cert-lightbox[open] {
+    animation: cert-lightbox-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .cert-lightbox[open]::backdrop {
+    animation: link-modal-backdrop-in 0.25s ease-out both;
+  }
+  @keyframes cert-lightbox-in {
+    from { opacity: 0; transform: scale(0.96); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  .cert-lightbox img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 92vh;
+    object-fit: contain;
+    border-radius: 6px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+  }
+  .lightbox-close {
+    position: absolute;
+    top: -2.5rem;
+    right: 0;
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.6);
+  }
+
+  @media (max-width: 600px) {
+    .lightbox-close {
+      top: 0.5rem;
+      right: 0.5rem;
+      background: rgba(20, 18, 16, 0.6);
+      border-color: transparent;
+    }
+  }
+</style>

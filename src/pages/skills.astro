@@ -1,5 +1,6 @@
 ---
 import MinimalLayout from "@/layouts/MinimalLayout.astro";
+import LinkModal from "@/components/LinkModal.astro";
 
 const groups = [
   {
@@ -41,11 +42,13 @@ interface Cert {
   issuer: string;
   status?: string;
   href?: string;
+  modal?: string;
 }
 
 const linkedInCerts = "https://www.linkedin.com/in/abdulla-albassam/details/certifications/";
 
 const certs: Cert[] = [
+  { name: "Accenture Award for Innovation", issuer: "Anthropic × Accenture Hackathon 2026", modal: "hackathon" },
   { name: "eJPT: Junior Penetration Tester", issuer: "INE Security", status: "In progress" },
   { name: "CCNA: Enterprise Networking, Security and Automation", issuer: "Cisco", href: linkedInCerts },
   { name: "CC: Certified in Cybersecurity", issuer: "ISC2", href: linkedInCerts },
@@ -55,24 +58,28 @@ const certs: Cert[] = [
 ---
 
 <MinimalLayout title="Skills & Certs — Abdulla AlBassam" active="skills">
-  <img slot="sidebar-extra-bottom" src="/cybersec.webp" alt="" class="sidebar-cartoon" />
+  <img slot="sidebar-extra-bottom" src="/cybersec.webp" alt="" class="sidebar-cartoon tilt-left" />
   <section class="skills">
     <img src="/cert.webp" alt="" class="cert-illustration" width="220" height="194" loading="eager" decoding="async" />
     <h2 class="block-heading">Certifications</h2>
     <ul class="cert-list">
       {
         certs.map((c) => {
-          const Tag = c.href ? "a" : "div";
-          const linkProps = c.href ? { href: c.href, target: "_blank", rel: "noopener noreferrer" } : {};
+          const Tag = c.modal ? "button" : c.href ? "a" : "div";
+          const tagProps = c.modal
+            ? { type: "button", "data-modal-trigger": c.modal }
+            : c.href
+            ? { href: c.href, target: "_blank", rel: "noopener noreferrer" }
+            : {};
           return (
             <li>
-              <Tag class="cert-row" {...linkProps}>
+              <Tag class="cert-row" {...tagProps}>
                 <div>
                   <strong>{c.name}</strong>
                   <span class="muted"> · {c.issuer}</span>
                 </div>
                 {c.status && <span class="cert-status">{c.status}</span>}
-                {c.href && !c.status && (
+                {(c.href || c.modal) && !c.status && (
                   <span class="cert-arrow" aria-hidden="true">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <line x1="7" y1="17" x2="17" y2="7" />
@@ -100,6 +107,21 @@ const certs: Cert[] = [
       ))
     }
   </section>
+
+  <LinkModal
+    id="hackathon"
+    eyebrow="View project"
+    title="Lean-in"
+    subtitle="Anthropic × Accenture Hackathon · Innovation Award"
+    links={[
+      { label: "GitHub", href: "https://github.com/Abdulla-AlBassam/lean-in", icon: "github" },
+      { label: "LinkedIn", href: "https://www.linkedin.com/feed/update/urn:li:activity:7459351820537274368/", icon: "linkedin" },
+    ]}
+    cert={{
+      src: "/certs/hackathon.webp",
+      alt: "Certificate of Achievement — Accenture Award for Innovation, Anthropic × Accenture Hackathon, Northumbria University, May 2026",
+    }}
+  />
 </MinimalLayout>
 
 <style>
@@ -123,6 +145,8 @@ const certs: Cert[] = [
     height: auto;
     pointer-events: none;
     user-select: none;
+    transform: rotate(4deg);
+    transform-origin: center;
   }
 
   @media (max-width: 1080px) {
@@ -197,11 +221,23 @@ const certs: Cert[] = [
     transition: color 0.15s ease;
   }
 
-  a.cert-row:hover {
+  button.cert-row {
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    font: inherit;
+    padding: 0;
+  }
+
+  a.cert-row:hover,
+  button.cert-row:hover {
     color: var(--crail);
   }
 
-  a.cert-row:hover strong {
+  a.cert-row:hover strong,
+  button.cert-row:hover strong {
     color: var(--crail);
   }
 
@@ -217,7 +253,8 @@ const certs: Cert[] = [
     transition: color 0.15s ease, transform 0.15s ease;
   }
 
-  a.cert-row:hover .cert-arrow {
+  a.cert-row:hover .cert-arrow,
+  button.cert-row:hover .cert-arrow {
     color: var(--crail);
     transform: translate(2px, -2px);
   }
@@ -234,5 +271,12 @@ const certs: Cert[] = [
     white-space: nowrap;
     text-transform: uppercase;
     letter-spacing: 0.1em;
+  }
+</style>
+
+<style is:global>
+  .sidebar-cartoon.tilt-left {
+    transform: rotate(-4deg);
+    transform-origin: center;
   }
 </style>
