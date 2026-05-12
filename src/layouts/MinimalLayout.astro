@@ -197,6 +197,7 @@ const year = new Date().getFullYear();
           </li>
           <li>
             <a class="social social-cv" href="/cv.pdf" download aria-label="Download CV" title="Download CV">
+              <img src="/cv-callout.webp" alt="" class="cv-callout" aria-hidden="true" />
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
                 <path d="M14 3v6h6" />
@@ -505,7 +506,18 @@ const year = new Date().getFullYear();
       .social-linkedin  { color: #0A66C2; }
       .social-github    { color: #1a1816; }
       .social-tryhackme { color: #88CC14; }
-      .social-cv        { color: var(--crail); }
+      .social-cv        { color: var(--crail); position: relative; }
+
+      .cv-callout {
+        position: absolute;
+        bottom: calc(100% + 6px);
+        right: -12px;
+        width: 96px;
+        height: auto;
+        pointer-events: none;
+        user-select: none;
+        z-index: 5;
+      }
 
       @media (max-width: 860px) {
         .frame {

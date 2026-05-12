@@ -23,12 +23,11 @@ const projects: Project[] = [
   {
     title: "Local Email Server with a Cascade AI Spam Filter",
     year: "2026",
-    inProgress: true,
     categories: ["ml", "cybersecurity"],
   },
   {
     title: "Sweaty: Social Gaming Platform",
-    year: "2024",
+    year: "2025 — present",
     href: "https://www.linkedin.com/in/abdulla-albassam/overlay/experience/2864877680/multiple-media-viewer/?profileId=ACoAAF0wWosB-M5smshM0TcBM7F127DOES9M6N8&treasuryMediaId=1773201904530",
     external: true,
     inProgress: true,
@@ -36,14 +35,12 @@ const projects: Project[] = [
   },
   {
     title: "Penetration Testing: Vulnerable VM",
-    year: "2025",
-    inProgress: true,
+    year: "2026",
     categories: ["cybersecurity"],
   },
   {
     title: "Cryptographic Transaction Protocol Design",
-    year: "2025",
-    inProgress: true,
+    year: "2026",
     categories: ["cybersecurity"],
   },
   {
@@ -91,7 +88,15 @@ const projects: Project[] = [
     href: "/showcase/projects/operating-systems",
     categories: ["development", "networking"],
   },
-].sort((a, b) => Number(b.year) - Number(a.year));
+].sort((a, b) => sortKey(b.year) - sortKey(a.year));
+
+function sortKey(year: string): number {
+  // "present" or "current" entries always sort to the top
+  if (/present|current/i.test(year)) return 9999;
+  // Pick the latest 4-digit year mentioned in the string
+  const matches = year.match(/\d{4}/g);
+  return matches ? Math.max(...matches.map(Number)) : 0;
+}
 
 const filters = [
   { id: "all", label: "All" },
