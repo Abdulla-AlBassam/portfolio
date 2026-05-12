@@ -197,7 +197,6 @@ const year = new Date().getFullYear();
           </li>
           <li>
             <a class="social social-cv" href="/cv.pdf" download aria-label="Download CV" title="Download CV">
-              <img src="/cv-callout.webp" alt="" class="cv-callout" aria-hidden="true" />
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
                 <path d="M14 3v6h6" />
@@ -279,7 +278,7 @@ const year = new Date().getFullYear();
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.85rem;
+        gap: 1.25rem;
         margin: 0;
         line-height: 1;
       }
@@ -287,7 +286,7 @@ const year = new Date().getFullYear();
       .signature-link {
         display: inline-flex;
         align-items: center;
-        gap: 0.85rem;
+        gap: 1.25rem;
         text-decoration: none;
         color: inherit;
         border-radius: 4px;
@@ -510,25 +509,7 @@ const year = new Date().getFullYear();
       .social-linkedin  { color: #0A66C2; }
       .social-github    { color: #1a1816; }
       .social-tryhackme { color: #88CC14; }
-      .social-cv        { color: var(--crail); position: relative; }
-
-      .cv-callout {
-        position: absolute;
-        bottom: calc(100% + 6px);
-        right: -12px;
-        width: 96px;
-        height: auto;
-        pointer-events: none;
-        user-select: none;
-        z-index: 5;
-        transform-origin: bottom right;
-        transform: translateX(-44px) scale(1);
-        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-
-      .social-cv:hover .cv-callout {
-        transform: translateX(0) scale(5);
-      }
+      .social-cv        { color: var(--crail); }
 
       @media (max-width: 860px) {
         .frame {
