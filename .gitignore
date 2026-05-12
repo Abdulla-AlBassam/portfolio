@@ -28,3 +28,8 @@ public/photography/mid/
 .claude/
 .vercel
 .env*.local
+
+# private project notes / Claude Code instructions
+CLAUDE.md
+PROGRESS.md
+.impeccable.md
