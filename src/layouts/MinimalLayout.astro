@@ -3,12 +3,16 @@ interface Props {
   title: string;
   description?: string;
   active: "about" | "projects" | "photography" | "skills";
+  sidebarTop?: string;
+  sidebarBottom?: string;
 }
 
 const {
   title,
   description = "Abdulla AlBassam — Cybersecurity & Networking student. Final-year BSc at Northumbria University.",
   active,
+  sidebarTop = "18rem",
+  sidebarBottom = "38rem",
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -58,16 +62,23 @@ const year = new Date().getFullYear();
             width="1288"
             height="273"
           />
-          {/* Arabic signature placeholder — uncomment when the Arabic file is added:
-          <span class="signature-divider" aria-hidden="true"></span>
+          <svg class="signature-divider" viewBox="0 0 24 56" aria-hidden="true">
+            <path
+              d="M 14 4 C 6 12, 18 20, 10 28 C 4 36, 16 44, 8 52"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
           <img
             src="/signature-ar.webp"
             alt="عبدالله البسام"
             class="signature signature-ar"
-            width="1288"
-            height="273"
+            width="1387"
+            height="211"
           />
-          */}
         </a>
       </h1>
     </header>
@@ -92,8 +103,12 @@ const year = new Date().getFullYear();
         <slot />
       </main>
 
-      <div class="sidebar-extra-slot">
+      <div class="sidebar-extra-slot" style={`top: ${sidebarTop}`}>
         <slot name="sidebar-extra" />
+      </div>
+
+      <div class="sidebar-extra-slot sidebar-extra-bottom" style={`top: ${sidebarBottom}`}>
+        <slot name="sidebar-extra-bottom" />
       </div>
     </div>
 
@@ -143,12 +158,12 @@ const year = new Date().getFullYear();
         </svg>
         <ul class="socials" aria-label="Social links">
           <li>
-            <a class="social social-email" href="mailto:albassam.004@gmail.com" aria-label="Email" title="Email">
+            <button class="social social-email" type="button" data-copy-email="abdulla.a.albassam@gmail.com" aria-label="Copy email address to clipboard" title="Copy email">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3" y="5" width="18" height="14" rx="2" />
                 <path d="m3 7 9 6 9-6" />
               </svg>
-            </a>
+            </button>
           </li>
           <li>
             <a class="social social-linkedin" href="https://linkedin.com/in/abdulla-albassam" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn">
@@ -193,6 +208,34 @@ const year = new Date().getFullYear();
         </ul>
       </div>
     </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      const toast = document.getElementById("toast");
+      let toastTimeout: number | undefined;
+
+      function showToast(message: string) {
+        if (!toast) return;
+        toast.textContent = message;
+        toast.classList.add("show");
+        if (toastTimeout) window.clearTimeout(toastTimeout);
+        toastTimeout = window.setTimeout(() => toast.classList.remove("show"), 1800);
+      }
+
+      document.querySelectorAll<HTMLButtonElement>("[data-copy-email]").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const email = btn.dataset.copyEmail;
+          if (!email) return;
+          try {
+            await navigator.clipboard.writeText(email);
+            showToast("Copied to clipboard");
+          } catch {
+            showToast("Couldn’t copy — long-press the icon");
+          }
+        });
+      });
+    </script>
 
     <style is:global>
       :root {
@@ -263,7 +306,7 @@ const year = new Date().getFullYear();
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.85rem;
+        gap: 1.25rem;
         margin: 0;
         line-height: 1;
       }
@@ -271,7 +314,7 @@ const year = new Date().getFullYear();
       .signature-link {
         display: inline-flex;
         align-items: center;
-        gap: 0.85rem;
+        gap: 1.25rem;
         text-decoration: none;
         color: inherit;
         border-radius: 4px;
@@ -289,18 +332,23 @@ const year = new Date().getFullYear();
 
       .signature {
         display: block;
-        height: 56px;
+        height: 44px;
         width: auto;
         user-select: none;
         pointer-events: none;
       }
 
+      .signature-ar {
+        height: 38px;
+      }
+
       .signature-divider {
         display: inline-block;
-        width: 1px;
-        height: 56px;
-        background: var(--crail);
+        width: 16px;
+        height: 44px;
+        color: var(--crail);
         flex-shrink: 0;
+        overflow: visible;
       }
 
       .frame {
@@ -318,6 +366,8 @@ const year = new Date().getFullYear();
         position: sticky;
         top: 3rem;
         align-self: start;
+        z-index: 2;
+        background: var(--pampas);
       }
 
       .sidebar ul {
@@ -365,11 +415,11 @@ const year = new Date().getFullYear();
 
       .sidebar-extra-slot {
         position: absolute;
-        top: 18rem;
         left: 2rem;
         width: 180px;
         pointer-events: none;
         user-select: none;
+        z-index: 1;
       }
 
       .sidebar-extra-slot :global(.sidebar-cartoon) {
@@ -465,14 +515,27 @@ const year = new Date().getFullYear();
         gap: 1.1rem;
       }
 
-      .site-footer .socials a {
+      .site-footer .socials a,
+      .site-footer .socials button {
         display: inline-flex;
+        align-items: center;
         text-decoration: none;
         transition: opacity 0.15s ease, transform 0.15s ease;
         opacity: 0.92;
       }
 
-      .site-footer .socials a:hover {
+      .site-footer .socials button {
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+        cursor: pointer;
+        font: inherit;
+        color: inherit;
+      }
+
+      .site-footer .socials a:hover,
+      .site-footer .socials button:hover {
         opacity: 1;
         transform: translateY(-1px);
       }
@@ -481,6 +544,31 @@ const year = new Date().getFullYear();
         width: 22px;
         height: 22px;
         display: block;
+      }
+
+      .toast {
+        position: fixed;
+        bottom: 1.5rem;
+        left: 50%;
+        transform: translateX(-50%) translateY(8px);
+        background: var(--ink);
+        color: var(--pampas);
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        padding: 0.55rem 0.95rem;
+        border-radius: 999px;
+        box-shadow: 0 10px 30px rgba(20, 18, 16, 0.22);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 200;
+      }
+
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
       }
 
       .social-email     { color: var(--ink-soft); }

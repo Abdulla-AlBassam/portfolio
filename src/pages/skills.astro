@@ -55,7 +55,9 @@ const certs: Cert[] = [
 ---
 
 <MinimalLayout title="Skills & Certs — Abdulla AlBassam" active="skills">
+  <img slot="sidebar-extra-bottom" src="/cybersec.webp" alt="" class="sidebar-cartoon" />
   <section class="skills">
+    <img src="/cert.webp" alt="" class="cert-illustration" width="220" height="194" loading="eager" decoding="async" />
     <h2 class="block-heading">Certifications</h2>
     <ul class="cert-list">
       {
@@ -110,6 +112,23 @@ const certs: Cert[] = [
     color: var(--cloudy-deep);
     font-size: 0.88rem;
     margin-bottom: 2rem;
+  }
+
+  .cert-illustration {
+    position: absolute;
+    top: 6rem;
+    left: 100%;
+    margin-left: 2rem;
+    width: 220px;
+    height: auto;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  @media (max-width: 1080px) {
+    .cert-illustration {
+      display: none;
+    }
   }
 
   .group {
