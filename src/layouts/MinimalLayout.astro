@@ -62,16 +62,23 @@ const year = new Date().getFullYear();
             width="1288"
             height="273"
           />
-          {/* Arabic signature placeholder — uncomment when the Arabic file is added:
-          <span class="signature-divider" aria-hidden="true"></span>
+          <svg class="signature-divider" viewBox="0 0 24 56" aria-hidden="true">
+            <path
+              d="M 14 4 C 6 12, 18 20, 10 28 C 4 36, 16 44, 8 52"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
           <img
             src="/signature-ar.webp"
             alt="عبدالله البسام"
             class="signature signature-ar"
-            width="1288"
-            height="273"
+            width="1387"
+            height="211"
           />
-          */}
         </a>
       </h1>
     </header>
@@ -305,10 +312,11 @@ const year = new Date().getFullYear();
 
       .signature-divider {
         display: inline-block;
-        width: 1px;
+        width: 18px;
         height: 56px;
-        background: var(--crail);
+        color: var(--crail);
         flex-shrink: 0;
+        overflow: visible;
       }
 
       .frame {
