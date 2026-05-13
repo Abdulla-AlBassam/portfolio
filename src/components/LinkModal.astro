@@ -227,8 +227,10 @@ const certLightboxId = `${id}-cert-lightbox`;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .link-modal[open]:not(.is-closing) { animation: link-modal-fade 0.18s ease-out both; }
-    .link-modal.is-closing { animation: link-modal-fade-out 0.18s ease-in both; }
+    .link-modal[open]:not(.is-closing),
+    .cert-lightbox[open]:not(.is-closing) { animation: link-modal-fade 0.18s ease-out both; }
+    .link-modal.is-closing,
+    .cert-lightbox.is-closing { animation: link-modal-fade-out 0.18s ease-in both; }
     @keyframes link-modal-fade { from { opacity: 0; } to { opacity: 1; } }
     @keyframes link-modal-fade-out { from { opacity: 1; } to { opacity: 0; } }
   }
@@ -387,15 +389,25 @@ const certLightboxId = `${id}-cert-lightbox`;
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
   }
-  .cert-lightbox[open] {
+  .cert-lightbox[open]:not(.is-closing) {
     animation: cert-lightbox-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
-  .cert-lightbox[open]::backdrop {
+  .cert-lightbox[open]:not(.is-closing)::backdrop {
     animation: link-modal-backdrop-in 0.25s ease-out both;
+  }
+  .cert-lightbox.is-closing {
+    animation: cert-lightbox-out 0.22s cubic-bezier(0.64, 0, 0.78, 0) both;
+  }
+  .cert-lightbox.is-closing::backdrop {
+    animation: link-modal-backdrop-out 0.22s ease-in both;
   }
   @keyframes cert-lightbox-in {
     from { opacity: 0; transform: scale(0.96); }
     to   { opacity: 1; transform: scale(1); }
+  }
+  @keyframes cert-lightbox-out {
+    from { opacity: 1; transform: scale(1); }
+    to   { opacity: 0; transform: scale(0.96); }
   }
   .cert-lightbox img {
     display: block;
