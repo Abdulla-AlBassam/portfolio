@@ -38,9 +38,30 @@ function readCategory(cat: "bw" | "color") {
 const bw = readCategory("bw");
 const color = readCategory("color");
 
+// 10 hand-tuned positions for the "tossed on a table" stack.
+// Top card (z 10) sits near centre; the rest fan around it.
+const SCATTER = [
+  { tx: -82, ty: 14, rot: -18, z: 1 },
+  { tx: 76, ty: -32, rot: 14, z: 2 },
+  { tx: -48, ty: 56, rot: 9, z: 3 },
+  { tx: 64, ty: 42, rot: -11, z: 4 },
+  { tx: -18, ty: -68, rot: -6, z: 5 },
+  { tx: 38, ty: 64, rot: 17, z: 6 },
+  { tx: -68, ty: -22, rot: 7, z: 7 },
+  { tx: 88, ty: 8, rot: -15, z: 8 },
+  { tx: -32, ty: -36, rot: 4, z: 9 },
+  { tx: 10, ty: -4, rot: -2, z: 10 },
+];
+
+function pickPreview(photos: { thumb: string; full: string; name: string }[]) {
+  if (photos.length <= SCATTER.length) return photos;
+  const step = Math.floor(photos.length / SCATTER.length);
+  return Array.from({ length: SCATTER.length }, (_, i) => photos[i * step]);
+}
+
 const categories = [
-  { id: "bw", label: "B&W", photos: bw },
-  { id: "color", label: "Colour", photos: color },
+  { id: "bw", label: "B&W", photos: bw, preview: pickPreview(bw) },
+  { id: "color", label: "Colour", photos: color, preview: pickPreview(color) },
 ];
 ---
 
@@ -63,26 +84,27 @@ const categories = [
               style={`--side: ${idx === 0 ? -1 : 1}`}
             >
               <span class="stack-cards">
-                <span class="stack-edge" style="--i: 4" />
-                <span class="stack-edge" style="--i: 3" />
-                <span class="stack-edge" style="--i: 2" />
-                <span class="stack-edge" style="--i: 1" />
-                <span class="stack-top">
-                  {cat.photos[0] && (
-                    <img
-                      src={cat.photos[0].thumb}
-                      alt=""
-                      loading="eager"
-                      decoding="async"
-                      width="240"
-                      height="240"
-                    />
-                  )}
-                </span>
+                {cat.preview.map((p, i) => {
+                  const s = SCATTER[i];
+                  const isTop = i === SCATTER.length - 1;
+                  return (
+                    <span
+                      class={isTop ? "stack-card stack-top" : "stack-card"}
+                      style={`--tx: ${s.tx}px; --ty: ${s.ty}px; --rot: ${s.rot}deg; --z: ${s.z}`}
+                    >
+                      <img
+                        src={p.thumb}
+                        alt=""
+                        loading="eager"
+                        decoding="async"
+                        width="180"
+                        height="180"
+                      />
+                    </span>
+                  );
+                })}
               </span>
-              <span class="stack-label">
-                {cat.label} <span class="dot">·</span> {cat.photos.length}
-              </span>
+              <span class="stack-label">{cat.label}</span>
             </button>
           ))
         }
@@ -98,9 +120,7 @@ const categories = [
                 </svg>
                 <span>Back</span>
               </button>
-              <span class="fan-title">
-                {cat.label} <span class="dot">·</span> {cat.photos.length}
-              </span>
+              <span class="fan-title">{cat.label}</span>
               <span class="fan-spacer" />
             </div>
             <div class="grid">
@@ -200,12 +220,13 @@ const categories = [
     const stack = stacks.find((s) => s.dataset.cat === activeCat);
     if (!fan || !stack) return;
 
-    delete fan.dataset.state;
+    fan.dataset.state = "closing";
     stack.setAttribute("aria-expanded", "false");
     stage.dataset.state = "closed";
 
-    const wait = prefersReducedMotion ? 0 : 450;
+    const wait = prefersReducedMotion ? 0 : 320;
     setTimeout(() => {
+      delete fan.dataset.state;
       fan.hidden = true;
     }, wait);
 
@@ -283,7 +304,7 @@ const categories = [
 
   .gallery {
     position: relative;
-    min-height: 22rem;
+    min-height: 28rem;
   }
 
   .stacks {
@@ -292,16 +313,17 @@ const categories = [
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    gap: 5rem;
-    padding: 3rem 0 4rem;
+    gap: 3.5rem;
+    padding: 2.5rem 0 4rem;
     z-index: 2;
     transition: opacity 320ms ease, transform 320ms ease;
   }
 
   .photography[data-state="open"] .stacks {
     opacity: 0;
-    transform: translateY(-8px);
+    transform: translateY(-6px);
     pointer-events: none;
+    transition: opacity 240ms ease, transform 240ms ease;
   }
 
   .stack {
@@ -310,8 +332,7 @@ const categories = [
     display: inline-flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.5rem;
-    transition: transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    gap: 2.25rem;
   }
 
   .stack:focus-visible {
@@ -320,69 +341,69 @@ const categories = [
 
   .stack:focus-visible .stack-cards {
     outline: 2px solid var(--crail);
-    outline-offset: 8px;
+    outline-offset: 12px;
     border-radius: 4px;
   }
 
   .stack-cards {
     position: relative;
-    width: 240px;
-    height: 240px;
-    transform: rotate(calc(var(--side, 1) * 1.5deg));
-    transition: transform 360ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    width: 360px;
+    height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .stack:hover .stack-cards {
-    transform: rotate(calc(var(--side, 1) * 1.5deg)) translateY(-4px);
-  }
-
-  .stack-top,
-  .stack-edge {
+  .stack-card {
     position: absolute;
-    inset: 0;
-    background: var(--pampas);
+    width: 180px;
+    height: 180px;
+    background: #fbfaf6;
     border: 6px solid #fbfaf6;
     border-radius: 2px;
     box-shadow:
-      0 1px 2px rgba(0, 0, 0, 0.06),
-      0 10px 24px -8px rgba(60, 50, 40, 0.18);
+      0 1px 2px rgba(0, 0, 0, 0.08),
+      0 14px 28px -10px rgba(60, 50, 40, 0.28);
     box-sizing: border-box;
     overflow: hidden;
-  }
-
-  .stack-top {
-    z-index: 5;
-    transition: transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform: translate(var(--tx, 0), var(--ty, 0)) rotate(var(--rot, 0deg));
+    z-index: var(--z, 1);
+    transition: transform 380ms cubic-bezier(0.2, 0.8, 0.2, 1),
       box-shadow 280ms ease;
   }
 
-  .stack:hover .stack-top {
-    transform: translateY(-6px) rotate(calc(var(--side, 1) * -0.6deg));
-    box-shadow:
-      0 2px 4px rgba(0, 0, 0, 0.08),
-      0 18px 30px -10px rgba(60, 50, 40, 0.28);
-  }
-
-  .stack-top img {
+  .stack-card img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
   }
 
-  .stack-edge {
-    background: #fbfaf6;
-    --offset: calc(var(--i) * 4px);
-    transform: translate(var(--offset), var(--offset))
-      rotate(calc((var(--i) - 2) * var(--side, 1) * 1.2deg));
-    opacity: calc(1 - (var(--i) * 0.06));
+  .stack-top {
+    box-shadow:
+      0 2px 6px rgba(0, 0, 0, 0.1),
+      0 22px 36px -12px rgba(60, 50, 40, 0.32);
+  }
+
+  .stack:hover .stack-top {
+    transform: translate(var(--tx, 0), calc(var(--ty, 0) - 10px))
+      rotate(var(--rot, 0deg)) scale(1.02);
+    box-shadow:
+      0 3px 8px rgba(0, 0, 0, 0.12),
+      0 30px 44px -14px rgba(60, 50, 40, 0.38);
+  }
+
+  /* On hover, spread the scattered cards outward a touch */
+  .stack:hover .stack-card:not(.stack-top) {
+    transform: translate(calc(var(--tx, 0) * 1.08), calc(var(--ty, 0) * 1.08))
+      rotate(calc(var(--rot, 0deg) * 1.05));
   }
 
   .stack-label {
     font-family: "Montserrat", sans-serif;
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     font-weight: 500;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--cloudy-deep);
     transition: color 200ms ease;
@@ -390,11 +411,6 @@ const categories = [
 
   .stack:hover .stack-label {
     color: var(--crail);
-  }
-
-  .stack .dot {
-    color: var(--crail);
-    margin: 0 0.4em;
   }
 
   /* ------------------ fan-out ------------------ */
@@ -420,6 +436,12 @@ const categories = [
   .fan[data-state="open"] .fan-head {
     opacity: 1;
     transform: none;
+  }
+
+  .fan[data-state="closing"] .fan-head {
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 200ms ease, transform 200ms ease;
   }
 
   .fan-close {
@@ -449,16 +471,11 @@ const categories = [
 
   .fan-title {
     font-family: "Montserrat", sans-serif;
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     font-weight: 500;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--cloudy-deep);
-  }
-
-  .fan-title .dot {
-    color: var(--crail);
-    margin: 0 0.4em;
   }
 
   .fan-spacer {
@@ -492,6 +509,14 @@ const categories = [
     opacity: 1;
   }
 
+  /* Close: uniform quick fade in place, no flying-back-to-stack stagger */
+  .fan[data-state="closing"] .cell {
+    opacity: 0;
+    transform: scale(0.96);
+    transition: opacity 220ms ease-out, transform 240ms ease-out;
+    transition-delay: 0ms;
+  }
+
   .cell img {
     width: 100%;
     height: 100%;
@@ -511,11 +536,13 @@ const categories = [
 
   @media (prefers-reduced-motion: reduce) {
     .stacks,
-    .stack-cards,
-    .stack-top,
+    .stack-card,
     .fan-head,
     .cell {
       transition: opacity 200ms ease !important;
+    }
+    .stack:hover .stack-card {
+      transform: translate(var(--tx, 0), var(--ty, 0)) rotate(var(--rot, 0deg)) !important;
     }
     .cell {
       transform: none !important;
@@ -529,12 +556,16 @@ const categories = [
     .stacks {
       flex-direction: column;
       align-items: center;
-      gap: 3rem;
-      padding: 2rem 0 3rem;
+      gap: 4rem;
+      padding: 1.5rem 0 3rem;
     }
     .stack-cards {
-      width: 200px;
-      height: 200px;
+      width: 300px;
+      height: 280px;
+    }
+    .stack-card {
+      width: 150px;
+      height: 150px;
     }
     .grid {
       grid-template-columns: repeat(4, 1fr);
