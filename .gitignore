@@ -24,6 +24,8 @@ dist/
 # generated thumbnails + mid-res (rebuilt on deploy)
 public/photography/thumbs/
 public/photography/mid/
+public/photography/*/thumbs/
+public/photography/*/mid/
 
 .claude/
 .vercel

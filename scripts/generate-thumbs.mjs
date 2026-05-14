@@ -1,61 +1,64 @@
 import sharp from "sharp";
-import { readdirSync, mkdirSync, existsSync } from "node:fs";
+import { readdirSync, mkdirSync, existsSync, statSync } from "node:fs";
 import { join, extname } from "node:path";
 
 const PHOTO_DIR = join(process.cwd(), "public", "photography");
-const THUMB_DIR = join(PHOTO_DIR, "thumbs");
-const MID_DIR = join(PHOTO_DIR, "mid");
+const CATEGORIES = ["bw", "color"];
 const THUMB_WIDTH = 400;
 const MID_WIDTH = 1200;
 const VALID_EXTS = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif", ".tif", ".tiff"]);
 
-mkdirSync(THUMB_DIR, { recursive: true });
-mkdirSync(MID_DIR, { recursive: true });
+let totalDone = 0;
+let totalSkipped = 0;
 
-const files = readdirSync(PHOTO_DIR).filter((f) => {
-  const ext = extname(f).toLowerCase();
-  return VALID_EXTS.has(ext) && !f.startsWith(".");
-});
+for (const cat of CATEGORIES) {
+  const catDir = join(PHOTO_DIR, cat);
+  if (!existsSync(catDir)) continue;
 
-console.log(`Processing ${files.length} photos...`);
+  const thumbDir = join(catDir, "thumbs");
+  const midDir = join(catDir, "mid");
+  mkdirSync(thumbDir, { recursive: true });
+  mkdirSync(midDir, { recursive: true });
 
-let thumbsDone = 0;
-let thumbsSkipped = 0;
-let midDone = 0;
-let midSkipped = 0;
+  const files = readdirSync(catDir).filter((f) => {
+    const full = join(catDir, f);
+    if (!statSync(full).isFile()) return false;
+    const ext = extname(f).toLowerCase();
+    return VALID_EXTS.has(ext) && !f.startsWith(".");
+  });
 
-await Promise.all(
-  files.map(async (file) => {
-    const src = join(PHOTO_DIR, file);
-    const outName = file.replace(/\.\w+$/, ".webp");
+  console.log(`[${cat}] Processing ${files.length} photos...`);
 
-    // Generate thumbnail (400px)
-    const thumbDest = join(THUMB_DIR, outName);
-    if (existsSync(thumbDest)) {
-      thumbsSkipped++;
-    } else {
-      await sharp(src)
-        .rotate()
-        .resize({ width: THUMB_WIDTH, withoutEnlargement: true })
-        .webp({ quality: 75 })
-        .toFile(thumbDest);
-      thumbsDone++;
-    }
+  await Promise.all(
+    files.map(async (file) => {
+      const src = join(catDir, file);
+      const outName = file.replace(/\.\w+$/, ".webp");
 
-    // Generate mid-res (1200px)
-    const midDest = join(MID_DIR, outName);
-    if (existsSync(midDest)) {
-      midSkipped++;
-    } else {
-      await sharp(src)
-        .rotate()
-        .resize({ width: MID_WIDTH, withoutEnlargement: true })
-        .webp({ quality: 80 })
-        .toFile(midDest);
-      midDone++;
-    }
-  })
-);
+      const thumbDest = join(thumbDir, outName);
+      if (existsSync(thumbDest)) {
+        totalSkipped++;
+      } else {
+        await sharp(src)
+          .rotate()
+          .resize({ width: THUMB_WIDTH, withoutEnlargement: true })
+          .webp({ quality: 75 })
+          .toFile(thumbDest);
+        totalDone++;
+      }
 
-console.log(`Thumbs: ${thumbsDone} generated, ${thumbsSkipped} skipped.`);
-console.log(`Mid-res: ${midDone} generated, ${midSkipped} skipped.`);
+      const midDest = join(midDir, outName);
+      if (existsSync(midDest)) {
+        totalSkipped++;
+      } else {
+        await sharp(src)
+          .rotate()
+          .resize({ width: MID_WIDTH, withoutEnlargement: true })
+          .webp({ quality: 80 })
+          .toFile(midDest);
+        totalDone++;
+      }
+    })
+  );
+}
+
+console.log(`Total: ${totalDone} generated, ${totalSkipped} skipped.`);

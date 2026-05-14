@@ -4,58 +4,148 @@ import fs from "node:fs";
 import path from "node:path";
 
 const photoDir = path.join(process.cwd(), "public", "photography");
-const thumbDir = path.join(photoDir, "thumbs");
-const midDir = path.join(photoDir, "mid");
-
 const supported = /\.(jpe?g|png|tif|tiff|webp)$/i;
-const files = fs
-  .readdirSync(photoDir, { withFileTypes: true })
-  .filter((d) => d.isFile() && supported.test(d.name))
-  .map((d) => d.name)
-  .sort();
 
-const hasThumbs = fs.existsSync(thumbDir);
-const hasMid = fs.existsSync(midDir);
+function readCategory(cat: "bw" | "color") {
+  const catDir = path.join(photoDir, cat);
+  if (!fs.existsSync(catDir)) return [];
+  const thumbDir = path.join(catDir, "thumbs");
+  const midDir = path.join(catDir, "mid");
+  const thumbs = new Set(
+    fs.existsSync(thumbDir) ? fs.readdirSync(thumbDir).filter((f) => /\.webp$/i.test(f)) : []
+  );
+  const mids = new Set(
+    fs.existsSync(midDir) ? fs.readdirSync(midDir).filter((f) => /\.webp$/i.test(f)) : []
+  );
 
-const thumbsAvailable = new Set(
-  hasThumbs ? fs.readdirSync(thumbDir).filter((f) => /\.webp$/i.test(f)) : []
-);
-const midAvailable = new Set(
-  hasMid ? fs.readdirSync(midDir).filter((f) => /\.webp$/i.test(f)) : []
-);
+  return fs
+    .readdirSync(catDir, { withFileTypes: true })
+    .filter((d) => d.isFile() && supported.test(d.name))
+    .map((d) => d.name)
+    .sort()
+    .map((name) => {
+      const webp = name.replace(/\.[^.]+$/, ".webp");
+      const thumb = thumbs.has(webp)
+        ? `/photography/${cat}/thumbs/${webp}`
+        : `/photography/${cat}/${name}`;
+      const full = mids.has(webp)
+        ? `/photography/${cat}/mid/${webp}`
+        : `/photography/${cat}/${name}`;
+      return { thumb, full, name };
+    });
+}
 
-const photos = files.map((name) => {
-  const base = name.replace(/\.[^.]+$/, "");
-  const webpName = `${base}.webp`;
-  const thumb = thumbsAvailable.has(webpName)
-    ? `/photography/thumbs/${webpName}`
-    : `/photography/${name}`;
-  const full = midAvailable.has(webpName)
-    ? `/photography/mid/${webpName}`
-    : `/photography/${name}`;
-  return { thumb, full, name };
-});
+const bw = readCategory("bw");
+const color = readCategory("color");
+
+// 10 hand-tuned positions for the "tossed on a table" stack.
+// Top card (z 10) sits near centre; the rest fan around it.
+const SCATTER = [
+  { tx: -82, ty: 14, rot: -18, z: 1 },
+  { tx: 76, ty: -32, rot: 14, z: 2 },
+  { tx: -48, ty: 56, rot: 9, z: 3 },
+  { tx: 64, ty: 42, rot: -11, z: 4 },
+  { tx: -18, ty: -68, rot: -6, z: 5 },
+  { tx: 38, ty: 64, rot: 17, z: 6 },
+  { tx: -68, ty: -22, rot: 7, z: 7 },
+  { tx: 88, ty: 8, rot: -15, z: 8 },
+  { tx: -32, ty: -36, rot: 4, z: 9 },
+  { tx: 10, ty: -4, rot: -2, z: 10 },
+];
+
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function pickPreview(photos: { thumb: string; full: string; name: string }[]) {
+  return shuffle(photos).slice(0, SCATTER.length);
+}
+
+const categories = [
+  { id: "bw", label: "B&W", photos: bw, preview: pickPreview(bw) },
+  { id: "color", label: "Colour", photos: color, preview: pickPreview(color) },
+];
 ---
 
 <MinimalLayout title="Photography — Abdulla AlBassam" active="photography" sidebarTop="24rem">
   <img slot="sidebar-extra" src="/camera.webp" alt="" class="sidebar-cartoon" />
-  <section class="photography">
-    <p class="lede">
-      A selection of shots I've taken on film.
-    </p>
 
-    <div class="grid">
+  <section class="photography" data-state="closed">
+    <p class="lede">A selection of shots I've taken on film.</p>
+
+    <div class="gallery">
+      <div class="stacks">
+        {
+          categories.map((cat, idx) => (
+            <button
+              class="stack"
+              data-cat={cat.id}
+              type="button"
+              aria-expanded="false"
+              aria-controls={`fan-${cat.id}`}
+              style={`--side: ${idx === 0 ? -1 : 1}`}
+            >
+              <span class="stack-cards">
+                {cat.preview.map((p, i) => {
+                  const s = SCATTER[i];
+                  const isTop = i === SCATTER.length - 1;
+                  return (
+                    <span
+                      class={isTop ? "stack-card stack-top" : "stack-card"}
+                      style={`--tx: ${s.tx}px; --ty: ${s.ty}px; --rot: ${s.rot}deg; --z: ${s.z}`}
+                    >
+                      <img
+                        src={p.thumb}
+                        alt=""
+                        loading="eager"
+                        decoding="async"
+                        width="180"
+                        height="180"
+                      />
+                    </span>
+                  );
+                })}
+              </span>
+              <span class="stack-label">{cat.label}</span>
+            </button>
+          ))
+        }
+      </div>
+
       {
-        photos.map((p, i) => (
-          <button
-            class="cell"
-            type="button"
-            data-index={i}
-            data-full={p.full}
-            aria-label={`Open photo ${i + 1} of ${photos.length}`}
-          >
-            <img src={p.thumb} alt="" loading="lazy" decoding="async" width="400" height="400" />
-          </button>
+        categories.map((cat) => (
+          <div class="fan" id={`fan-${cat.id}`} data-cat={cat.id} hidden>
+            <div class="fan-head">
+              <button class="fan-close" type="button">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="15 18 9 12 15 6" />
+                </svg>
+                <span>Back</span>
+              </button>
+              <span class="fan-title">{cat.label}</span>
+              <span class="fan-spacer" />
+            </div>
+            <div class="grid">
+              {cat.photos.map((p, i) => (
+                <button
+                  class="cell"
+                  type="button"
+                  data-index={i}
+                  data-cat={cat.id}
+                  data-full={p.full}
+                  style={`--i: ${i}`}
+                  aria-label={`Open photo ${i + 1} of ${cat.photos.length}`}
+                >
+                  <img src={p.thumb} alt="" loading="lazy" decoding="async" width="400" height="400" />
+                </button>
+              ))}
+            </div>
+          </div>
         ))
       }
     </div>
@@ -84,7 +174,9 @@ const photos = files.map((name) => {
 </MinimalLayout>
 
 <script>
-  const cells = Array.from(document.querySelectorAll<HTMLButtonElement>(".cell"));
+  const stage = document.querySelector<HTMLElement>(".photography")!;
+  const stacks = Array.from(document.querySelectorAll<HTMLButtonElement>(".stack"));
+  const fans = Array.from(document.querySelectorAll<HTMLDivElement>(".fan"));
   const lb = document.getElementById("lightbox") as HTMLDivElement;
   const lbImg = lb.querySelector<HTMLImageElement>(".lb-img")!;
   const lbCounter = lb.querySelector<HTMLDivElement>(".lb-counter")!;
@@ -92,49 +184,125 @@ const photos = files.map((name) => {
   const prevBtn = lb.querySelector<HTMLButtonElement>(".lb-prev")!;
   const nextBtn = lb.querySelector<HTMLButtonElement>(".lb-next")!;
 
-  let current = 0;
-  const sources = cells.map((c) => c.dataset.full || "");
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  function open(index: number) {
-    current = index;
-    show();
-    lb.setAttribute("aria-hidden", "false");
-    lb.classList.add("open");
-    document.body.style.overflow = "hidden";
+  let activeCat: string | null = null;
+  let currentSources: string[] = [];
+  let currentIndex = 0;
+
+  function openCategory(cat: string) {
+    if (activeCat === cat) return;
+    const stack = stacks.find((s) => s.dataset.cat === cat);
+    const fan = fans.find((f) => f.dataset.cat === cat);
+    if (!stack || !fan) return;
+
+    const stackRect = stack.getBoundingClientRect();
+    const stackCx = stackRect.left + stackRect.width / 2;
+    const stackCy = stackRect.top + stackRect.height / 2;
+
+    fan.hidden = false;
+    void fan.offsetHeight;
+
+    const cells = fan.querySelectorAll<HTMLButtonElement>(".cell");
+    cells.forEach((cell) => {
+      const r = cell.getBoundingClientRect();
+      const dx = stackCx - (r.left + r.width / 2);
+      const dy = stackCy - (r.top + r.height / 2);
+      cell.style.setProperty("--dx", `${dx}px`);
+      cell.style.setProperty("--dy", `${dy}px`);
+      cell.style.setProperty("--rot", `${(Math.random() - 0.5) * 18}deg`);
+    });
+
+    stage.dataset.state = "open";
+    stack.setAttribute("aria-expanded", "true");
+    requestAnimationFrame(() => {
+      fan.dataset.state = "open";
+    });
+    activeCat = cat;
   }
 
-  function close() {
+  function closeCategory() {
+    if (!activeCat) return;
+    const fan = fans.find((f) => f.dataset.cat === activeCat);
+    const stack = stacks.find((s) => s.dataset.cat === activeCat);
+    if (!fan || !stack) return;
+
+    fan.dataset.state = "closing";
+    stack.setAttribute("aria-expanded", "false");
+    stage.dataset.state = "closed";
+
+    const wait = prefersReducedMotion ? 0 : 320;
+    setTimeout(() => {
+      delete fan.dataset.state;
+      fan.hidden = true;
+    }, wait);
+
+    activeCat = null;
+  }
+
+  stacks.forEach((stack) => {
+    stack.addEventListener("click", () => openCategory(stack.dataset.cat!));
+  });
+
+  fans.forEach((fan) => {
+    const close = fan.querySelector<HTMLButtonElement>(".fan-close");
+    close?.addEventListener("click", () => closeCategory());
+
+    const cells = Array.from(fan.querySelectorAll<HTMLButtonElement>(".cell"));
+    cells.forEach((cell, i) => {
+      cell.addEventListener("click", () => {
+        currentSources = cells.map((c) => c.dataset.full || "");
+        currentIndex = i;
+        showLightbox();
+        lb.setAttribute("aria-hidden", "false");
+        lb.classList.add("open");
+        document.body.style.overflow = "hidden";
+      });
+    });
+  });
+
+  function showLightbox() {
+    lbImg.src = currentSources[currentIndex];
+    lbCounter.textContent = `${currentIndex + 1} / ${currentSources.length}`;
+  }
+
+  function step(delta: number) {
+    currentIndex = (currentIndex + delta + currentSources.length) % currentSources.length;
+    showLightbox();
+  }
+
+  function closeLightbox() {
     lb.setAttribute("aria-hidden", "true");
     lb.classList.remove("open");
     document.body.style.overflow = "";
   }
 
-  function show() {
-    lbImg.src = sources[current];
-    lbCounter.textContent = `${current + 1} / ${sources.length}`;
-  }
-
-  function step(delta: number) {
-    current = (current + delta + sources.length) % sources.length;
-    show();
-  }
-
-  cells.forEach((cell, i) => cell.addEventListener("click", () => open(i)));
-  closeBtn.addEventListener("click", close);
+  closeBtn.addEventListener("click", closeLightbox);
   prevBtn.addEventListener("click", () => step(-1));
   nextBtn.addEventListener("click", () => step(1));
 
   lb.addEventListener("click", (e) => {
-    if (e.target === lb) close();
+    if (e.target === lb) closeLightbox();
   });
 
   document.addEventListener("keydown", (e) => {
-    if (lb.getAttribute("aria-hidden") === "true") return;
-    if (e.key === "Escape") close();
-    else if (e.key === "ArrowLeft") step(-1);
-    else if (e.key === "ArrowRight") step(1);
+    if (lb.getAttribute("aria-hidden") === "false") {
+      if (e.key === "Escape") closeLightbox();
+      else if (e.key === "ArrowLeft") step(-1);
+      else if (e.key === "ArrowRight") step(1);
+      return;
+    }
+    if (e.key === "Escape" && activeCat) closeCategory();
   });
 </script>
+
+<style is:global>
+  /* Photography page only: nudge the camera left and tilt it slightly */
+  body:has(.photography) .sidebar-cartoon {
+    transform: translateX(-1.25rem) rotate(-7deg);
+    transform-origin: center;
+  }
+</style>
 
 <style>
   .photography {
@@ -144,7 +312,191 @@ const photos = files.map((name) => {
   .lede {
     color: var(--cloudy-deep);
     font-size: 0.88rem;
+    margin-bottom: 3rem;
+  }
+
+  /* ------------------ stacks ------------------ */
+
+  .gallery {
+    position: relative;
+    min-height: 28rem;
+  }
+
+  .stacks {
+    position: absolute;
+    inset: 0 0 auto 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 3.5rem;
+    padding: 2.5rem 0 4rem;
+    z-index: 2;
+    transition: opacity 320ms ease, transform 320ms ease;
+  }
+
+  .photography[data-state="open"] .stacks {
+    opacity: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+    transition: opacity 240ms ease, transform 240ms ease;
+  }
+
+  .stack {
+    all: unset;
+    cursor: pointer;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.25rem;
+  }
+
+  .stack:focus-visible {
+    outline: none;
+  }
+
+  .stack:focus-visible .stack-cards {
+    outline: 2px solid var(--crail);
+    outline-offset: 12px;
+    border-radius: 4px;
+  }
+
+  .stack-cards {
+    position: relative;
+    width: 360px;
+    height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: scale(0.86);
+    transform-origin: center;
+  }
+
+  .stack-card {
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    background: #fbfaf6;
+    border: 6px solid #fbfaf6;
+    border-radius: 2px;
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.08),
+      0 14px 28px -10px rgba(60, 50, 40, 0.28);
+    box-sizing: border-box;
+    overflow: hidden;
+    transform: translate(var(--tx, 0), var(--ty, 0)) rotate(var(--rot, 0deg));
+    z-index: var(--z, 1);
+    transition: transform 380ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      box-shadow 280ms ease;
+  }
+
+  .stack-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .stack-top {
+    box-shadow:
+      0 2px 6px rgba(0, 0, 0, 0.1),
+      0 22px 36px -12px rgba(60, 50, 40, 0.32);
+  }
+
+  .stack:hover .stack-top {
+    transform: translate(var(--tx, 0), calc(var(--ty, 0) - 10px))
+      rotate(var(--rot, 0deg)) scale(1.02);
+    box-shadow:
+      0 3px 8px rgba(0, 0, 0, 0.12),
+      0 30px 44px -14px rgba(60, 50, 40, 0.38);
+  }
+
+  /* On hover, spread the scattered cards outward a touch */
+  .stack:hover .stack-card:not(.stack-top) {
+    transform: translate(calc(var(--tx, 0) * 1.08), calc(var(--ty, 0) * 1.08))
+      rotate(calc(var(--rot, 0deg) * 1.05));
+  }
+
+  .stack-label {
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cloudy-deep);
+    transition: color 200ms ease;
+  }
+
+  .stack:hover .stack-label {
+    color: var(--crail);
+  }
+
+  /* ------------------ fan-out ------------------ */
+
+  .fan {
+    position: relative;
+  }
+
+  .fan[hidden] {
+    display: none;
+  }
+
+  .fan-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 1.5rem;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 300ms ease 200ms, transform 300ms ease 200ms;
+  }
+
+  .fan[data-state="open"] .fan-head {
+    opacity: 1;
+    transform: none;
+  }
+
+  .fan[data-state="closing"] .fan-head {
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 200ms ease, transform 200ms ease;
+  }
+
+  .fan-close {
+    all: unset;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--cloudy-deep);
+    padding: 0.4rem 0.6rem 0.4rem 0;
+    transition: color 180ms ease;
+  }
+
+  .fan-close:hover {
+    color: var(--crail);
+  }
+
+  .fan-close:focus-visible {
+    outline: 2px solid var(--crail);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  .fan-title {
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cloudy-deep);
+  }
+
+  .fan-spacer {
+    width: 4rem;
   }
 
   .grid {
@@ -161,6 +513,25 @@ const photos = files.map((name) => {
     background: var(--pampas-deep);
     border-radius: 2px;
     display: block;
+    transform: translate(var(--dx, 0), var(--dy, 0)) scale(0.55) rotate(var(--rot, 0deg));
+    opacity: 0;
+    transition:
+      transform 620ms cubic-bezier(0.2, 0.75, 0.2, 1),
+      opacity 360ms ease-out;
+    transition-delay: calc(var(--i, 0) * 8ms);
+  }
+
+  .fan[data-state="open"] .cell {
+    transform: none;
+    opacity: 1;
+  }
+
+  /* Close: uniform quick fade in place, no flying-back-to-stack stagger */
+  .fan[data-state="closing"] .cell {
+    opacity: 0;
+    transform: scale(0.96);
+    transition: opacity 220ms ease-out, transform 240ms ease-out;
+    transition-delay: 0ms;
   }
 
   .cell img {
@@ -168,7 +539,7 @@ const photos = files.map((name) => {
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 0.4s ease, opacity 0.2s ease;
+    transition: transform 0.4s ease;
   }
 
   .cell:hover img {
@@ -180,7 +551,39 @@ const photos = files.map((name) => {
     outline-offset: 2px;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .stacks,
+    .stack-card,
+    .fan-head,
+    .cell {
+      transition: opacity 200ms ease !important;
+    }
+    .stack:hover .stack-card {
+      transform: translate(var(--tx, 0), var(--ty, 0)) rotate(var(--rot, 0deg)) !important;
+    }
+    .cell {
+      transform: none !important;
+      transition-delay: 0ms !important;
+    }
+  }
+
+  /* ------------------ responsive ------------------ */
+
   @media (max-width: 768px) {
+    .stacks {
+      flex-direction: column;
+      align-items: center;
+      gap: 4rem;
+      padding: 1.5rem 0 3rem;
+    }
+    .stack-cards {
+      width: 300px;
+      height: 280px;
+    }
+    .stack-card {
+      width: 150px;
+      height: 150px;
+    }
     .grid {
       grid-template-columns: repeat(4, 1fr);
     }
@@ -191,6 +594,8 @@ const photos = files.map((name) => {
       grid-template-columns: repeat(3, 1fr);
     }
   }
+
+  /* ------------------ lightbox ------------------ */
 
   .lightbox {
     position: fixed;
