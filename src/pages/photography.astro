@@ -53,10 +53,17 @@ const SCATTER = [
   { tx: 10, ty: -4, rot: -2, z: 10 },
 ];
 
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 function pickPreview(photos: { thumb: string; full: string; name: string }[]) {
-  if (photos.length <= SCATTER.length) return photos;
-  const step = Math.floor(photos.length / SCATTER.length);
-  return Array.from({ length: SCATTER.length }, (_, i) => photos[i * step]);
+  return shuffle(photos).slice(0, SCATTER.length);
 }
 
 const categories = [
