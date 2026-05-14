@@ -289,6 +289,14 @@ const categories = [
   });
 </script>
 
+<style is:global>
+  /* Photography page only: nudge the camera left and tilt it slightly */
+  body:has(.photography) .sidebar-cartoon {
+    transform: translateX(-1.25rem) rotate(-7deg);
+    transform-origin: center;
+  }
+</style>
+
 <style>
   .photography {
     color: var(--ink-soft);
@@ -352,6 +360,8 @@ const categories = [
     display: flex;
     align-items: center;
     justify-content: center;
+    transform: scale(0.86);
+    transform-origin: center;
   }
 
   .stack-card {
