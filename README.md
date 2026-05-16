@@ -53,9 +53,7 @@ Your content here...
 
 ## Design
 
-- **Theme:** Midnight Terminal — dark-first with cyan accent (#22D3EE)
-- **Fonts:** Inter (body), JetBrains Mono (code/headings)
-- **Light mode** available via toggle
+Check out both V1 and V2!
 
 ## License
 
