@@ -97,6 +97,7 @@ const year = new Date().getFullYear();
             ))
           }
         </ul>
+        <slot name="sidebar-inline" />
       </aside>
 
       <main class="content">
@@ -426,6 +427,15 @@ const year = new Date().getFullYear();
         display: block;
         width: 100%;
         height: auto;
+      }
+
+      .sidebar :global(.sidebar-cartoon) {
+        display: block;
+        width: 100%;
+        height: auto;
+        margin-top: 4rem;
+        pointer-events: none;
+        user-select: none;
       }
 
       .content {

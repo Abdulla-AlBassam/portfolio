@@ -72,8 +72,8 @@ const categories = [
 ];
 ---
 
-<MinimalLayout title="Photography — Abdulla AlBassam" active="photography" sidebarTop="24rem">
-  <img slot="sidebar-extra" src="/camera.webp" alt="" class="sidebar-cartoon" />
+<MinimalLayout title="Photography — Abdulla AlBassam" active="photography">
+  <img slot="sidebar-inline" src="/camera.webp" alt="" class="sidebar-cartoon" />
 
   <section class="photography" data-state="closed">
     <p class="lede">A selection of shots I've taken on film.</p>
@@ -299,7 +299,7 @@ const categories = [
 <style is:global>
   /* Photography page only: nudge the camera left and tilt it slightly */
   body:has(.photography) .sidebar-cartoon {
-    transform: translateX(-1.25rem) rotate(-7deg);
+    transform: translateX(-2.25rem) rotate(-7deg);
     transform-origin: center;
   }
 </style>
