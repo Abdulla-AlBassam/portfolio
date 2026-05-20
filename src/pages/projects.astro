@@ -1,7 +1,6 @@
 ---
 import MinimalLayout from "@/layouts/MinimalLayout.astro";
 import LinkModal from "@/components/LinkModal.astro";
-import CategoryIcon from "@/components/CategoryIcon.astro";
 
 type Category = "cybersecurity" | "networking" | "development" | "ml";
 
@@ -32,6 +31,13 @@ const projects: Project[] = [
     categories: ["development", "cybersecurity"],
   },
   {
+    title: "URL Triage Agent: Autonomous Phishing Investigator",
+    year: "2026",
+    href: "https://github.com/Abdulla-AlBassam/url-triage-agent",
+    external: true,
+    categories: ["cybersecurity", "ml"],
+  },
+  {
     title: "Local Email Server with a Cascade AI Spam Filter",
     year: "2026",
     categories: ["ml", "cybersecurity"],
@@ -48,6 +54,13 @@ const projects: Project[] = [
     title: "Penetration Testing: Vulnerable VM",
     year: "2026",
     categories: ["cybersecurity"],
+  },
+  {
+    title: "Cyb: Gamified Cybersecurity Learning Platform",
+    year: "2025",
+    href: "https://github.com/Abdulla-AlBassam/cyb",
+    external: true,
+    categories: ["cybersecurity", "development"],
   },
   {
     title: "Cryptographic Transaction Protocol Design",
@@ -119,7 +132,6 @@ const filters = [
             role="tab"
             aria-selected={f.id === "all" ? "true" : "false"}
           >
-            {f.id !== "all" && <CategoryIcon category={f.id as Category} class="filter-icon" />}
             {f.label}
           </button>
         ))
@@ -144,14 +156,7 @@ const filters = [
           return (
             <li class="project-item" data-categories={dataCats}>
               <Tag class="project-row" {...tagProps}>
-                <span class="project-main">
-                  <span class="project-icons" aria-hidden="true">
-                    {p.categories.map((c) => (
-                      <CategoryIcon category={c} />
-                    ))}
-                  </span>
-                  <span class="project-title">{p.title}</span>
-                </span>
+                <span class="project-title">{p.title}</span>
                 <span class="project-meta">
                   <span class="project-year">{p.year}</span>
                   {p.inProgress && (
@@ -176,7 +181,7 @@ const filters = [
     subtitle="Dissertation project: hardened SMTP/IMAP stack with multi-stage AI filtering"
     links={[
       { label: "Thesis", href: "/projects/docs/dissertation.pdf", icon: "pdf" },
-      { label: "GitHub", href: "https://github.com/Abdulla-AlBassam", icon: "github" },
+      { label: "GitHub", href: "https://github.com/Abdulla-AlBassam/mini-mail", icon: "github" },
     ]}
   />
 
@@ -241,9 +246,6 @@ const filters = [
   }
 
   .filter {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
     font-family: "Montserrat", sans-serif;
     font-size: 0.72rem;
     font-weight: 500;
@@ -254,11 +256,6 @@ const filters = [
     border-radius: 999px;
     cursor: pointer;
     transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
-  }
-
-  .filter :global(.filter-icon) {
-    width: 11px;
-    height: 11px;
   }
 
   .filter:hover {
@@ -304,31 +301,6 @@ const filters = [
 
   a.project-row:hover .project-year,
   button.project-row:hover .project-year {
-    color: var(--crail);
-  }
-
-  .project-main {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    flex-wrap: wrap;
-    row-gap: 0.2rem;
-    min-width: 0;
-  }
-
-  .project-icons {
-    display: inline-flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 0.35rem;
-    width: 2rem;
-    color: var(--cloudy);
-    flex-shrink: 0;
-    transition: color 0.15s ease;
-  }
-
-  a.project-row:hover .project-icons,
-  button.project-row:hover .project-icons {
     color: var(--crail);
   }
 
