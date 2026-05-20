@@ -86,18 +86,6 @@ const projects: Project[] = [
     external: true,
     categories: ["cybersecurity"],
   },
-  {
-    title: "REST API Build + Architecture Blueprint",
-    year: "2024",
-    href: "/showcase/projects/rest-api",
-    categories: ["development", "cybersecurity"],
-  },
-  {
-    title: "Operating Systems: Concurrent C + HA DNS/Web Infrastructure",
-    year: "2024",
-    href: "/showcase/projects/operating-systems",
-    categories: ["development", "networking"],
-  },
 ].sort((a, b) => sortKey(b.year) - sortKey(a.year));
 
 function sortKey(year: string): number {
