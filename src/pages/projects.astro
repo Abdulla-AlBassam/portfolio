@@ -143,7 +143,6 @@ const filters = [
             <li class="project-item" data-categories={dataCats}>
               <Tag class="project-row" {...tagProps}>
                 <span class="project-main">
-                  <span class="project-title">{p.title}</span>
                   <span class="project-icons" aria-hidden="true">
                     {p.categories.map((c) => (
                       <svg
@@ -180,6 +179,7 @@ const filters = [
                       </svg>
                     ))}
                   </span>
+                  <span class="project-title">{p.title}</span>
                 </span>
                 <span class="project-meta">
                   <span class="project-year">{p.year}</span>
@@ -221,6 +221,12 @@ const filters = [
     ]}
   />
 </MinimalLayout>
+
+<style is:global>
+  body:has(.projects) .sidebar-cartoon {
+    transform: translateX(-1rem);
+  }
+</style>
 
 <script>
   const filterButtons = document.querySelectorAll<HTMLButtonElement>(".filter");
@@ -334,7 +340,9 @@ const filters = [
   .project-icons {
     display: inline-flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 0.35rem;
+    width: 2rem;
     color: var(--cloudy);
     flex-shrink: 0;
     transition: color 0.15s ease;
