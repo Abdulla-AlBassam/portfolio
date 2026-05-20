@@ -18,9 +18,8 @@ const projects: Project[] = [
   {
     title: "This Portfolio",
     year: "2026",
-    href: "https://github.com/Abdulla-AlBassam/Portfolio",
-    external: true,
     categories: ["development"],
+    modal: "portfolio",
   },
   {
     title: "Mane: Native macOS Ad Blocker",
@@ -173,6 +172,17 @@ const filters = [
       }
     </ul>
   </section>
+
+  <LinkModal
+    id="portfolio"
+    eyebrow="View project"
+    title="This Portfolio"
+    subtitle="Astro static site on Vercel, self-assessed for security"
+    links={[
+      { label: "GitHub", href: "https://github.com/Abdulla-AlBassam/Portfolio", icon: "github" },
+      { label: "Vulnerability Assessment", href: "/projects/docs/vulnerability-assessment.pdf", icon: "pdf" },
+    ]}
+  />
 
   <LinkModal
     id="email-server"
