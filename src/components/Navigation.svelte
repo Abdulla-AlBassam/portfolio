@@ -269,7 +269,7 @@
     outline-offset: 2px;
   }
 
-  /* Grid — 3 columns (left, center hub, right) × 2 rows */
+  /* Grid – 3 columns (left, center hub, right) × 2 rows */
   .menu-grid {
     flex: 1;
     display: grid;
@@ -279,7 +279,7 @@
       grid-template-rows 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Explicit grid placement — 2 cols × 3 rows (Me top, 2×2 below) */
+  /* Explicit grid placement – 2 cols × 3 rows (Me top, 2×2 below) */
   .menu-cell:nth-child(1) { grid-column: 1; grid-row: 2; }
   .menu-cell:nth-child(2) { grid-column: 2; grid-row: 2; }
   .menu-cell:nth-child(3) { grid-column: 1; grid-row: 3; }
@@ -337,7 +337,7 @@
     transform: translateX(10px);
   }
 
-  /* Me cell — no overrides needed, inherits .menu-cell base styles */
+  /* Me cell – no overrides needed, inherits .menu-cell base styles */
 
   /* Footer */
   .menu-footer {

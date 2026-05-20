@@ -206,7 +206,7 @@
       const totalHeight = columnHeights[i];
       if (totalHeight <= 0) return;
 
-      // Speed: pixels per second — normal vs slowed on hover
+      // Speed: pixels per second – normal vs slowed on hover
       const normalDuration = getScrollDuration(i);
       const duration = isHovered ? 120 : normalDuration;
       const speed = totalHeight / duration;
@@ -302,7 +302,7 @@
     bind:this={overlayEl}
     role="dialog"
     aria-modal="true"
-    aria-label="Photo lightbox — {altFromSrc(photos[expandedIndex].src)}"
+    aria-label="Photo lightbox – {altFromSrc(photos[expandedIndex].src)}"
     tabindex="-1"
   >
     <div class="overlay-backdrop"></div>
