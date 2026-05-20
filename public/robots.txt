@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://abdulla.dev/sitemap-index.xml
+Sitemap: https://www.abdullaalbassam.com/sitemap-index.xml
