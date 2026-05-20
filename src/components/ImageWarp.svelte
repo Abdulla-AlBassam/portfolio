@@ -9,7 +9,7 @@
     const width = container.clientWidth;
     const height = container.clientHeight;
 
-    // Orthographic camera — maps 1:1 to container pixels
+    // Orthographic camera – maps 1:1 to container pixels
     const camera = new THREE.OrthographicCamera(
       -0.5, 0.5, 0.5, -0.5, 0.1, 10
     );

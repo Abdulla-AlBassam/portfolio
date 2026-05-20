@@ -28,7 +28,7 @@
     window.addEventListener('mousemove', handler)
     window.addEventListener('touchmove', handler, { passive: true })
 
-    // Load TV model — add directly to the Three.js group (bypasses Svelte reactivity)
+    // Load TV model – add directly to the Three.js group (bypasses Svelte reactivity)
     const loader = new GLTFLoader()
     const waitForGroup = () => {
       if (!groupRef) return requestAnimationFrame(waitForGroup)

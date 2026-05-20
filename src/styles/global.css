@@ -19,12 +19,12 @@
     /* Hover background */
     --bg-hover: #0f0f0f;
 
-    /* Text scale — all AA compliant on --bg-primary */
+    /* Text scale – all AA compliant on --bg-primary */
     --text-primary: #fafafa;       /* 17.4:1 */
     --text-heading: white;         /* 18.1:1 */
     --text-secondary: #aaaaaa;     /* 7.5:1 */
-    --text-muted: #888888;         /* 4.84:1 — AA pass for normal text */
-    --text-faint: #888888;         /* 4.84:1 — floor for AA compliance */
+    --text-muted: #888888;         /* 4.84:1 – AA pass for normal text */
+    --text-faint: #888888;         /* 4.84:1 – floor for AA compliance */
 
     /* Accent */
     --accent: #ffffff;

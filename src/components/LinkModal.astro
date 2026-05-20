@@ -99,7 +99,7 @@ const certLightboxId = `${id}-cert-lightbox`;
 )}
 
 <script>
-  // Hoisted by Astro — runs once per page even when multiple LinkModals exist.
+  // Hoisted by Astro – runs once per page even when multiple LinkModals exist.
   document.querySelectorAll<HTMLElement>('[data-modal-trigger]').forEach((trigger) => {
     trigger.addEventListener('click', () => {
       const id = trigger.getAttribute('data-modal-trigger');
@@ -109,7 +109,7 @@ const certLightboxId = `${id}-cert-lightbox`;
     });
   });
 
-  // Close with reverse animation — intercept all close paths (button, backdrop, ESC),
+  // Close with reverse animation – intercept all close paths (button, backdrop, ESC),
   // play the exit keyframes, then actually call dialog.close() on animationend.
   const closeWithAnimation = (dialog: HTMLDialogElement) => {
     if (dialog.classList.contains('is-closing')) return;
@@ -195,7 +195,7 @@ const certLightboxId = `${id}-cert-lightbox`;
     -webkit-backdrop-filter: blur(3px);
   }
 
-  /* Morph entrance — circle → rounded square via transform + opacity (compositor-friendly).
+  /* Morph entrance – circle → rounded square via transform + opacity (compositor-friendly).
      Border-radius animates between only two stops so the browser doesn't repaint per frame
      against irregular asymmetric values. ease-out-expo (no overshoot) for a clean settle. */
   .link-modal[open]:not(.is-closing) {
