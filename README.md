@@ -2,6 +2,14 @@
 
 My personal portfolio website built with Astro, Svelte, and Tailwind CSS.
 
+<p align="center">
+  <a href="https://abdullaalbassam.com">
+    <img src=".github/assets/portfolio-demo.gif" width="720" alt="Portfolio walkthrough">
+  </a>
+</p>
+
+Live at [abdullaalbassam.com](https://abdullaalbassam.com).
+
 ## Tech Stack
 
 - **Framework:** [Astro](https://astro.build) v4 — static site generation with island architecture
