@@ -365,6 +365,22 @@ const filters = [
   }
 
   @media (max-width: 600px) {
+    .filter-bar {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .filter-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter {
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+
     .project-row {
       flex-direction: column;
       align-items: flex-start;
