@@ -622,6 +622,10 @@ const year = new Date().getFullYear();
           display: none;
         }
 
+        .sidebar :global(.sidebar-cartoon) {
+          display: none;
+        }
+
         .v1-arrow,
         .socials-arrow {
           display: none;
@@ -632,6 +636,30 @@ const year = new Date().getFullYear();
           gap: 1.2rem;
           padding: 0 1.5rem 2.5rem;
           text-align: center;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .brand {
+          padding: 2.5rem 1rem 0;
+        }
+
+        .signature-mark,
+        .signature-link {
+          gap: 0.55rem;
+        }
+
+        .signature {
+          height: clamp(24px, 7.2vw, 40px);
+        }
+
+        .signature-ar {
+          height: clamp(21px, 6.2vw, 34px);
+        }
+
+        .signature-divider {
+          width: clamp(9px, 2.6vw, 14px);
+          height: clamp(24px, 7.2vw, 40px);
         }
       }
     </style>
