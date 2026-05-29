@@ -1,6 +1,13 @@
 ---
 import MinimalLayout from "@/layouts/MinimalLayout.astro";
 import LinkModal from "@/components/LinkModal.astro";
+import { reader } from "@/lib/reader";
+import { renderMarkdoc } from "@/lib/markdoc";
+
+const about = await reader.singletons.about.read();
+const bioContent = about ? await about.bio() : null;
+const bioHtml = bioContent ? renderMarkdoc(bioContent.node) : "";
+const education = about?.education ?? [];
 ---
 
 <MinimalLayout title="Abdulla AlBassam's Portfolio" active="about" sidebarBottom="32rem">
@@ -25,22 +32,7 @@ import LinkModal from "@/components/LinkModal.astro";
       loading="eager"
       decoding="async"
     />
-    <p>
-      I'm a final-year Cybersecurity and Networking student at
-      <a href="https://www.northumbria.ac.uk/" target="_blank" rel="noopener noreferrer">Northumbria University</a>,
-      on track for First Class Honours and a recipient of the
-      <a href="https://sites.moe.gov.sa/scholarship-program/paths/path-emdad/" target="_blank" rel="noopener noreferrer">Emdad</a> Scholarship.
-    </p>
-
-    <p>
-      I'm engineering agentic security tools and researching how autonomous AI
-      will reshape both sides of the cyber arms race.
-    </p>
-
-    <p>
-      I'm also building <a href="https://sweatyapp.com" target="_blank" rel="noopener noreferrer">Sweaty</a>,
-      a social platform for gamers.
-    </p>
+    <div class="bio" set:html={bioHtml} />
 
     <p>
       Recently, my team and I took home the Innovation Award at Northumbria's
@@ -50,36 +42,20 @@ import LinkModal from "@/components/LinkModal.astro";
 
     <h2 class="block-heading">Education</h2>
     <ul class="entries">
-      <li>
-        <div class="entry-row">
-          <div>
-            <strong>BSc (Hons) Networks &amp; Cyber Security</strong>
-            <span class="muted institution">Northumbria University</span>
-          </div>
-          <span class="meta">2023 – 2026</span>
-        </div>
-        <p class="muted small">Predicted: First Class Honours.</p>
-      </li>
-      <li>
-        <div class="entry-row">
-          <div>
-            <strong>Foundation Year: Economics &amp; Mathematics</strong>
-            <span class="muted institution">King's College London</span>
-          </div>
-          <span class="meta">2022 – 2023</span>
-        </div>
-        <p class="muted small">Grade: 2:1.</p>
-      </li>
-      <li>
-        <div class="entry-row">
-          <div>
-            <strong>American Diploma with Honours</strong>
-            <span class="muted institution">Modern Knowledge Schools, Bahrain</span>
-          </div>
-          <span class="meta">2008 – 2022</span>
-        </div>
-        <p class="muted small">Grade: 98%</p>
-      </li>
+      {
+        education.map((e) => (
+          <li>
+            <div class="entry-row">
+              <div>
+                <strong>{e.qualification}</strong>
+                <span class="muted institution">{e.institution}</span>
+              </div>
+              <span class="meta">{e.period}</span>
+            </div>
+            {e.note && <p class="muted small">{e.note}</p>}
+          </li>
+        ))
+      }
     </ul>
   </section>
 

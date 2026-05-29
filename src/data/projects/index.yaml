@@ -1,0 +1,104 @@
+items:
+  - title: This Portfolio
+    year: '2026'
+    inProgress: false
+    external: false
+    categories:
+      - development
+    modal: portfolio
+  - title: 'Mane: Native macOS Ad Blocker'
+    year: 2026 – present
+    inProgress: true
+    href: https://github.com/Abdulla-AlBassam/mane
+    external: true
+    categories:
+      - development
+      - cybersecurity
+    modal: none
+  - title: 'URL Triage Agent: Autonomous Phishing Investigator'
+    year: '2026'
+    inProgress: false
+    href: https://github.com/Abdulla-AlBassam/url-triage-agent
+    external: true
+    categories:
+      - cybersecurity
+      - ml
+    modal: none
+  - title: Local Email Server with a Cascade AI Spam Filter
+    year: '2026'
+    inProgress: false
+    external: false
+    categories:
+      - ml
+      - cybersecurity
+    modal: email-server
+  - title: 'Sweaty: Social Gaming Platform'
+    year: 2025 – present
+    inProgress: true
+    external: false
+    categories:
+      - development
+    modal: sweaty
+  - title: 'Penetration Testing: Vulnerable VM'
+    year: '2026'
+    inProgress: false
+    external: false
+    categories:
+      - cybersecurity
+    modal: none
+  - title: 'Cyb: Gamified Cybersecurity Learning Platform'
+    year: '2025'
+    inProgress: false
+    href: https://github.com/Abdulla-AlBassam/cyb
+    external: true
+    categories:
+      - cybersecurity
+      - development
+    modal: none
+  - title: Cryptographic Transaction Protocol Design
+    year: '2026'
+    inProgress: false
+    href: /projects/docs/cryptographic-protocol.pdf
+    external: true
+    categories:
+      - cybersecurity
+    modal: none
+  - title: 'Enterprise Networking: Segmented WAN with Selective IPsec'
+    year: '2025'
+    inProgress: false
+    href: /projects/docs/enterprise-wan.pdf
+    external: true
+    categories:
+      - networking
+    modal: none
+  - title: 'Digital Forensics: Timeline Reconstruction'
+    year: '2025'
+    inProgress: false
+    href: /projects/docs/digital-forensics.pdf
+    external: true
+    categories:
+      - cybersecurity
+    modal: none
+  - title: Client Audit + Security Assessment Report
+    year: '2025'
+    inProgress: false
+    external: false
+    categories:
+      - cybersecurity
+    modal: none
+  - title: 'Networking: Secure VLAN Routing + Layer-2 Hardening'
+    year: '2024'
+    inProgress: false
+    href: /projects/docs/secure-vlan.pdf
+    external: true
+    categories:
+      - networking
+    modal: none
+  - title: 'Qualitative Study: Young-Adult Security Literacy'
+    year: '2024'
+    inProgress: false
+    href: /projects/docs/qualitative-study.pdf
+    external: true
+    categories:
+      - cybersecurity
+    modal: none
