@@ -1,0 +1,356 @@
+---
+import { render } from "astro:content";
+import MinimalLayout from "../../layouts/MinimalLayout.astro";
+import { getThoughts, monthStamp, monthYear, type Thought } from "./_thoughts";
+
+export async function getStaticPaths() {
+  const thoughts = await getThoughts();
+  return thoughts.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+interface Props {
+  entry: Thought;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const ogImage = new URL(`/thoughts/og/${entry.id}.png`, Astro.site).href;
+const published = entry.data.date.toISOString();
+---
+
+<MinimalLayout
+  title={`${entry.data.title} – Abdulla AlBassam`}
+  description={entry.data.description}
+  active="thoughts"
+  image={ogImage}
+  ogType="article"
+>
+  <Fragment slot="head">
+    <meta property="og:image:alt" content={entry.data.title} />
+    <meta property="og:site_name" content="Abdulla AlBassam" />
+    <meta property="article:published_time" content={published} />
+    <meta property="article:author" content="Abdulla AlBassam" />
+  </Fragment>
+
+  <article class="article">
+    <header class="article-header">
+      <p class="article-eyebrow"><a href="/thoughts">Thoughts</a></p>
+      <h1 class="article-title">{entry.data.title}</h1>
+      <p class="article-subtitle">{entry.data.description}</p>
+      <time class="article-date" datetime={monthStamp(entry.data.date)}>
+        {monthYear(entry.data.date)}
+      </time>
+    </header>
+
+    <div class="article-body">
+      <Content />
+    </div>
+
+    <footer class="article-footer">
+      <a href="/thoughts">← All thoughts</a>
+      <span>Abdulla AlBassam</span>
+    </footer>
+  </article>
+</MinimalLayout>
+
+<style is:global>
+  .article {
+    --article-size: 1.15rem; /* 17.5px at the 95% root */
+    --article-lh: 1.65;
+    --article-gap: 1.25em; /* paragraph spacing, relative to body size */
+    --article-accent: var(--midnight, #272757);
+    font-family: var(--font-serif, "Newsreader", "Iowan Old Style", Georgia, serif);
+    color: var(--ink);
+  }
+
+  html.dark .article {
+    --article-accent: var(--midnight, #9a9ee0);
+  }
+
+  /* ---- header ---- */
+  .article-header {
+    margin: 0 0 2.5rem;
+  }
+
+  .article-eyebrow {
+    margin: 0 0 1.4rem;
+    font-size: 0.85rem;
+    color: var(--cloudy-deep);
+    letter-spacing: 0.01em;
+  }
+
+  .article-eyebrow a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .article-eyebrow a:hover {
+    color: var(--article-accent);
+  }
+
+  .article-title {
+    margin: 0;
+    font-size: 2.25rem; /* 34px */
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+    font-variation-settings: "opsz" 60; /* the display cut; the only place this is pinned */
+    color: var(--ink);
+  }
+
+  .article-subtitle {
+    margin: 0.55rem 0 0;
+    font-size: 1.2rem;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1.35;
+    color: var(--ink-soft);
+    text-wrap: pretty;
+  }
+
+  .article-date {
+    display: block;
+    margin: 1.4rem 0 0;
+    font-size: 0.9rem;
+    color: var(--cloudy-deep);
+    letter-spacing: 0.01em;
+  }
+
+  /* ---- body ---- */
+  .article-body {
+    font-size: var(--article-size);
+    line-height: var(--article-lh);
+    text-wrap: pretty;
+  }
+
+  .article-body > * {
+    margin-top: 0;
+    margin-bottom: var(--article-gap);
+  }
+
+  .article-body > *:last-child {
+    margin-bottom: 0;
+  }
+
+  .article-body h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.008em;
+    margin-top: 2.75rem;
+    margin-bottom: 0.85rem;
+    text-wrap: balance;
+  }
+
+  .article-body h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-top: 2.1rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .article-body h2 + h3 {
+    margin-top: 1rem;
+  }
+
+  .article-body a {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-color: var(--article-accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.16em;
+    transition: color 0.15s ease;
+  }
+
+  .article-body a:hover {
+    color: var(--article-accent);
+  }
+
+  .article-body strong {
+    font-weight: 600;
+  }
+
+  .article-body em {
+    font-style: italic;
+  }
+
+  .article-body blockquote {
+    margin: 2rem 0;
+    padding: 0.1rem 0 0.1rem 1.35rem;
+    border-left: 2px solid var(--article-accent);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+
+  .article-body blockquote p {
+    margin: 0 0 0.75em;
+  }
+
+  .article-body blockquote p:last-child {
+    margin-bottom: 0;
+  }
+
+  .article-body blockquote cite {
+    display: block;
+    margin-top: 0.6em;
+    font-style: normal;
+    font-size: 0.85em;
+    color: var(--cloudy-deep);
+  }
+
+  .article-body ul,
+  .article-body ol {
+    padding-left: 1.5rem;
+  }
+
+  .article-body li {
+    margin: 0 0 0.45em;
+    padding-left: 0.2rem;
+  }
+
+  .article-body li::marker {
+    color: var(--cloudy-deep);
+  }
+
+  .article-body li > p {
+    margin-bottom: 0.45em;
+  }
+
+  .article-body figure {
+    margin: 2.5rem 0;
+  }
+
+  .article-body figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+    background: var(--pampas-deep);
+  }
+
+  html.dark .article-body figure img {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.07);
+  }
+
+  .article-body figcaption {
+    margin-top: 0.75rem;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    font-style: normal;
+    color: var(--cloudy-deep);
+  }
+
+  /* Charts: an image with a transparent background sits on a card so it reads
+     on both themes. Write <figure class="chart"> in the MDX. */
+  .article-body figure.chart img {
+    background: var(--pampas-deep);
+    padding: 1rem;
+  }
+
+  .article-body code {
+    font-family: var(--font-mono, ui-monospace, "SF Mono", Menlo, monospace);
+    font-size: 0.86em;
+    background: var(--pampas-deep);
+    border-radius: 4px;
+    padding: 0.1em 0.38em;
+  }
+
+  .article-body pre {
+    font-family: var(--font-mono, ui-monospace, "SF Mono", Menlo, monospace);
+    font-size: 0.82rem;
+    line-height: 1.55;
+    background: var(--pampas-deep);
+    border-radius: 6px;
+    padding: 1rem 1.15rem;
+    overflow-x: auto;
+    margin: 1.75rem 0;
+  }
+
+  .article-body pre code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+  }
+
+  .article-body hr {
+    border: 0;
+    border-top: 1px solid var(--rule);
+    margin: 3rem 0;
+  }
+
+  /* ---- footer ---- */
+  .article-footer {
+    margin-top: 3.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    font-size: 0.95rem;
+    color: var(--cloudy-deep);
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .article-footer a {
+    color: var(--cloudy-deep);
+    text-decoration: none;
+  }
+
+  .article-footer a:hover {
+    color: var(--article-accent);
+  }
+
+  @media (max-width: 860px) {
+    .article {
+      --article-size: 1.12rem;
+      --article-lh: 1.6;
+    }
+
+    .article-header {
+      margin-bottom: 2rem;
+    }
+
+    .article-eyebrow {
+      margin-bottom: 1rem;
+    }
+
+    .article-title {
+      font-size: 1.85rem;
+      line-height: 1.15;
+    }
+
+    .article-subtitle {
+      font-size: 1.1rem;
+    }
+
+    .article-date {
+      margin-top: 1.1rem;
+    }
+
+    .article-body h2 {
+      font-size: 1.35rem;
+      margin-top: 2.25rem;
+    }
+
+    .article-body h3 {
+      font-size: 1.12rem;
+    }
+
+    .article-body figure {
+      margin: 2rem 0;
+    }
+
+    .article-body blockquote {
+      margin: 1.6rem 0;
+      padding-left: 1.1rem;
+    }
+
+    .article-body pre {
+      font-size: 0.78rem;
+      padding: 0.85rem 1rem;
+    }
+  }
+</style>

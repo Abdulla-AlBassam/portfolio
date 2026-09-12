@@ -74,7 +74,7 @@ const categories = [
 ---
 
 <MinimalLayout title="Photography – Abdulla AlBassam" active="photography">
-  <DappledLight slot="header" />
+  <DappledLight slot="aside-right" variant="panel" />
   <img slot="sidebar-inline" src="/camera.webp" alt="" class="sidebar-cartoon" />
 
   <section class="photography" data-state="closed">
@@ -121,16 +121,20 @@ const categories = [
 
       {
         categories.map((cat) => (
-          <div class="fan" id={`fan-${cat.id}`} data-cat={cat.id} hidden>
+          <div
+            class="fan"
+            id={`fan-${cat.id}`}
+            data-cat={cat.id}
+            role="region"
+            aria-label={`${cat.label} photos`}
+            hidden
+          >
             <div class="fan-head">
-              <button class="fan-close" type="button">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <button class="fan-back" type="button" aria-label="Back to the photo stacks">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <polyline points="15 18 9 12 15 6" />
                 </svg>
-                <span>Back</span>
               </button>
-              <span class="fan-title">{cat.label}</span>
-              <span class="fan-spacer" />
             </div>
             <div class="grid">
               {cat.photos.map((p, i) => (
@@ -220,6 +224,7 @@ const categories = [
     requestAnimationFrame(() => {
       fan.dataset.state = "open";
     });
+    fan.querySelector<HTMLButtonElement>(".fan-back")?.focus({ preventScroll: true });
     activeCat = cat;
   }
 
@@ -239,6 +244,8 @@ const categories = [
       fan.hidden = true;
     }, wait);
 
+    // Return focus to the pile that was opened before the fan is hidden under it.
+    stack.focus({ preventScroll: true });
     activeCat = null;
   }
 
@@ -247,8 +254,8 @@ const categories = [
   });
 
   fans.forEach((fan) => {
-    const close = fan.querySelector<HTMLButtonElement>(".fan-close");
-    close?.addEventListener("click", () => closeCategory());
+    const back = fan.querySelector<HTMLButtonElement>(".fan-back");
+    back?.addEventListener("click", () => closeCategory());
 
     const cells = Array.from(fan.querySelectorAll<HTMLButtonElement>(".cell"));
     cells.forEach((cell, i) => {
@@ -312,8 +319,9 @@ const categories = [
   }
 
   .lede {
+    font-family: var(--font-serif);
     color: var(--cloudy-deep);
-    font-size: 0.88rem;
+    font-size: 1rem;
     margin-bottom: 3rem;
   }
 
@@ -357,7 +365,7 @@ const categories = [
   }
 
   .stack:focus-visible .stack-cards {
-    outline: 2px solid var(--crail);
+    outline: 2px solid var(--midnight);
     outline-offset: 12px;
     border-radius: 4px;
   }
@@ -419,17 +427,18 @@ const categories = [
   }
 
   .stack-label {
-    font-family: "Montserrat", sans-serif;
-    font-size: 0.8rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 0.95rem;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    text-transform: none;
     color: var(--cloudy-deep);
     transition: color 200ms ease;
   }
 
   .stack:hover .stack-label {
-    color: var(--crail);
+    color: var(--midnight);
   }
 
   /* ------------------ fan-out ------------------ */
@@ -445,8 +454,9 @@ const categories = [
   .fan-head {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1.5rem;
+    height: 44px;
+    /* pulls the chevron up towards the lede; the grid starts 0.75rem below */
+    margin: -0.5rem 0 0.75rem;
     opacity: 0;
     transform: translateY(-6px);
     transition: opacity 300ms ease 200ms, transform 300ms ease 200ms;
@@ -463,42 +473,40 @@ const categories = [
     transition: opacity 200ms ease, transform 200ms ease;
   }
 
-  .fan-close {
+  .fan-back {
     all: unset;
+    box-sizing: border-box;
+    width: 44px;
+    height: 44px;
+    /* the glyph is 20px centred in 44px, so -12px puts its left edge on the
+       column edge */
+    margin-left: -12px;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 50%;
+    color: var(--cloudy-deep);
     cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-family: "Montserrat", sans-serif;
-    font-size: 0.78rem;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    color: var(--cloudy-deep);
-    padding: 0.4rem 0.6rem 0.4rem 0;
-    transition: color 180ms ease;
+    transition: color 180ms ease, transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  .fan-close:hover {
-    color: var(--crail);
+  .fan-back svg {
+    width: 20px;
+    height: 20px;
+    display: block;
   }
 
-  .fan-close:focus-visible {
-    outline: 2px solid var(--crail);
-    outline-offset: 4px;
-    border-radius: 2px;
+  .fan-back:hover {
+    color: var(--midnight);
+    transform: translateX(-2px);
   }
 
-  .fan-title {
-    font-family: "Montserrat", sans-serif;
-    font-size: 0.8rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--cloudy-deep);
+  .fan-back:active {
+    transform: translateX(-3px);
   }
 
-  .fan-spacer {
-    width: 4rem;
+  .fan-back:focus-visible {
+    outline: 2px solid var(--midnight);
+    outline-offset: 2px;
   }
 
   .grid {
@@ -549,11 +557,17 @@ const categories = [
   }
 
   .cell:focus-visible {
-    outline: 2px solid var(--crail);
+    outline: 2px solid var(--midnight);
     outline-offset: 2px;
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .fan-back,
+    .fan-back:hover,
+    .fan-back:active {
+      transform: none;
+    }
+
     .stacks,
     .stack-card,
     .fan-head,
@@ -661,7 +675,7 @@ const categories = [
     bottom: 1.5rem;
     left: 50%;
     transform: translateX(-50%);
-    font-family: "Montserrat", sans-serif;
+    font-family: var(--font-serif);
     font-size: 0.78rem;
     font-weight: 500;
     letter-spacing: 0.04em;

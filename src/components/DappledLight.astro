@@ -1,23 +1,42 @@
 ---
-// Decorative komorebi (tree-dappled light) scene for the photography header.
+// Decorative komorebi (tree-dappled light) scene.
 // Two-tone ordered-dither shader on a single fullscreen quad, raw WebGL, no deps.
 // Ported from Jacky Zhao's jzhao.xyz (dappledLight.inline.ts), retuned to the
-// pampas / crail / ink palette and stripped of the Quartz SPA + dark-mode hooks.
+// pampas / midnight / ink palette and stripped of the Quartz SPA hooks.
+//
+// "banner" is the wide masthead; "panel" is the quiet 120 x 360 strip that sits
+// in the right gutter of the photography page.
+interface Props {
+  variant?: "banner" | "panel";
+}
+const { variant = "banner" } = Astro.props;
 ---
 
-<div class="dappled-scene" aria-hidden="true"></div>
+<div class="dappled-scene" data-variant={variant} aria-hidden="true"></div>
 
 <style is:global>
   :root {
-    /* mirrors the site palette; lit wall = pampas, rim glow = crail, shadow = ink */
+    /* mirrors the site palette; lit wall = pampas, rim glow = midnight-mid, shadow = ink */
     --komorebi-light: #f4f3ee;
-    --komorebi-mid: #c15f3c;
+    --komorebi-mid: #6e72c2;
     --komorebi-shadow: #1a1816;
     --komorebi-center: 0.6;
+    --komorebi-contrast: 1.6;
+    --komorebi-scale: 3;
+    --komorebi-trunk: 1;
+    --komorebi-canopy: 1.2;
   }
 
-  /* Banner masthead: replaces the signature on the photography page, centred
-     and capped at the page's content width. */
+  /* Dark: the visible thing is the light, not the shadow. Lit patches sit one
+     step above the page and the shadow equals the page, so the strip reads as
+     light falling on a wall rather than rings on black. */
+  html.dark {
+    --komorebi-light: #36322c;
+    --komorebi-mid: #9a9ee0;
+    --komorebi-shadow: #262320;
+  }
+
+  /* Banner masthead: centred and capped at the page's content width. */
   .dappled-scene {
     display: block;
     width: 100%;
@@ -28,6 +47,29 @@
     pointer-events: none;
     border: 1px solid rgba(26, 24, 22, 0.18);
     border-radius: 3px;
+  }
+
+  /* Panel: a tall strip in the right gutter. The lit tone equals the page
+     background, so without the hairline it would read as loose speckle rather
+     than a window. */
+  .dappled-scene[data-variant="panel"] {
+    width: 120px;
+    height: 360px;
+    max-width: none;
+    margin: 0;
+    position: sticky;
+    top: 3rem;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    --komorebi-center: 0.68;
+    --komorebi-contrast: 1.3;
+    --komorebi-scale: 2;
+    --komorebi-trunk: 0;
+    /* The canopy term biases the whole frame by up to +/- half its value. Across
+       880px of banner that only shifts the balance; across a 120px strip it can
+       lift every pixel past the dither range and leave an empty box, so the
+       strip takes a much smaller share. */
+    --komorebi-canopy: 0.35;
   }
 
   .dappled-canvas {
@@ -244,19 +286,6 @@
     const n = parseInt(h.slice(0, 6), 16)
     return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255]
   }
-  function cssVar(name: string): [number, number, number] {
-    const v = getComputedStyle(document.documentElement).getPropertyValue(name)
-    return v && v.trim().startsWith("#") ? hexToRgb(v) : [0, 0, 0]
-  }
-  function cssNum(name: string, fallback: number): number {
-    const v = parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name))
-    return isNaN(v) ? fallback : v
-  }
-  function rgbStr(name: string): string {
-    return cssVar(name)
-      .map((c) => Math.round(c * 255))
-      .join(",")
-  }
   function contentSize(el: HTMLElement): [number, number] {
     const cs = getComputedStyle(el)
     const padX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight)
@@ -265,6 +294,24 @@
   }
 
   function initScene(container: HTMLElement) {
+    const isPanel = container.dataset.variant === "panel"
+    // Read the tunables off the container, not the root, so a variant's own
+    // overrides cascade. getComputedStyle returns a live object, so re-reading
+    // after a theme change picks up the new values.
+    const style = getComputedStyle(container)
+    const cssVar = (name: string): [number, number, number] => {
+      const v = style.getPropertyValue(name)
+      return v && v.trim().startsWith("#") ? hexToRgb(v) : [0, 0, 0]
+    }
+    const cssNum = (name: string, fallback: number): number => {
+      const v = parseFloat(style.getPropertyValue(name))
+      return isNaN(v) ? fallback : v
+    }
+    const rgbStr = (name: string): string =>
+      cssVar(name)
+        .map((c) => Math.round(c * 255))
+        .join(",")
+
     const canvas = document.createElement("canvas")
     canvas.className = "dappled-canvas"
     container.appendChild(canvas)
@@ -322,25 +369,27 @@
 
     // tunable state (driven by the debug sliders)
     const u = {
-      contrast: 1.6,
+      contrast: cssNum("--komorebi-contrast", 1.6),
       center: cssNum("--komorebi-center", 0.38),
       goldLo: 0.45,
       goldHi: 0.7,
-      canopy: 1.2,
+      canopy: cssNum("--komorebi-canopy", 1.2),
       dither: 1,
-      layerOn: [1, 1, 1, 1],
-      blur: [0.0, 0.12, 0.35, 0.8], // trunk -> thick -> thin -> leaves
-      sensitivity: 5,
+      layerOn: [cssNum("--komorebi-trunk", 1), 1, 1, 1],
+      blur: isPanel ? [0.0, 0.2, 0.45, 0.85] : [0.0, 0.12, 0.35, 0.8], // trunk -> thick -> thin -> leaves
+      sensitivity: isPanel ? 8 : 5, // cursor gusts are gentler on the strip
       rest: 0.35,
       gustSpeed: 1,
     }
 
-    const colA = cssVar("--komorebi-light")
-    const colMid = cssVar("--komorebi-mid")
-    const colB = cssVar("--komorebi-shadow")
+    // Re-read on theme change: draw() uploads the colour uniforms every frame,
+    // so the animated path picks a change up on the next frame.
+    let colA = cssVar("--komorebi-light")
+    let colMid = cssVar("--komorebi-mid")
+    let colB = cssVar("--komorebi-shadow")
     const chartRGB = rgbStr("--komorebi-mid")
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    const SCALE = 3
+    const SCALE = cssNum("--komorebi-scale", 3)
 
     let w = 600
     let h = 180
@@ -533,6 +582,17 @@
       gl.uniform1f(U.uDither, u.dither)
       gl.drawArrays(gl.TRIANGLES, 0, 3)
     }
+
+    const refreshPalette = () => {
+      colA = cssVar("--komorebi-light")
+      colMid = cssVar("--komorebi-mid")
+      colB = cssVar("--komorebi-shadow")
+      if (reduce) draw()
+    }
+    new MutationObserver(refreshPalette).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    })
 
     let raf = 0
     let running = true
