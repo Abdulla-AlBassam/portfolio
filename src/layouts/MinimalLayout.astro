@@ -1,4 +1,7 @@
 ---
+import Socials from "@/components/Socials.astro";
+import ThemeToggle from "@/components/ThemeToggle.astro";
+
 interface Props {
   title: string;
   description?: string;
@@ -112,15 +115,18 @@ const year = new Date().getFullYear();
         </a>
       </h1>
 
-      <button
-        class="menu-button"
-        type="button"
-        aria-expanded="false"
-        aria-controls="site-menu"
-        aria-label="Open menu"
-      >
-        <span class="menu-lines" aria-hidden="true"></span>
-      </button>
+      <div class="brand-actions">
+        <ThemeToggle class="header-theme" />
+        <button
+          class="menu-button"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-menu"
+          aria-label="Open menu"
+        >
+          <span class="menu-lines" aria-hidden="true"></span>
+        </button>
+      </div>
     </header>
 
     <div class="menu" id="site-menu" role="dialog" aria-modal="true" aria-label="Site menu" hidden>
@@ -134,12 +140,15 @@ const year = new Date().getFullYear();
             height="273"
           />
         </a>
-        <button class="menu-close" type="button" aria-label="Close menu">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
-            <line x1="5" y1="5" x2="19" y2="19" />
-            <line x1="19" y1="5" x2="5" y2="19" />
-          </svg>
-        </button>
+        <div class="brand-actions">
+          <ThemeToggle class="header-theme" />
+          <button class="menu-close" type="button" aria-label="Close menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+              <line x1="5" y1="5" x2="19" y2="19" />
+              <line x1="19" y1="5" x2="5" y2="19" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       <nav class="menu-nav" aria-label="Sections">
@@ -158,31 +167,7 @@ const year = new Date().getFullYear();
       </nav>
 
       <div class="menu-foot">
-        <button
-          class="theme-toggle theme-toggle--labelled"
-          type="button"
-          data-theme-toggle
-          aria-label="Switch to light mode"
-          aria-pressed="true"
-        >
-          <span class="theme-icon" aria-hidden="true">
-            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-            </svg>
-            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="4" />
-              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-            </svg>
-          </span>
-          <span class="theme-label">Light mode</span>
-        </button>
-        <img
-          src="/signature-ar.webp"
-          alt="عبدالله البسام"
-          class="signature signature-ar"
-          width="1387"
-          height="211"
-        />
+        <Socials />
       </div>
     </div>
 
@@ -190,24 +175,7 @@ const year = new Date().getFullYear();
       <aside class="sidebar" aria-label="Section navigation">
         <ul>
           <li class="theme-li">
-            <button
-              class="theme-toggle"
-              type="button"
-              data-theme-toggle
-              aria-label="Switch to light mode"
-              aria-pressed="true"
-              title="Toggle theme"
-            >
-              <span class="theme-icon" aria-hidden="true">
-                <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                </svg>
-                <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="4" />
-                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-                </svg>
-              </span>
-            </button>
+            <ThemeToggle class="sidebar-theme" />
           </li>
           {
             nav.map((item) => (
@@ -288,56 +256,7 @@ const year = new Date().getFullYear();
             stroke-linejoin="round"
           />
         </svg>
-        <ul class="socials" aria-label="Social links">
-          <li>
-            <button class="social social-email" type="button" data-copy-email="abdulla.a.albassam@gmail.com" aria-label="Copy email address to clipboard" title="Copy email">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="5" width="18" height="14" rx="2" />
-                <path d="m3 7 9 6 9-6" />
-              </svg>
-            </button>
-          </li>
-          <li>
-            <a class="social social-linkedin" href="https://linkedin.com/in/abdulla-albassam" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z" />
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a class="social social-github" href="https://github.com/Abdulla-AlBassam" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-1.97c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.18-3.08-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.62 1.58.23 2.75.11 3.04.74.8 1.18 1.82 1.18 3.08 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.13v3.16c0 .31.21.67.8.55C20.21 21.39 23.5 17.07 23.5 12 23.5 5.65 18.35.5 12 .5z" />
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a class="social social-tryhackme" href="https://tryhackme.com/p/AbdullaAlBassam" target="_blank" rel="noopener noreferrer" aria-label="TryHackMe" title="TryHackMe">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M14.79 9.05c0 .76-.62 1.38-1.39 1.38a1.39 1.39 0 1 1 1.39-1.38zm-5.94 0a1.39 1.39 0 1 1-2.77 0 1.39 1.39 0 0 1 2.77 0zM12 0C5.37 0 0 5.37 0 12c0 6.62 5.37 12 12 12s12-5.38 12-12c0-6.63-5.37-12-12-12zm0 21.65c-5.32 0-9.65-4.33-9.65-9.65 0-5.33 4.33-9.65 9.65-9.65 5.33 0 9.65 4.32 9.65 9.65 0 5.32-4.32 9.65-9.65 9.65zm-4.62-7.18a4.62 4.62 0 0 0 9.24 0H7.38z" />
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a class="social social-letterboxd" href="https://letterboxd.com/3boodi/" target="_blank" rel="noopener noreferrer" aria-label="Letterboxd" title="Letterboxd">
-              <svg viewBox="0 0 24 24" fill="none">
-                <circle cx="5" cy="12" r="3.5" fill="#00E054" />
-                <circle cx="12" cy="12" r="3.5" fill="#40BCF4" />
-                <circle cx="19" cy="12" r="3.5" fill="#F89132" />
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a class="social social-cv" href="/cv.pdf" download aria-label="Download CV" title="Download CV">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
-                <path d="M14 3v6h6" />
-                <path d="M12 12v6" />
-                <path d="m9 15 3 3 3-3" />
-              </svg>
-            </a>
-          </li>
-        </ul>
+        <Socials />
       </div>
     </footer>
 
@@ -345,7 +264,7 @@ const year = new Date().getFullYear();
 
     <script>
       const root = document.documentElement;
-      // Two toggles once the overlay exists: the sidebar one and the menu one.
+      // One toggle per surface: sidebar, mobile header and the open menu.
       const themeToggles = document.querySelectorAll<HTMLButtonElement>("[data-theme-toggle]");
 
       function syncThemeToggle() {
@@ -356,8 +275,6 @@ const year = new Date().getFullYear();
             "aria-label",
             isDark ? "Switch to light mode" : "Switch to dark mode",
           );
-          const label = btn.querySelector(".theme-label");
-          if (label) label.textContent = isDark ? "Light mode" : "Dark mode";
         });
       }
 
@@ -388,7 +305,9 @@ const year = new Date().getFullYear();
         });
       }
 
-      function openMenu() {
+      // Safari paints a focus ring on any scripted focus(), so focus is only
+      // moved when the trigger itself was reached by keyboard.
+      function openMenu(byKeyboard: boolean) {
         if (!menu || !menuButton || menu.hidden === false) return;
         lastFocus = document.activeElement as HTMLElement;
         menu.hidden = false;
@@ -398,10 +317,10 @@ const year = new Date().getFullYear();
         menuButton.setAttribute("aria-label", "Close menu");
         root.classList.add("menu-open");
         setInert(true);
-        menuClose?.focus();
+        if (byKeyboard) menuClose?.focus();
       }
 
-      function closeMenu() {
+      function closeMenu(byKeyboard: boolean) {
         if (!menu || !menuButton || menu.hidden) return;
         menu.classList.remove("is-open");
         menuButton.setAttribute("aria-expanded", "false");
@@ -422,17 +341,20 @@ const year = new Date().getFullYear();
             finish();
           });
         }
-        (lastFocus ?? menuButton).focus();
+        if (byKeyboard) (lastFocus ?? menuButton).focus();
       }
 
-      menuButton?.addEventListener("click", () => (menu?.hidden ? openMenu() : closeMenu()));
-      menuClose?.addEventListener("click", closeMenu);
+      menuButton?.addEventListener("click", () => {
+        const byKeyboard = menuButton.matches(":focus-visible");
+        menu?.hidden ? openMenu(byKeyboard) : closeMenu(byKeyboard);
+      });
+      menuClose?.addEventListener("click", () => closeMenu(menuClose.matches(":focus-visible")));
 
       document.addEventListener("keydown", (e) => {
         if (!menu || menu.hidden) return;
         if (e.key === "Escape") {
           e.preventDefault();
-          closeMenu();
+          closeMenu(true);
           return;
         }
         if (e.key === "Tab") {
@@ -456,7 +378,7 @@ const year = new Date().getFullYear();
       // Growing past the breakpoint would otherwise leave the page scroll-locked
       // behind an overlay that is no longer shown.
       window.matchMedia("(min-width: 861px)").addEventListener("change", (e) => {
-        if (e.matches) closeMenu();
+        if (e.matches) closeMenu(false);
       });
 
       const toast = document.getElementById("toast");
@@ -518,11 +440,6 @@ const year = new Date().getFullYear();
         filter: invert(1) hue-rotate(180deg);
       }
 
-      /* GitHub mark is near-black; lift it on dark. */
-      html.dark .social-github {
-        color: var(--ink-soft);
-      }
-
       * {
         box-sizing: border-box;
       }
@@ -581,51 +498,16 @@ const year = new Date().getFullYear();
         padding: 3rem 1.5rem 0;
       }
 
-      .theme-toggle {
-        display: flex;
-        align-items: center;
-        padding: 0.15rem 0 0.15rem 0.9rem;
-        margin: 0;
-        background: none;
-        border: none;
-        color: var(--cloudy-deep);
-        cursor: pointer;
-        transition: color 0.15s ease;
+      /* Indented to sit on the nav's dot column. The toggle is a child
+         component, so its classes are reached through :global(). */
+      .sidebar :global(.sidebar-theme) {
+        padding-left: 0.9rem;
       }
 
-      .theme-toggle:hover {
-        color: var(--midnight);
-      }
-
-      .theme-toggle:focus-visible {
-        outline: 2px solid var(--midnight);
-        outline-offset: 3px;
-        border-radius: 2px;
-      }
-
-      .theme-icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-      }
-
-      .theme-toggle svg {
-        width: 15px;
-        height: 15px;
-        display: block;
-      }
-
-      .theme-toggle .icon-sun {
+      /* Toggle and menu button share the header's right edge below the
+         breakpoint; the sidebar carries the toggle above it. */
+      .brand-actions {
         display: none;
-      }
-
-      :global(html.dark) .theme-toggle .icon-moon {
-        display: none;
-      }
-
-      :global(html.dark) .theme-toggle .icon-sun {
-        display: block;
       }
 
       .signature-mark {
@@ -875,46 +757,6 @@ const year = new Date().getFullYear();
         pointer-events: none;
       }
 
-      .site-footer .socials {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        gap: 1.1rem;
-      }
-
-      .site-footer .socials a,
-      .site-footer .socials button {
-        display: inline-flex;
-        align-items: center;
-        text-decoration: none;
-        transition: opacity 0.15s ease, transform 0.15s ease;
-        opacity: 0.92;
-      }
-
-      .site-footer .socials button {
-        background: none;
-        border: none;
-        padding: 0;
-        margin: 0;
-        cursor: pointer;
-        font: inherit;
-        color: inherit;
-      }
-
-      .site-footer .socials a:hover,
-      .site-footer .socials button:hover {
-        opacity: 1;
-        transform: translateY(-1px);
-      }
-
-      .site-footer .socials svg {
-        width: 22px;
-        height: 22px;
-        display: block;
-      }
-
       .toast {
         position: fixed;
         bottom: 1.5rem;
@@ -939,12 +781,6 @@ const year = new Date().getFullYear();
         opacity: 1;
         transform: translateX(-50%) translateY(0);
       }
-
-      .social-email     { color: var(--ink-soft); }
-      .social-linkedin  { color: #0A66C2; }
-      .social-github    { color: #1a1816; }
-      .social-tryhackme { color: #88CC14; }
-      .social-cv        { color: var(--midnight); }
 
       .menu-button {
         display: none;
@@ -1127,33 +963,8 @@ const year = new Date().getFullYear();
 
       .menu-foot {
         margin-top: auto;
-        padding-top: 1.1rem;
+        padding-top: 1.4rem;
         border-top: 1px solid var(--rule);
-        display: flex;
-        flex-direction: column;
-        gap: 1.4rem;
-      }
-
-      .theme-toggle--labelled {
-        min-height: 44px;
-        margin: -0.6rem 0;
-        padding: 0;
-        gap: 0.6rem;
-        font-family: var(--font-serif);
-        font-size: 0.95rem;
-        color: var(--cloudy-deep);
-      }
-
-      .theme-toggle--labelled svg {
-        width: 16px;
-        height: 16px;
-      }
-
-      .menu-foot .signature-ar {
-        display: block;
-        height: 26px;
-        width: auto;
-        opacity: 0.85;
       }
 
       @media (max-width: 860px) {
@@ -1181,6 +992,25 @@ const year = new Date().getFullYear();
         .signature-divider {
           width: 12px;
           height: 32px;
+        }
+
+        .brand-actions {
+          display: flex;
+          align-items: center;
+          gap: 0.15rem;
+        }
+
+        .brand-actions :global(.header-theme) {
+          width: 44px;
+          height: 44px;
+          justify-content: center;
+          padding: 0;
+          color: var(--ink-soft);
+        }
+
+        .brand-actions :global(.header-theme svg) {
+          width: 18px;
+          height: 18px;
         }
 
         .menu-button {

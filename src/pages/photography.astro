@@ -1,6 +1,5 @@
 ---
 import MinimalLayout from "@/layouts/MinimalLayout.astro";
-import DappledLight from "@/components/DappledLight.astro";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -74,7 +73,6 @@ const categories = [
 ---
 
 <MinimalLayout title="Photography – Abdulla AlBassam" active="photography">
-  <DappledLight slot="aside-right" variant="panel" />
   <img slot="sidebar-inline" src="/camera.webp" alt="" class="sidebar-cartoon" />
 
   <section class="photography" data-state="closed">
@@ -181,6 +179,7 @@ const categories = [
 
 <script>
   const stage = document.querySelector<HTMLElement>(".photography")!;
+  const gallery = stage.querySelector<HTMLElement>(".gallery")!;
   const stacks = Array.from(document.querySelectorAll<HTMLButtonElement>(".stack"));
   const fans = Array.from(document.querySelectorAll<HTMLDivElement>(".fan"));
   const lb = document.getElementById("lightbox") as HTMLDivElement;
@@ -193,15 +192,24 @@ const categories = [
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   let activeCat: string | null = null;
+  let closedHeight = 0;
+  let closeFrame = 0;
+  let finishClose: (() => void) | null = null;
   let currentSources: string[] = [];
   let currentIndex = 0;
 
-  function openCategory(cat: string) {
+  // Safari paints a focus ring on any scripted focus(), so focus only moves
+  // when the trigger itself was reached by keyboard.
+  function openCategory(cat: string, byKeyboard: boolean) {
     if (activeCat === cat) return;
     const stack = stacks.find((s) => s.dataset.cat === cat);
     const fan = fans.find((f) => f.dataset.cat === cat);
     if (!stack || !fan) return;
 
+    // Re-opening mid-collapse: settle the previous close first so the closed
+    // height is measured from a resting layout.
+    if (finishClose) finishClose();
+    closedHeight = gallery.offsetHeight;
     const stackRect = stack.getBoundingClientRect();
     const stackCx = stackRect.left + stackRect.width / 2;
     const stackCy = stackRect.top + stackRect.height / 2;
@@ -224,38 +232,71 @@ const categories = [
     requestAnimationFrame(() => {
       fan.dataset.state = "open";
     });
-    fan.querySelector<HTMLButtonElement>(".fan-back")?.focus({ preventScroll: true });
+    if (byKeyboard) fan.querySelector<HTMLButtonElement>(".fan-back")?.focus({ preventScroll: true });
     activeCat = cat;
   }
 
-  function closeCategory() {
+  function closeCategory(byKeyboard: boolean) {
     if (!activeCat) return;
     const fan = fans.find((f) => f.dataset.cat === activeCat);
     const stack = stacks.find((s) => s.dataset.cat === activeCat);
     if (!fan || !stack) return;
 
+    // The fan is in flow, so hiding it would collapse the page in one frame
+    // and yank the footer (and any scroll offset) up under the stacks. Instead
+    // the gallery is pinned at its open height and eased back to the height it
+    // had before the fan opened, alongside the crossfade. The scroll offset is
+    // eased down in the same loop: the browser only clamps it once the layout
+    // settles, which would otherwise be a snap at the very end.
+    const openHeight = gallery.offsetHeight;
+    const startY = window.scrollY;
+    const closedMaxScroll = Math.max(
+      0,
+      document.documentElement.scrollHeight - (openHeight - closedHeight) - window.innerHeight,
+    );
+    const targetY = Math.min(startY, closedMaxScroll);
+    gallery.style.height = `${openHeight}px`;
+
     fan.dataset.state = "closing";
     stack.setAttribute("aria-expanded", "false");
     stage.dataset.state = "closed";
 
-    const wait = prefersReducedMotion ? 0 : 320;
-    setTimeout(() => {
+    finishClose = () => {
+      cancelAnimationFrame(closeFrame);
+      closeFrame = 0;
+      finishClose = null;
       delete fan.dataset.state;
       fan.hidden = true;
-    }, wait);
+      gallery.style.height = "";
+      if (targetY !== startY) window.scrollTo({ top: targetY, behavior: "instant" });
+    };
+
+    const duration = prefersReducedMotion ? 0 : 320;
+    const t0 = performance.now();
+    const tick = (now: number) => {
+      const p = duration ? Math.min(1, (now - t0) / duration) : 1;
+      const e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; // ease-in-out
+      gallery.style.height = `${openHeight + (closedHeight - openHeight) * e}px`;
+      if (targetY !== startY) window.scrollTo({ top: startY + (targetY - startY) * e, behavior: "instant" });
+      if (p < 1) closeFrame = requestAnimationFrame(tick);
+      else finishClose?.();
+    };
+    closeFrame = requestAnimationFrame(tick);
 
     // Return focus to the pile that was opened before the fan is hidden under it.
-    stack.focus({ preventScroll: true });
+    if (byKeyboard) stack.focus({ preventScroll: true });
     activeCat = null;
   }
 
   stacks.forEach((stack) => {
-    stack.addEventListener("click", () => openCategory(stack.dataset.cat!));
+    stack.addEventListener("click", () =>
+      openCategory(stack.dataset.cat!, stack.matches(":focus-visible")),
+    );
   });
 
   fans.forEach((fan) => {
     const back = fan.querySelector<HTMLButtonElement>(".fan-back");
-    back?.addEventListener("click", () => closeCategory());
+    back?.addEventListener("click", () => closeCategory(back.matches(":focus-visible")));
 
     const cells = Array.from(fan.querySelectorAll<HTMLButtonElement>(".cell"));
     cells.forEach((cell, i) => {
@@ -301,7 +342,7 @@ const categories = [
       else if (e.key === "ArrowRight") step(1);
       return;
     }
-    if (e.key === "Escape" && activeCat) closeCategory();
+    if (e.key === "Escape" && activeCat) closeCategory(true);
   });
 </script>
 

@@ -70,19 +70,19 @@ import LinkModal from "@/components/LinkModal.astro";
     <h2 class="ledger-heading">Education</h2>
     <ul class="ledger-list">
       <li class="ledger-entry">
-        <p class="ledger-when">2023 – 2026<span class="ledger-note">First Class Honours.</span></p>
+        <p class="ledger-when">2023 – 2026</p>
         <p class="ledger-title">
           <span>BSc (Hons) Networks &amp; Cyber Security</span> <span class="ledger-org">Northumbria University</span>
         </p>
       </li>
       <li class="ledger-entry">
-        <p class="ledger-when">2022 – 2023<span class="ledger-note">Grade: 2:1.</span></p>
+        <p class="ledger-when">2022 – 2023</p>
         <p class="ledger-title">
           <span>Foundation Year: Economics &amp; Mathematics</span> <span class="ledger-org">King's College London</span>
         </p>
       </li>
       <li class="ledger-entry">
-        <p class="ledger-when">2008 – 2022<span class="ledger-note">Grade: 98%</span></p>
+        <p class="ledger-when">2008 – 2022</p>
         <p class="ledger-title">
           <span>American Diploma with Honours</span> <span class="ledger-org">Modern Knowledge Schools, Bahrain</span>
         </p>
@@ -131,14 +131,13 @@ import LinkModal from "@/components/LinkModal.astro";
     }
   }
 
-  /* Heading: small italic sitting on a hairline that runs to the column edge */
+  /* Heading: small, sitting on a hairline that runs to the column edge */
   .ledger-heading {
     display: flex;
     align-items: baseline;
     gap: 0.9rem;
     margin: 2.25rem 0 0.7rem;
     font-family: var(--font-serif);
-    font-style: italic;
     font-weight: 400;
     font-size: 1.1rem;
     line-height: 1.2;
@@ -183,12 +182,6 @@ import LinkModal from "@/components/LinkModal.astro";
     white-space: nowrap;
   }
 
-  /* Grade as a sidenote under the date */
-  .ledger-note {
-    display: block;
-    font-style: italic;
-  }
-
   .ledger-title {
     font-size: 0.92rem;
     line-height: 1.45;
@@ -222,15 +215,6 @@ import LinkModal from "@/components/LinkModal.astro";
     .ledger-when {
       white-space: normal;
       margin-bottom: 0.05rem;
-    }
-
-    .ledger-note {
-      display: inline;
-    }
-
-    .ledger-note::before {
-      content: " · ";
-      font-style: normal;
     }
 
     .ledger-title > span:not(:last-child)::after {

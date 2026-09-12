@@ -1,0 +1,79 @@
+---
+/**
+ * Icon-only light/dark switch. Every instance carries [data-theme-toggle];
+ * MinimalLayout wires the click handler and keeps aria state in sync.
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<button
+  class:list={["theme-toggle", className]}
+  type="button"
+  data-theme-toggle
+  aria-label="Switch to light mode"
+  aria-pressed="true"
+  title="Toggle theme"
+>
+  <span class="theme-icon" aria-hidden="true">
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+    </svg>
+  </span>
+</button>
+
+<style>
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    padding: 0.15rem 0;
+    margin: 0;
+    background: none;
+    border: none;
+    color: var(--cloudy-deep);
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+
+  .theme-toggle:hover {
+    color: var(--midnight);
+  }
+
+  .theme-toggle:focus-visible {
+    outline: 2px solid var(--midnight);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .theme-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .theme-toggle svg {
+    width: 15px;
+    height: 15px;
+    display: block;
+  }
+
+  .icon-sun {
+    display: none;
+  }
+
+  :global(html.dark) .icon-moon {
+    display: none;
+  }
+
+  :global(html.dark) .icon-sun {
+    display: block;
+  }
+</style>
