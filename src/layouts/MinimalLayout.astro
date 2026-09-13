@@ -236,6 +236,7 @@ const year = new Date().getFullYear();
             />
           </svg>
         </span>
+        <span class="visitor" data-visitor hidden></span>
       </p>
       <div class="socials-wrap">
         <svg class="socials-arrow" viewBox="0 0 90 56" aria-hidden="true">
@@ -263,6 +264,37 @@ const year = new Date().getFullYear();
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
     <script>
+      // Live visitor counter (abacus, a free key/value hit counter).
+      // Counts once per browser session; later pages only read the value.
+      const visitorEl = document.querySelector<HTMLElement>("[data-visitor]");
+      if (visitorEl) {
+        const counter = "https://abacus.jasoncameron.dev";
+        const key = "abdullaalbassam-com/visits";
+        let seen = false;
+        try {
+          seen = sessionStorage.getItem("visitor-counted") === "1";
+        } catch (e) {}
+        fetch(`${counter}/${seen ? "get" : "hit"}/${key}`)
+          .then((r) => r.json())
+          .then(({ value }: { value: number }) => {
+            if (!Number.isInteger(value)) return;
+            try {
+              sessionStorage.setItem("visitor-counted", "1");
+            } catch (e) {}
+            const mod100 = value % 100;
+            const mod10 = value % 10;
+            const suffix =
+              mod100 >= 11 && mod100 <= 13 ? "th"
+              : mod10 === 1 ? "st"
+              : mod10 === 2 ? "nd"
+              : mod10 === 3 ? "rd"
+              : "th";
+            visitorEl.textContent = `You're the ${value.toLocaleString("en-GB")}${suffix} person to land here.`;
+            visitorEl.hidden = false;
+          })
+          .catch(() => {});
+      }
+
       const root = document.documentElement;
       // One toggle per surface: sidebar, mobile header and the open menu.
       const themeToggles = document.querySelectorAll<HTMLButtonElement>("[data-theme-toggle]");
@@ -696,6 +728,15 @@ const year = new Date().getFullYear();
 
       .site-footer .copy {
         margin: 0;
+      }
+
+      .site-footer .visitor {
+        display: block;
+        margin-top: 0.35rem;
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-size: 0.78rem;
+        color: var(--cloudy-deep);
       }
 
       .site-footer .sep {
