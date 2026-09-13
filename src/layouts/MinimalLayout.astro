@@ -281,16 +281,37 @@ const year = new Date().getFullYear();
             try {
               sessionStorage.setItem("visitor-counted", "1");
             } catch (e) {}
-            const mod100 = value % 100;
-            const mod10 = value % 10;
-            const suffix =
-              mod100 >= 11 && mod100 <= 13 ? "th"
-              : mod10 === 1 ? "st"
-              : mod10 === 2 ? "nd"
-              : mod10 === 3 ? "rd"
-              : "th";
-            visitorEl.textContent = `You are the ${value.toLocaleString("en-GB")}${suffix} person to see this! :)`;
+            const ordinal = (n: number) => {
+              const mod100 = n % 100;
+              const mod10 = n % 10;
+              const suffix =
+                mod100 >= 11 && mod100 <= 13 ? "th"
+                : mod10 === 1 ? "st"
+                : mod10 === 2 ? "nd"
+                : mod10 === 3 ? "rd"
+                : "th";
+              return `${n.toLocaleString("en-GB")}${suffix}`;
+            };
+            // Odometer: the previous number is shown first and rolls up
+            // to the visitor's own once the footer scrolls into view.
+            const roll = document.createElement("span");
+            roll.className = "visitor-roll";
+            for (const n of [Math.max(value - 1, 0), value]) {
+              const line = document.createElement("span");
+              line.textContent = ordinal(n);
+              roll.append(line);
+            }
+            const num = document.createElement("span");
+            num.className = "visitor-num";
+            num.append(roll);
+            visitorEl.replaceChildren("You are the ", num, " person to see this! :)");
             visitorEl.hidden = false;
+            const observer = new IntersectionObserver((entries) => {
+              if (!entries.some((e) => e.isIntersecting)) return;
+              observer.disconnect();
+              setTimeout(() => roll.classList.add("is-live"), 500);
+            });
+            observer.observe(visitorEl);
           })
           .catch(() => {});
       }
@@ -743,6 +764,30 @@ const year = new Date().getFullYear();
         font-style: italic;
         font-size: 0.78rem;
         color: var(--cloudy-deep);
+      }
+
+      .site-footer :global(.visitor-num) {
+        display: inline-block;
+        vertical-align: bottom;
+        height: 1.25em;
+        line-height: 1.25em;
+        overflow: hidden;
+      }
+
+      .site-footer :global(.visitor-roll) {
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+      }
+
+      .site-footer :global(.visitor-roll.is-live) {
+        transform: translateY(-50%);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .site-footer :global(.visitor-roll) {
+          transition: none;
+        }
       }
 
       .site-footer .sep {
