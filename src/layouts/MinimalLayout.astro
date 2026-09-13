@@ -75,7 +75,7 @@ const year = new Date().getFullYear();
     <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
-    <script defer src="https://cloud.umami.is/script.js" data-website-id="8c977691-5137-4260-bd4b-9abd81c35a1a"></script>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="6c39e7c8-43d5-47a8-931e-8cb32be0dc68"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -525,9 +525,15 @@ const year = new Date().getFullYear();
     </style>
 
     <style>
+      /* Stays pinned while scrolling so the home link (and, on mobile,
+         the menu) is always reachable. Sits under the menu overlay. */
       .brand {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: var(--pampas);
         text-align: center;
-        padding: 3rem 1.5rem 0;
+        padding: 3rem 1.5rem 0.75rem;
       }
 
       /* Indented to sit on the nav's dot column. The toggle is a child
@@ -604,7 +610,7 @@ const year = new Date().getFullYear();
 
       .sidebar {
         position: sticky;
-        top: 3rem;
+        top: 7.5rem; /* clears the sticky header */
         align-self: start;
         z-index: 2;
         background: var(--pampas);
@@ -1013,7 +1019,7 @@ const year = new Date().getFullYear();
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 1.25rem 1.25rem 0;
+          padding: 1.25rem 1.25rem 0.75rem;
           text-align: left;
         }
 
