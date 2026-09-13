@@ -289,7 +289,7 @@ const year = new Date().getFullYear();
               : mod10 === 2 ? "nd"
               : mod10 === 3 ? "rd"
               : "th";
-            visitorEl.textContent = `You're the ${value.toLocaleString("en-GB")}${suffix} person to land here.`;
+            visitorEl.textContent = `You are the ${value.toLocaleString("en-GB")}${suffix} person to see this! :)`;
             visitorEl.hidden = false;
           })
           .catch(() => {});
