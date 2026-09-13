@@ -179,7 +179,6 @@ const categories = [
 
 <script>
   const stage = document.querySelector<HTMLElement>(".photography")!;
-  const gallery = stage.querySelector<HTMLElement>(".gallery")!;
   const stacks = Array.from(document.querySelectorAll<HTMLButtonElement>(".stack"));
   const fans = Array.from(document.querySelectorAll<HTMLDivElement>(".fan"));
   const lb = document.getElementById("lightbox") as HTMLDivElement;
@@ -189,11 +188,9 @@ const categories = [
   const prevBtn = lb.querySelector<HTMLButtonElement>(".lb-prev")!;
   const nextBtn = lb.querySelector<HTMLButtonElement>(".lb-next")!;
 
-  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
   let activeCat: string | null = null;
-  let closedHeight = 0;
-  let closeFrame = 0;
+  let preOpenScroll = 0;
+  let closeTimer = 0;
   let finishClose: (() => void) | null = null;
   let currentSources: string[] = [];
   let currentIndex = 0;
@@ -206,10 +203,10 @@ const categories = [
     const fan = fans.find((f) => f.dataset.cat === cat);
     if (!stack || !fan) return;
 
-    // Re-opening mid-collapse: settle the previous close first so the closed
-    // height is measured from a resting layout.
+    // Re-opening mid-collapse: settle the previous close first so the stack is
+    // measured against a resting layout.
     if (finishClose) finishClose();
-    closedHeight = gallery.offsetHeight;
+    preOpenScroll = window.scrollY;
     const stackRect = stack.getBoundingClientRect();
     const stackCx = stackRect.left + stackRect.width / 2;
     const stackCy = stackRect.top + stackRect.height / 2;
@@ -242,46 +239,34 @@ const categories = [
     const stack = stacks.find((s) => s.dataset.cat === activeCat);
     if (!fan || !stack) return;
 
-    // The fan is in flow, so hiding it would collapse the page in one frame
-    // and yank the footer (and any scroll offset) up under the stacks. Instead
-    // the gallery is pinned at its open height and eased back to the height it
-    // had before the fan opened, alongside the crossfade. The scroll offset is
-    // eased down in the same loop: the browser only clamps it once the layout
-    // settles, which would otherwise be a snap at the very end.
-    const openHeight = gallery.offsetHeight;
-    const startY = window.scrollY;
-    const closedMaxScroll = Math.max(
-      0,
-      document.documentElement.scrollHeight - (openHeight - closedHeight) - window.innerHeight,
-    );
-    const targetY = Math.min(startY, closedMaxScroll);
-    gallery.style.height = `${openHeight}px`;
-
+    // The fan is in flow, so hiding it collapses the page by its full height.
+    // Animating that collapse sweeps the footer up through the viewport and
+    // relays out the whole grid every frame. Instead the fan is frozen where it
+    // sits (fixed, at the rect it already occupies) and fades out there, while
+    // the layout underneath returns to the closed page in a single frame and the
+    // scroll offset goes back to where it was before the fan opened. Nothing in
+    // the page moves: it is the view the stacks were clicked from.
+    const rect = fan.getBoundingClientRect();
+    fan.style.top = `${rect.top}px`;
+    fan.style.left = `${rect.left}px`;
+    fan.style.width = `${rect.width}px`;
     fan.dataset.state = "closing";
     stack.setAttribute("aria-expanded", "false");
     stage.dataset.state = "closed";
+    window.scrollTo({ top: preOpenScroll, behavior: "instant" });
 
     finishClose = () => {
-      cancelAnimationFrame(closeFrame);
-      closeFrame = 0;
+      clearTimeout(closeTimer);
       finishClose = null;
       delete fan.dataset.state;
       fan.hidden = true;
-      gallery.style.height = "";
-      if (targetY !== startY) window.scrollTo({ top: targetY, behavior: "instant" });
+      fan.style.top = "";
+      fan.style.left = "";
+      fan.style.width = "";
     };
-
-    const duration = prefersReducedMotion ? 0 : 320;
-    const t0 = performance.now();
-    const tick = (now: number) => {
-      const p = duration ? Math.min(1, (now - t0) / duration) : 1;
-      const e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; // ease-in-out
-      gallery.style.height = `${openHeight + (closedHeight - openHeight) * e}px`;
-      if (targetY !== startY) window.scrollTo({ top: startY + (targetY - startY) * e, behavior: "instant" });
-      if (p < 1) closeFrame = requestAnimationFrame(tick);
-      else finishClose?.();
-    };
-    closeFrame = requestAnimationFrame(tick);
+    // Long enough for the crossfade in the stylesheet, which reduced motion
+    // shortens to an opacity-only fade of its own.
+    closeTimer = window.setTimeout(finishClose, 280);
 
     // Return focus to the pile that was opened before the fan is hidden under it.
     if (byKeyboard) stack.focus({ preventScroll: true });
@@ -490,6 +475,15 @@ const categories = [
 
   .fan[hidden] {
     display: none;
+  }
+
+  /* Pinned out of flow for the crossfade: the page behind it is already back to
+     its closed height, so this only has to fade where it stands. Below the
+     stacks (z-index 2) so they come up through it, above the footer. */
+  .fan[data-state="closing"] {
+    position: fixed;
+    z-index: 1;
+    pointer-events: none;
   }
 
   .fan-head {
