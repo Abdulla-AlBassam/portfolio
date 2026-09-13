@@ -1,6 +1,5 @@
 ---
 import MinimalLayout from "@/layouts/MinimalLayout.astro";
-import DappledLight from "@/components/DappledLight.astro";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -74,7 +73,6 @@ const categories = [
 ---
 
 <MinimalLayout title="Photography – Abdulla AlBassam" active="photography">
-  <DappledLight slot="header" />
   <img slot="sidebar-inline" src="/camera.webp" alt="" class="sidebar-cartoon" />
 
   <section class="photography" data-state="closed">
@@ -121,16 +119,20 @@ const categories = [
 
       {
         categories.map((cat) => (
-          <div class="fan" id={`fan-${cat.id}`} data-cat={cat.id} hidden>
+          <div
+            class="fan"
+            id={`fan-${cat.id}`}
+            data-cat={cat.id}
+            role="region"
+            aria-label={`${cat.label} photos`}
+            hidden
+          >
             <div class="fan-head">
-              <button class="fan-close" type="button">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <button class="fan-back" type="button" aria-label="Back to the photo stacks">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <polyline points="15 18 9 12 15 6" />
                 </svg>
-                <span>Back</span>
               </button>
-              <span class="fan-title">{cat.label}</span>
-              <span class="fan-spacer" />
             </div>
             <div class="grid">
               {cat.photos.map((p, i) => (
@@ -177,6 +179,7 @@ const categories = [
 
 <script>
   const stage = document.querySelector<HTMLElement>(".photography")!;
+  const gallery = stage.querySelector<HTMLElement>(".gallery")!;
   const stacks = Array.from(document.querySelectorAll<HTMLButtonElement>(".stack"));
   const fans = Array.from(document.querySelectorAll<HTMLDivElement>(".fan"));
   const lb = document.getElementById("lightbox") as HTMLDivElement;
@@ -189,15 +192,24 @@ const categories = [
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   let activeCat: string | null = null;
+  let closedHeight = 0;
+  let closeFrame = 0;
+  let finishClose: (() => void) | null = null;
   let currentSources: string[] = [];
   let currentIndex = 0;
 
-  function openCategory(cat: string) {
+  // Safari paints a focus ring on any scripted focus(), so focus only moves
+  // when the trigger itself was reached by keyboard.
+  function openCategory(cat: string, byKeyboard: boolean) {
     if (activeCat === cat) return;
     const stack = stacks.find((s) => s.dataset.cat === cat);
     const fan = fans.find((f) => f.dataset.cat === cat);
     if (!stack || !fan) return;
 
+    // Re-opening mid-collapse: settle the previous close first so the closed
+    // height is measured from a resting layout.
+    if (finishClose) finishClose();
+    closedHeight = gallery.offsetHeight;
     const stackRect = stack.getBoundingClientRect();
     const stackCx = stackRect.left + stackRect.width / 2;
     const stackCy = stackRect.top + stackRect.height / 2;
@@ -220,35 +232,71 @@ const categories = [
     requestAnimationFrame(() => {
       fan.dataset.state = "open";
     });
+    if (byKeyboard) fan.querySelector<HTMLButtonElement>(".fan-back")?.focus({ preventScroll: true });
     activeCat = cat;
   }
 
-  function closeCategory() {
+  function closeCategory(byKeyboard: boolean) {
     if (!activeCat) return;
     const fan = fans.find((f) => f.dataset.cat === activeCat);
     const stack = stacks.find((s) => s.dataset.cat === activeCat);
     if (!fan || !stack) return;
 
+    // The fan is in flow, so hiding it would collapse the page in one frame
+    // and yank the footer (and any scroll offset) up under the stacks. Instead
+    // the gallery is pinned at its open height and eased back to the height it
+    // had before the fan opened, alongside the crossfade. The scroll offset is
+    // eased down in the same loop: the browser only clamps it once the layout
+    // settles, which would otherwise be a snap at the very end.
+    const openHeight = gallery.offsetHeight;
+    const startY = window.scrollY;
+    const closedMaxScroll = Math.max(
+      0,
+      document.documentElement.scrollHeight - (openHeight - closedHeight) - window.innerHeight,
+    );
+    const targetY = Math.min(startY, closedMaxScroll);
+    gallery.style.height = `${openHeight}px`;
+
     fan.dataset.state = "closing";
     stack.setAttribute("aria-expanded", "false");
     stage.dataset.state = "closed";
 
-    const wait = prefersReducedMotion ? 0 : 320;
-    setTimeout(() => {
+    finishClose = () => {
+      cancelAnimationFrame(closeFrame);
+      closeFrame = 0;
+      finishClose = null;
       delete fan.dataset.state;
       fan.hidden = true;
-    }, wait);
+      gallery.style.height = "";
+      if (targetY !== startY) window.scrollTo({ top: targetY, behavior: "instant" });
+    };
 
+    const duration = prefersReducedMotion ? 0 : 320;
+    const t0 = performance.now();
+    const tick = (now: number) => {
+      const p = duration ? Math.min(1, (now - t0) / duration) : 1;
+      const e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; // ease-in-out
+      gallery.style.height = `${openHeight + (closedHeight - openHeight) * e}px`;
+      if (targetY !== startY) window.scrollTo({ top: startY + (targetY - startY) * e, behavior: "instant" });
+      if (p < 1) closeFrame = requestAnimationFrame(tick);
+      else finishClose?.();
+    };
+    closeFrame = requestAnimationFrame(tick);
+
+    // Return focus to the pile that was opened before the fan is hidden under it.
+    if (byKeyboard) stack.focus({ preventScroll: true });
     activeCat = null;
   }
 
   stacks.forEach((stack) => {
-    stack.addEventListener("click", () => openCategory(stack.dataset.cat!));
+    stack.addEventListener("click", () =>
+      openCategory(stack.dataset.cat!, stack.matches(":focus-visible")),
+    );
   });
 
   fans.forEach((fan) => {
-    const close = fan.querySelector<HTMLButtonElement>(".fan-close");
-    close?.addEventListener("click", () => closeCategory());
+    const back = fan.querySelector<HTMLButtonElement>(".fan-back");
+    back?.addEventListener("click", () => closeCategory(back.matches(":focus-visible")));
 
     const cells = Array.from(fan.querySelectorAll<HTMLButtonElement>(".cell"));
     cells.forEach((cell, i) => {
@@ -294,7 +342,7 @@ const categories = [
       else if (e.key === "ArrowRight") step(1);
       return;
     }
-    if (e.key === "Escape" && activeCat) closeCategory();
+    if (e.key === "Escape" && activeCat) closeCategory(true);
   });
 </script>
 
@@ -312,8 +360,9 @@ const categories = [
   }
 
   .lede {
+    font-family: var(--font-serif);
     color: var(--cloudy-deep);
-    font-size: 0.88rem;
+    font-size: 1rem;
     margin-bottom: 3rem;
   }
 
@@ -357,7 +406,7 @@ const categories = [
   }
 
   .stack:focus-visible .stack-cards {
-    outline: 2px solid var(--crail);
+    outline: 2px solid var(--midnight);
     outline-offset: 12px;
     border-radius: 4px;
   }
@@ -419,17 +468,18 @@ const categories = [
   }
 
   .stack-label {
-    font-family: "Montserrat", sans-serif;
-    font-size: 0.8rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 0.95rem;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    text-transform: none;
     color: var(--cloudy-deep);
     transition: color 200ms ease;
   }
 
   .stack:hover .stack-label {
-    color: var(--crail);
+    color: var(--midnight);
   }
 
   /* ------------------ fan-out ------------------ */
@@ -445,8 +495,9 @@ const categories = [
   .fan-head {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1.5rem;
+    height: 44px;
+    /* pulls the chevron up towards the lede; the grid starts 0.75rem below */
+    margin: -0.5rem 0 0.75rem;
     opacity: 0;
     transform: translateY(-6px);
     transition: opacity 300ms ease 200ms, transform 300ms ease 200ms;
@@ -463,42 +514,40 @@ const categories = [
     transition: opacity 200ms ease, transform 200ms ease;
   }
 
-  .fan-close {
+  .fan-back {
     all: unset;
+    box-sizing: border-box;
+    width: 44px;
+    height: 44px;
+    /* the glyph is 20px centred in 44px, so -12px puts its left edge on the
+       column edge */
+    margin-left: -12px;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 50%;
+    color: var(--cloudy-deep);
     cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-family: "Montserrat", sans-serif;
-    font-size: 0.78rem;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    color: var(--cloudy-deep);
-    padding: 0.4rem 0.6rem 0.4rem 0;
-    transition: color 180ms ease;
+    transition: color 180ms ease, transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  .fan-close:hover {
-    color: var(--crail);
+  .fan-back svg {
+    width: 20px;
+    height: 20px;
+    display: block;
   }
 
-  .fan-close:focus-visible {
-    outline: 2px solid var(--crail);
-    outline-offset: 4px;
-    border-radius: 2px;
+  .fan-back:hover {
+    color: var(--midnight);
+    transform: translateX(-2px);
   }
 
-  .fan-title {
-    font-family: "Montserrat", sans-serif;
-    font-size: 0.8rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--cloudy-deep);
+  .fan-back:active {
+    transform: translateX(-3px);
   }
 
-  .fan-spacer {
-    width: 4rem;
+  .fan-back:focus-visible {
+    outline: 2px solid var(--midnight);
+    outline-offset: 2px;
   }
 
   .grid {
@@ -549,11 +598,17 @@ const categories = [
   }
 
   .cell:focus-visible {
-    outline: 2px solid var(--crail);
+    outline: 2px solid var(--midnight);
     outline-offset: 2px;
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .fan-back,
+    .fan-back:hover,
+    .fan-back:active {
+      transform: none;
+    }
+
     .stacks,
     .stack-card,
     .fan-head,
@@ -661,7 +716,7 @@ const categories = [
     bottom: 1.5rem;
     left: 50%;
     transform: translateX(-50%);
-    font-family: "Montserrat", sans-serif;
+    font-family: var(--font-serif);
     font-size: 0.78rem;
     font-weight: 500;
     letter-spacing: 0.04em;

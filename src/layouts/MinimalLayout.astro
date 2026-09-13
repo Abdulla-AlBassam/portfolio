@@ -1,10 +1,16 @@
 ---
+import Socials from "@/components/Socials.astro";
+import ThemeToggle from "@/components/ThemeToggle.astro";
+
 interface Props {
   title: string;
   description?: string;
-  active: "about" | "projects" | "photography" | "skills";
+  active: "about" | "projects" | "photography" | "skills" | "thoughts";
   sidebarTop?: string;
   sidebarBottom?: string;
+  /** Absolute URL of a share image (og:image). */
+  image?: string;
+  ogType?: "website" | "article";
 }
 
 const {
@@ -13,12 +19,15 @@ const {
   active,
   sidebarTop = "18rem",
   sidebarBottom = "38rem",
+  image,
+  ogType = "website",
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 const nav = [
   { id: "about", label: "About", href: "/" },
+  { id: "thoughts", label: "Thoughts", href: "/thoughts" },
   { id: "projects", label: "Projects", href: "/projects" },
   { id: "skills", label: "Skills & Certs", href: "/skills" },
   { id: "photography", label: "Photography", href: "/photography" },
@@ -35,11 +44,13 @@ const year = new Date().getFullYear();
     <meta name="generator" content={Astro.generator} />
     <script is:inline>
       (() => {
+        // Dark is the default; the page only goes light when the visitor has
+        // chosen it. The class is added first so a storage failure still
+        // lands on dark. System preference is intentionally ignored.
+        document.documentElement.classList.add("dark");
         try {
-          // Every visit starts light; dark lasts only for the current visit.
-          // System preference is intentionally ignored.
-          if (sessionStorage.getItem("theme") === "dark") {
-            document.documentElement.classList.add("dark");
+          if (localStorage.getItem("theme") === "light") {
+            document.documentElement.classList.remove("dark");
           }
         } catch (e) {}
       })();
@@ -47,10 +58,18 @@ const year = new Date().getFullYear();
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
+    {image && <meta property="og:image" content={image} />}
+    {image && <meta property="og:image:width" content="1200" />}
+    {image && <meta property="og:image:height" content="627" />}
+    <meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {image && <meta name="twitter:image" content={image} />}
+    <slot name="head" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
     <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
@@ -61,70 +80,102 @@ const year = new Date().getFullYear();
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&display=swap"
       rel="stylesheet"
     />
   </head>
   <body>
     <header class="brand">
-      {
-        Astro.slots.has("header") ? (
-          <slot name="header" />
-        ) : (
-          <h1 class="signature-mark">
-            <a href="/" class="signature-link" aria-label="Home – Abdulla AlBassam">
-              <img
-                src="/signature.webp"
-                alt="Abdulla AlBassam"
-                class="signature signature-en"
-                width="1288"
-                height="273"
-              />
-              <svg class="signature-divider" viewBox="0 0 24 56" aria-hidden="true">
-                <path
-                  d="M 14 4 C 6 12, 18 20, 10 28 C 4 36, 16 44, 8 52"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.6"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              <img
-                src="/signature-ar.webp"
-                alt="عبدالله البسام"
-                class="signature signature-ar"
-                width="1387"
-                height="211"
-              />
-            </a>
-          </h1>
-        )
-      }
+      <h1 class="signature-mark">
+        <a href="/" class="signature-link" aria-label="Home – Abdulla AlBassam">
+          <img
+            src="/signature.webp"
+            alt="Abdulla AlBassam"
+            class="signature signature-en"
+            width="1288"
+            height="273"
+          />
+          <svg class="signature-divider" viewBox="0 0 24 56" aria-hidden="true">
+            <path
+              d="M 14 4 C 6 12, 18 20, 10 28 C 4 36, 16 44, 8 52"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <img
+            src="/signature-ar.webp"
+            alt="عبدالله البسام"
+            class="signature signature-ar"
+            width="1387"
+            height="211"
+          />
+        </a>
+      </h1>
+
+      <div class="brand-actions">
+        <ThemeToggle class="header-theme" />
+        <button
+          class="menu-button"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-menu"
+          aria-label="Open menu"
+        >
+          <span class="menu-lines" aria-hidden="true"></span>
+        </button>
+      </div>
     </header>
+
+    <div class="menu" id="site-menu" role="dialog" aria-modal="true" aria-label="Site menu" hidden>
+      <div class="menu-top">
+        <a href="/" class="signature-link" aria-label="Home – Abdulla AlBassam">
+          <img
+            src="/signature.webp"
+            alt="Abdulla AlBassam"
+            class="signature signature-en"
+            width="1288"
+            height="273"
+          />
+        </a>
+        <div class="brand-actions">
+          <ThemeToggle class="header-theme" />
+          <button class="menu-close" type="button" aria-label="Close menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+              <line x1="5" y1="5" x2="19" y2="19" />
+              <line x1="19" y1="5" x2="5" y2="19" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <nav class="menu-nav" aria-label="Sections">
+        <ul>
+          {
+            nav.map((item) => (
+              <li class:list={[{ active: item.id === active }]}>
+                <a href={item.href} aria-current={item.id === active ? "page" : undefined}>
+                  <span class="dot" aria-hidden="true" />
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div class="menu-foot">
+        <Socials />
+      </div>
+    </div>
 
     <div class="frame">
       <aside class="sidebar" aria-label="Section navigation">
         <ul>
           <li class="theme-li">
-            <button
-              class="theme-toggle"
-              type="button"
-              id="theme-toggle"
-              aria-label="Switch to dark mode"
-              aria-pressed="false"
-              title="Toggle theme"
-            >
-              <span class="theme-icon" aria-hidden="true">
-                <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                </svg>
-                <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="4" />
-                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-                </svg>
-              </span>
-            </button>
+            <ThemeToggle class="sidebar-theme" />
           </li>
           {
             nav.map((item) => (
@@ -151,6 +202,14 @@ const year = new Date().getFullYear();
       <div class="sidebar-extra-slot sidebar-extra-bottom" style={`--extra-offset: ${sidebarBottom}`}>
         <slot name="sidebar-extra-bottom" />
       </div>
+
+      {
+        Astro.slots.has("aside-right") && (
+          <div class="aside-right-slot">
+            <slot name="aside-right" />
+          </div>
+        )
+      }
     </div>
 
     <footer class="site-footer">
@@ -197,56 +256,7 @@ const year = new Date().getFullYear();
             stroke-linejoin="round"
           />
         </svg>
-        <ul class="socials" aria-label="Social links">
-          <li>
-            <button class="social social-email" type="button" data-copy-email="abdulla.a.albassam@gmail.com" aria-label="Copy email address to clipboard" title="Copy email">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="5" width="18" height="14" rx="2" />
-                <path d="m3 7 9 6 9-6" />
-              </svg>
-            </button>
-          </li>
-          <li>
-            <a class="social social-linkedin" href="https://linkedin.com/in/abdulla-albassam" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z" />
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a class="social social-github" href="https://github.com/Abdulla-AlBassam" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-1.97c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.18-3.08-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.62 1.58.23 2.75.11 3.04.74.8 1.18 1.82 1.18 3.08 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.13v3.16c0 .31.21.67.8.55C20.21 21.39 23.5 17.07 23.5 12 23.5 5.65 18.35.5 12 .5z" />
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a class="social social-tryhackme" href="https://tryhackme.com/p/AbdullaAlBassam" target="_blank" rel="noopener noreferrer" aria-label="TryHackMe" title="TryHackMe">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M14.79 9.05c0 .76-.62 1.38-1.39 1.38a1.39 1.39 0 1 1 1.39-1.38zm-5.94 0a1.39 1.39 0 1 1-2.77 0 1.39 1.39 0 0 1 2.77 0zM12 0C5.37 0 0 5.37 0 12c0 6.62 5.37 12 12 12s12-5.38 12-12c0-6.63-5.37-12-12-12zm0 21.65c-5.32 0-9.65-4.33-9.65-9.65 0-5.33 4.33-9.65 9.65-9.65 5.33 0 9.65 4.32 9.65 9.65 0 5.32-4.32 9.65-9.65 9.65zm-4.62-7.18a4.62 4.62 0 0 0 9.24 0H7.38z" />
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a class="social social-letterboxd" href="https://letterboxd.com/3boodi/" target="_blank" rel="noopener noreferrer" aria-label="Letterboxd" title="Letterboxd">
-              <svg viewBox="0 0 24 24" fill="none">
-                <circle cx="5" cy="12" r="3.5" fill="#00E054" />
-                <circle cx="12" cy="12" r="3.5" fill="#40BCF4" />
-                <circle cx="19" cy="12" r="3.5" fill="#F89132" />
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a class="social social-cv" href="/cv.pdf" download aria-label="Download CV" title="Download CV">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
-                <path d="M14 3v6h6" />
-                <path d="M12 12v6" />
-                <path d="m9 15 3 3 3-3" />
-              </svg>
-            </a>
-          </li>
-        </ul>
+        <Socials />
       </div>
     </footer>
 
@@ -254,26 +264,121 @@ const year = new Date().getFullYear();
 
     <script>
       const root = document.documentElement;
-      const themeToggle = document.getElementById("theme-toggle");
+      // One toggle per surface: sidebar, mobile header and the open menu.
+      const themeToggles = document.querySelectorAll<HTMLButtonElement>("[data-theme-toggle]");
 
       function syncThemeToggle() {
-        if (!themeToggle) return;
         const isDark = root.classList.contains("dark");
-        themeToggle.setAttribute("aria-pressed", String(isDark));
-        themeToggle.setAttribute(
-          "aria-label",
-          isDark ? "Switch to light mode" : "Switch to dark mode",
-        );
+        themeToggles.forEach((btn) => {
+          btn.setAttribute("aria-pressed", String(isDark));
+          btn.setAttribute(
+            "aria-label",
+            isDark ? "Switch to light mode" : "Switch to dark mode",
+          );
+        });
       }
 
       syncThemeToggle();
 
-      themeToggle?.addEventListener("click", () => {
-        const isDark = root.classList.toggle("dark");
-        try {
-          sessionStorage.setItem("theme", isDark ? "dark" : "light");
-        } catch (e) {}
-        syncThemeToggle();
+      themeToggles.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const isDark = root.classList.toggle("dark");
+          try {
+            localStorage.setItem("theme", isDark ? "dark" : "light");
+          } catch (e) {}
+          syncThemeToggle();
+        });
+      });
+
+      const menu = document.getElementById("site-menu");
+      const menuButton = document.querySelector<HTMLButtonElement>(".menu-button");
+      const menuClose = menu?.querySelector<HTMLButtonElement>(".menu-close");
+      const outside = [".brand", ".frame", ".site-footer"].map((sel) =>
+        document.querySelector<HTMLElement>(sel),
+      );
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let lastFocus: HTMLElement | null = null;
+
+      function setInert(on: boolean) {
+        outside.forEach((el) => {
+          if (el) el.inert = on;
+        });
+      }
+
+      // Safari paints a focus ring on any scripted focus(), so focus is only
+      // moved when the trigger itself was reached by keyboard.
+      function openMenu(byKeyboard: boolean) {
+        if (!menu || !menuButton || menu.hidden === false) return;
+        lastFocus = document.activeElement as HTMLElement;
+        menu.hidden = false;
+        void menu.offsetHeight; // commit the display change before the transition
+        menu.classList.add("is-open");
+        menuButton.setAttribute("aria-expanded", "true");
+        menuButton.setAttribute("aria-label", "Close menu");
+        root.classList.add("menu-open");
+        setInert(true);
+        if (byKeyboard) menuClose?.focus();
+      }
+
+      function closeMenu(byKeyboard: boolean) {
+        if (!menu || !menuButton || menu.hidden) return;
+        menu.classList.remove("is-open");
+        menuButton.setAttribute("aria-expanded", "false");
+        menuButton.setAttribute("aria-label", "Open menu");
+        root.classList.remove("menu-open");
+        setInert(false);
+        const finish = () => {
+          menu.hidden = true;
+        };
+        // Above the breakpoint the overlay is display:none, so no transition will
+        // run and transitionend would never arrive to reset hidden.
+        if (reduceMotion || getComputedStyle(menu).display === "none") {
+          finish();
+        } else {
+          menu.addEventListener("transitionend", function onEnd(ev) {
+            if (ev.target !== menu) return; // ignore the staggered list items
+            menu.removeEventListener("transitionend", onEnd);
+            finish();
+          });
+        }
+        if (byKeyboard) (lastFocus ?? menuButton).focus();
+      }
+
+      menuButton?.addEventListener("click", () => {
+        const byKeyboard = menuButton.matches(":focus-visible");
+        menu?.hidden ? openMenu(byKeyboard) : closeMenu(byKeyboard);
+      });
+      menuClose?.addEventListener("click", () => closeMenu(menuClose.matches(":focus-visible")));
+
+      document.addEventListener("keydown", (e) => {
+        if (!menu || menu.hidden) return;
+        if (e.key === "Escape") {
+          e.preventDefault();
+          closeMenu(true);
+          return;
+        }
+        if (e.key === "Tab") {
+          // Fallback trap for browsers without inert.
+          const focusable = Array.from(
+            menu.querySelectorAll<HTMLElement>("a[href], button:not([disabled])"),
+          );
+          if (!focusable.length) return;
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      });
+
+      // Growing past the breakpoint would otherwise leave the page scroll-locked
+      // behind an overlay that is no longer shown.
+      window.matchMedia("(min-width: 861px)").addEventListener("change", (e) => {
+        if (e.matches) closeMenu(false);
       });
 
       const toast = document.getElementById("toast");
@@ -303,10 +408,12 @@ const year = new Date().getFullYear();
 
     <style is:global>
       :root {
+        --font-serif: "Newsreader", "Iowan Old Style", "Palatino Linotype",
+          "Book Antiqua", "Charter", Georgia, "Times New Roman", serif;
         --pampas: #f4f3ee;
         --pampas-deep: #ece9e0;
-        --crail: #c15f3c;
-        --crail-soft: #d27a59;
+        --midnight: #272757;
+        --midnight-soft: #45459a;
         --cloudy: #b1ada1;
         --cloudy-deep: #8c8a82;
         --ink: #1a1816;
@@ -317,8 +424,9 @@ const year = new Date().getFullYear();
       html.dark {
         --pampas: #262320;
         --pampas-deep: #302c28;
-        --crail: #d8825f;
-        --crail-soft: #e6a07f;
+        /* Same hue, lifted to sit on the dark page. */
+        --midnight: #9a9ee0;
+        --midnight-soft: #b9bcee;
         --cloudy: #4a443d;
         --cloudy-deep: #a39d92;
         --ink: #f2efe7;
@@ -332,11 +440,6 @@ const year = new Date().getFullYear();
         filter: invert(1) hue-rotate(180deg);
       }
 
-      /* GitHub mark is near-black; lift it on dark. */
-      html.dark .social-github {
-        color: var(--ink-soft);
-      }
-
       * {
         box-sizing: border-box;
       }
@@ -348,13 +451,19 @@ const year = new Date().getFullYear();
 
       html {
         font-size: 95%;
+        font-optical-sizing: auto;
+      }
+
+      /* Scroll lock while the mobile menu is open; the overlay scrolls itself. */
+      html.menu-open {
+        overflow: hidden;
       }
 
       body {
         background: var(--pampas);
         color: var(--ink);
-        font-family: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
-        font-size: 14px;
+        font-family: var(--font-serif);
+        font-size: 15px;
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
@@ -362,7 +471,7 @@ const year = new Date().getFullYear();
       }
 
       a {
-        color: var(--crail);
+        color: var(--midnight);
         text-decoration: underline;
         text-decoration-thickness: 1px;
         text-underline-offset: 3px;
@@ -370,7 +479,7 @@ const year = new Date().getFullYear();
       }
 
       a:hover {
-        color: var(--crail-soft);
+        color: var(--midnight-soft);
       }
 
       p {
@@ -378,7 +487,7 @@ const year = new Date().getFullYear();
       }
 
       h1, h2, h3 {
-        font-family: "Montserrat", sans-serif;
+        font-family: var(--font-serif);
         color: var(--ink);
       }
     </style>
@@ -389,51 +498,16 @@ const year = new Date().getFullYear();
         padding: 3rem 1.5rem 0;
       }
 
-      .theme-toggle {
-        display: flex;
-        align-items: center;
-        padding: 0.15rem 0 0.15rem 0.9rem;
-        margin: 0;
-        background: none;
-        border: none;
-        color: var(--cloudy-deep);
-        cursor: pointer;
-        transition: color 0.15s ease;
+      /* Indented to sit on the nav's dot column. The toggle is a child
+         component, so its classes are reached through :global(). */
+      .sidebar :global(.sidebar-theme) {
+        padding-left: 0.9rem;
       }
 
-      .theme-toggle:hover {
-        color: var(--crail);
-      }
-
-      .theme-toggle:focus-visible {
-        outline: 2px solid var(--crail);
-        outline-offset: 3px;
-        border-radius: 2px;
-      }
-
-      .theme-icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-      }
-
-      .theme-toggle svg {
-        width: 15px;
-        height: 15px;
-        display: block;
-      }
-
-      .theme-toggle .icon-sun {
+      /* Toggle and menu button share the header's right edge below the
+         breakpoint; the sidebar carries the toggle above it. */
+      .brand-actions {
         display: none;
-      }
-
-      :global(html.dark) .theme-toggle .icon-moon {
-        display: none;
-      }
-
-      :global(html.dark) .theme-toggle .icon-sun {
-        display: block;
       }
 
       .signature-mark {
@@ -460,7 +534,7 @@ const year = new Date().getFullYear();
       }
 
       .signature-link:focus-visible {
-        outline: 2px solid var(--crail);
+        outline: 2px solid var(--midnight);
         outline-offset: 6px;
       }
 
@@ -480,7 +554,7 @@ const year = new Date().getFullYear();
         display: inline-block;
         width: 16px;
         height: 44px;
-        color: var(--crail);
+        color: var(--midnight);
         flex-shrink: 0;
         overflow: visible;
       }
@@ -518,15 +592,16 @@ const year = new Date().getFullYear();
         align-items: center;
         gap: 0.55rem;
         padding: 0.15rem 0;
-        font-family: "Montserrat", sans-serif;
-        font-size: 0.85rem;
+        font-family: var(--font-serif);
+        font-size: 0.95rem;
+        letter-spacing: 0.005em;
         color: var(--cloudy-deep);
         text-decoration: none;
         transition: color 0.15s ease;
       }
 
       .sidebar a:hover {
-        color: var(--crail);
+        color: var(--midnight);
       }
 
       .sidebar .dot {
@@ -539,11 +614,11 @@ const year = new Date().getFullYear();
       }
 
       .sidebar li.active .dot {
-        background: var(--crail);
+        background: var(--midnight);
       }
 
       .sidebar li.active a {
-        color: var(--crail);
+        color: var(--midnight);
         font-weight: 500;
       }
 
@@ -586,6 +661,28 @@ const year = new Date().getFullYear();
         min-width: 0;
       }
 
+      /* Tall strip in the right gutter, outside the content column but aligned
+         to its top edge. Frame padding + sidebar + gap + content + gutter. */
+      .aside-right-slot {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: calc(2rem + 180px + 3rem + 580px + 2.5rem);
+        width: 120px;
+        pointer-events: none;
+        user-select: none;
+        z-index: 1;
+        display: none;
+      }
+
+      /* Below this the strip would crowd the viewport edge, so it is not rendered
+         at all and the scene inside never starts. */
+      @media (min-width: 1160px) {
+        .aside-right-slot {
+          display: block;
+        }
+      }
+
       .site-footer {
         max-width: 1100px;
         margin: 0 auto;
@@ -608,11 +705,11 @@ const year = new Date().getFullYear();
 
       .site-footer .v1-link {
         color: var(--cloudy-deep);
-        font-family: "Montserrat", sans-serif;
+        font-family: var(--font-serif);
         font-size: 0.72rem;
         font-weight: 500;
         text-decoration: none;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.06em;
         text-transform: uppercase;
         border-bottom: 1px solid var(--rule);
         padding-bottom: 1px;
@@ -620,8 +717,8 @@ const year = new Date().getFullYear();
       }
 
       .site-footer .v1-link:hover {
-        color: var(--crail);
-        border-color: var(--crail);
+        color: var(--midnight);
+        border-color: var(--midnight);
       }
 
       .v1-wrap {
@@ -637,7 +734,7 @@ const year = new Date().getFullYear();
         transform: translateY(-50%);
         width: 70px;
         height: 44px;
-        color: var(--crail);
+        color: var(--midnight);
         overflow: visible;
         pointer-events: none;
       }
@@ -655,49 +752,9 @@ const year = new Date().getFullYear();
         transform: translateY(-50%);
         width: 70px;
         height: 44px;
-        color: var(--crail);
+        color: var(--midnight);
         overflow: visible;
         pointer-events: none;
-      }
-
-      .site-footer .socials {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        gap: 1.1rem;
-      }
-
-      .site-footer .socials a,
-      .site-footer .socials button {
-        display: inline-flex;
-        align-items: center;
-        text-decoration: none;
-        transition: opacity 0.15s ease, transform 0.15s ease;
-        opacity: 0.92;
-      }
-
-      .site-footer .socials button {
-        background: none;
-        border: none;
-        padding: 0;
-        margin: 0;
-        cursor: pointer;
-        font: inherit;
-        color: inherit;
-      }
-
-      .site-footer .socials a:hover,
-      .site-footer .socials button:hover {
-        opacity: 1;
-        transform: translateY(-1px);
-      }
-
-      .site-footer .socials svg {
-        width: 22px;
-        height: 22px;
-        display: block;
       }
 
       .toast {
@@ -707,7 +764,7 @@ const year = new Date().getFullYear();
         transform: translateX(-50%) translateY(8px);
         background: var(--ink);
         color: var(--pampas);
-        font-family: "Montserrat", sans-serif;
+        font-family: var(--font-serif);
         font-size: 0.78rem;
         font-weight: 500;
         letter-spacing: 0.01em;
@@ -725,54 +782,271 @@ const year = new Date().getFullYear();
         transform: translateX(-50%) translateY(0);
       }
 
-      .social-email     { color: var(--ink-soft); }
-      .social-linkedin  { color: #0A66C2; }
-      .social-github    { color: #1a1816; }
-      .social-tryhackme { color: #88CC14; }
-      .social-cv        { color: var(--crail); }
+      .menu-button {
+        display: none;
+      }
+
+      /* Two 22x1.5px hairlines that rotate into the X. Two rather than three
+         matches the weight of the rules elsewhere on the page. */
+      .menu-lines {
+        position: relative;
+        display: block;
+        width: 22px;
+        height: 9px;
+      }
+
+      .menu-lines::before,
+      .menu-lines::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 1.5px;
+        background: currentColor;
+        border-radius: 1px;
+        transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+
+      .menu-lines::before {
+        top: 0;
+      }
+
+      .menu-lines::after {
+        bottom: 0;
+      }
+
+      .menu-button[aria-expanded="true"] .menu-lines::before {
+        transform: translateY(3.75px) rotate(45deg);
+      }
+
+      .menu-button[aria-expanded="true"] .menu-lines::after {
+        transform: translateY(-3.75px) rotate(-45deg);
+      }
+
+      /* Opaque full-screen menu: repeats the header row at the same coordinates
+         so opening reads as turning to a new page rather than a sheet sliding in. */
+      .menu {
+        position: fixed;
+        inset: 0;
+        z-index: 150;
+        display: flex;
+        flex-direction: column;
+        min-height: 100dvh;
+        padding: calc(1.25rem + env(safe-area-inset-top)) 1.25rem
+          calc(1.5rem + env(safe-area-inset-bottom));
+        background: var(--pampas);
+        color: var(--ink);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        opacity: 0;
+        transition: opacity 160ms ease;
+      }
+
+      .menu[hidden] {
+        display: none;
+      }
+
+      .menu.is-open {
+        opacity: 1;
+        transition: opacity 220ms ease-out;
+      }
+
+      @media (min-width: 861px) {
+        .menu {
+          display: none !important;
+        }
+      }
+
+      .menu-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .menu-top .signature {
+        height: clamp(26px, 7.5vw, 32px);
+      }
+
+      .menu-close {
+        width: 44px;
+        height: 44px;
+        margin-right: -11px;
+        padding: 0;
+        display: grid;
+        place-items: center;
+        background: none;
+        border: 0;
+        border-radius: 50%;
+        color: var(--ink-soft);
+        cursor: pointer;
+        transition: color 0.15s ease;
+      }
+
+      .menu-close svg {
+        width: 22px;
+        height: 22px;
+        display: block;
+      }
+
+      .menu-close:hover {
+        color: var(--midnight);
+      }
+
+      .menu-close:focus-visible {
+        outline: 2px solid var(--midnight);
+        outline-offset: 2px;
+      }
+
+      .menu-nav {
+        margin-top: 2.75rem;
+      }
+
+      .menu-nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .menu-nav a {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.45rem 0;
+        font-family: var(--font-serif);
+        font-size: 2.1rem;
+        line-height: 1.2;
+        letter-spacing: -0.005em;
+        color: var(--ink-soft);
+        text-decoration: none;
+      }
+
+      .menu-nav .dot {
+        width: 0.4rem;
+        height: 0.4rem;
+        border-radius: 50%;
+        background: transparent;
+        flex-shrink: 0;
+      }
+
+      .menu-nav li.active a {
+        color: var(--midnight);
+        font-weight: 500;
+      }
+
+      .menu-nav li.active .dot {
+        background: var(--midnight);
+      }
+
+      .menu-nav a:focus-visible {
+        outline: 2px solid var(--midnight);
+        outline-offset: 4px;
+        border-radius: 2px;
+      }
+
+      .menu-nav li {
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 300ms cubic-bezier(0.2, 0.8, 0.2, 1),
+          transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+
+      .menu.is-open .menu-nav li {
+        opacity: 1;
+        transform: none;
+      }
+
+      .menu.is-open .menu-nav li:nth-child(1) { transition-delay: 60ms; }
+      .menu.is-open .menu-nav li:nth-child(2) { transition-delay: 95ms; }
+      .menu.is-open .menu-nav li:nth-child(3) { transition-delay: 130ms; }
+      .menu.is-open .menu-nav li:nth-child(4) { transition-delay: 165ms; }
+      .menu.is-open .menu-nav li:nth-child(5) { transition-delay: 200ms; }
+
+      .menu-foot {
+        margin-top: auto;
+        padding-top: 1.4rem;
+        border-top: 1px solid var(--rule);
+      }
 
       @media (max-width: 860px) {
+        .brand {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 1.25rem 1.25rem 0;
+          text-align: left;
+        }
+
+        .signature-mark,
+        .signature-link {
+          gap: 0.55rem;
+        }
+
+        .signature {
+          height: 32px;
+        }
+
+        .signature-ar {
+          height: 28px;
+        }
+
+        .signature-divider {
+          width: 12px;
+          height: 32px;
+        }
+
+        .brand-actions {
+          display: flex;
+          align-items: center;
+          gap: 0.15rem;
+        }
+
+        .brand-actions :global(.header-theme) {
+          width: 44px;
+          height: 44px;
+          justify-content: center;
+          padding: 0;
+          color: var(--ink-soft);
+        }
+
+        .brand-actions :global(.header-theme svg) {
+          width: 18px;
+          height: 18px;
+        }
+
+        .menu-button {
+          display: grid;
+          place-items: center;
+          width: 44px;
+          height: 44px;
+          /* 22px of line centred in 44px, so the icon is flush with the edge. */
+          margin-right: -11px;
+          padding: 0;
+          background: none;
+          border: 0;
+          border-radius: 50%;
+          color: var(--ink-soft);
+          cursor: pointer;
+          transition: color 0.15s ease;
+        }
+
+        .menu-button:hover {
+          color: var(--midnight);
+        }
+
+        .menu-button:focus-visible {
+          outline: 2px solid var(--midnight);
+          outline-offset: 2px;
+        }
+
         .frame {
           grid-template-columns: 1fr;
           gap: 2rem;
-          padding: 3rem 1.5rem 4rem;
+          /* Content lines up with the signature above it. */
+          padding: 2.25rem 1.25rem 3.5rem;
         }
 
-        .sidebar {
-          position: static;
-        }
-
-        .sidebar ul {
-          flex-direction: row;
-          flex-wrap: nowrap;
-          justify-content: space-between;
-          gap: 0.5rem;
-        }
-
-        .sidebar a {
-          font-size: 0.78rem;
-          gap: 0;
-          white-space: nowrap;
-        }
-
-        .sidebar .dot {
-          display: none;
-        }
-
-        .sidebar .theme-li {
-          display: flex;
-          align-items: center;
-        }
-
-        .theme-toggle {
-          padding: 0.15rem 0;
-        }
-
+        .sidebar,
         .sidebar-extra-slot {
-          display: none;
-        }
-
-        .sidebar :global(.sidebar-cartoon) {
           display: none;
         }
 
@@ -790,26 +1064,30 @@ const year = new Date().getFullYear();
       }
 
       @media (max-width: 600px) {
-        .brand {
-          padding: 2.5rem 1rem 0;
-        }
-
-        .signature-mark,
-        .signature-link {
-          gap: 0.55rem;
-        }
-
         .signature {
-          height: clamp(24px, 7.2vw, 40px);
+          height: clamp(26px, 7.5vw, 32px);
         }
 
-        .signature-ar {
-          height: clamp(21px, 6.2vw, 34px);
-        }
-
+        .signature-ar,
         .signature-divider {
-          width: clamp(9px, 2.6vw, 14px);
-          height: clamp(24px, 7.2vw, 40px);
+          display: none;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .menu {
+          transition-duration: 120ms;
+        }
+
+        .menu-nav li {
+          transform: none;
+          transition: opacity 120ms ease;
+          transition-delay: 0ms !important;
+        }
+
+        .menu-lines::before,
+        .menu-lines::after {
+          transition: none;
         }
       }
     </style>

@@ -154,21 +154,21 @@ const certLightboxId = `${id}-cert-lightbox`;
     padding: 0;
     margin: 0;
     font: inherit;
-    color: var(--crail);
+    color: var(--midnight);
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 3px;
     cursor: pointer;
     transition: color 0.15s ease;
   }
-  .link-button:hover { color: var(--crail-soft); }
+  .link-button:hover { color: var(--midnight-soft); }
   .link-button:focus-visible {
-    outline: 2px solid var(--crail);
+    outline: 2px solid var(--midnight);
     outline-offset: 3px;
     border-radius: 2px;
   }
   .link-button.strong-link {
-    color: var(--crail);
+    color: var(--midnight);
     font-weight: 600;
   }
 
@@ -185,7 +185,7 @@ const certLightboxId = `${id}-cert-lightbox`;
     border-radius: 14px;
     background: var(--pampas);
     color: var(--ink);
-    font-family: "Montserrat", sans-serif;
+    font-family: var(--font-serif);
     box-shadow: 0 30px 80px rgba(20, 18, 16, 0.28), 0 2px 8px rgba(20, 18, 16, 0.08);
     will-change: transform, opacity, filter, border-radius;
   }
@@ -259,7 +259,7 @@ const certLightboxId = `${id}-cert-lightbox`;
   .modal-eyebrow {
     font-size: 0.62rem;
     font-weight: 600;
-    letter-spacing: 0.22em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--cloudy-deep);
     line-height: 1;
@@ -294,7 +294,7 @@ const certLightboxId = `${id}-cert-lightbox`;
     border-radius: 6px;
     color: var(--ink);
     text-decoration: none;
-    font-family: "Montserrat", sans-serif;
+    font-family: var(--font-serif);
     font-size: 0.86rem;
     font-weight: 500;
     line-height: 1;
@@ -311,15 +311,15 @@ const certLightboxId = `${id}-cert-lightbox`;
   .modal-btn .label { flex: 1; }
   .modal-btn .arrow { color: var(--cloudy-deep); }
   .modal-btn:hover {
-    background: var(--crail);
+    background: var(--midnight);
     color: var(--pampas);
-    border-color: var(--crail);
+    border-color: var(--midnight);
   }
   .modal-btn:hover .icon,
   .modal-btn:hover .arrow { color: var(--pampas); }
   .modal-btn:hover .arrow { transform: translateX(3px); }
   .modal-btn:focus-visible {
-    outline: 2px solid var(--crail);
+    outline: 2px solid var(--midnight);
     outline-offset: 2px;
   }
 
@@ -348,11 +348,11 @@ const certLightboxId = `${id}-cert-lightbox`;
     border-radius: 3px;
   }
   .cert-trigger:hover {
-    border-color: var(--crail);
+    border-color: var(--midnight);
     transform: translateY(-1px);
   }
   .cert-trigger:focus-visible {
-    outline: 2px solid var(--crail);
+    outline: 2px solid var(--midnight);
     outline-offset: 2px;
   }
   .cert-zoom-hint {

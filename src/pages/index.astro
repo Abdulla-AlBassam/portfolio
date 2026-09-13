@@ -49,59 +49,43 @@ import LinkModal from "@/components/LinkModal.astro";
       where we built an AI-driven digital solution to a problem affecting the people of the UK.
     </p>
 
-    <h2 class="block-heading">Experience</h2>
-    <ul class="entries">
-      <li>
-        <div class="entry-row">
-          <div>
-            <strong>Information Security Intern</strong>
-            <span class="muted institution">Investcorp</span>
-          </div>
-          <span class="meta">Jul – Aug 2026</span>
-        </div>
+    <h2 class="ledger-heading">Experience</h2>
+    <ul class="ledger-list">
+      <li class="ledger-entry">
+        <p class="ledger-when">Jul – Aug 2026</p>
+        <p class="ledger-title">
+          <span>Information Security Assurance</span> <span class="ledger-org">Investcorp</span>
+          <span class="ledger-kind">Intern</span>
+        </p>
       </li>
-      <li>
-        <div class="entry-row">
-          <div>
-            <strong>Software Engineering Consultant</strong>
-            <span class="muted institution">JABA</span>
-          </div>
-          <span class="meta">Freelance · Jun – Aug 2026</span>
-        </div>
+      <li class="ledger-entry">
+        <p class="ledger-when">Jun – Aug 2026</p>
+        <p class="ledger-title">
+          <span>Software Engineering Consultant</span> <span class="ledger-org">JABA</span>
+          <span class="ledger-kind">Freelance</span>
+        </p>
       </li>
     </ul>
 
-    <h2 class="block-heading">Education</h2>
-    <ul class="entries">
-      <li>
-        <div class="entry-row">
-          <div>
-            <strong>BSc (Hons) Networks &amp; Cyber Security</strong>
-            <span class="muted institution">Northumbria University</span>
-          </div>
-          <span class="meta">2023 – 2026</span>
-        </div>
-        <p class="muted small">First Class Honours.</p>
+    <h2 class="ledger-heading">Education</h2>
+    <ul class="ledger-list">
+      <li class="ledger-entry">
+        <p class="ledger-when">2023 – 2026</p>
+        <p class="ledger-title">
+          <span>BSc (Hons) Networks &amp; Cyber Security</span> <span class="ledger-org">Northumbria University</span>
+        </p>
       </li>
-      <li>
-        <div class="entry-row">
-          <div>
-            <strong>Foundation Year: Economics &amp; Mathematics</strong>
-            <span class="muted institution">King's College London</span>
-          </div>
-          <span class="meta">2022 – 2023</span>
-        </div>
-        <p class="muted small">Grade: 2:1.</p>
+      <li class="ledger-entry">
+        <p class="ledger-when">2022 – 2023</p>
+        <p class="ledger-title">
+          <span>Foundation Year: Economics &amp; Mathematics</span> <span class="ledger-org">King's College London</span>
+        </p>
       </li>
-      <li>
-        <div class="entry-row">
-          <div>
-            <strong>American Diploma with Honours</strong>
-            <span class="muted institution">Modern Knowledge Schools, Bahrain</span>
-          </div>
-          <span class="meta">2008 – 2022</span>
-        </div>
-        <p class="muted small">Grade: 98%</p>
+      <li class="ledger-entry">
+        <p class="ledger-when">2008 – 2022</p>
+        <p class="ledger-title">
+          <span>American Diploma with Honours</span> <span class="ledger-org">Modern Knowledge Schools, Bahrain</span>
+        </p>
       </li>
     </ul>
   </section>
@@ -147,74 +131,95 @@ import LinkModal from "@/components/LinkModal.astro";
     }
   }
 
-  .about strong {
+  /* Heading: small, sitting on a hairline that runs to the column edge */
+  .ledger-heading {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+    margin: 2.25rem 0 0.7rem;
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 1.1rem;
+    line-height: 1.2;
+    letter-spacing: 0.005em;
     color: var(--ink);
-    font-weight: 600;
   }
 
-  .about em {
-    color: var(--ink);
-    font-style: normal;
-    font-weight: 500;
+  /* An empty flex item takes its baseline from the bottom of its border box,
+     so the rule lands on the word's baseline; the nudge clears the descenders. */
+  .ledger-heading::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+    top: 2px;
   }
 
-  .block-heading {
-    font-family: "Montserrat", sans-serif;
-    font-size: 0.68rem;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--cloudy-deep);
-    margin: 1rem 0 1rem;
-  }
-
-  .entries {
+  .ledger-list {
     list-style: none;
     padding: 0;
     margin: 0;
   }
 
-  .entries > li {
-    padding: 0.7rem 0;
-    border-bottom: 1px solid var(--rule);
-  }
-
-  .entries > li:last-child {
-    border-bottom: none;
-  }
-
-  .entry-row {
-    display: flex;
-    justify-content: space-between;
+  .ledger-entry {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+    column-gap: 1rem;
     align-items: baseline;
-    gap: 1rem;
+    padding: 0.42rem 0;
   }
 
-  .entry-row strong {
-    color: var(--ink);
-    font-weight: 600;
+  .ledger-entry p {
+    margin: 0;
   }
 
-  .meta {
-    font-family: "Montserrat", sans-serif;
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.06em;
+  /* Date margin, tabular figures so the years stack cleanly */
+  .ledger-when {
+    font-size: 0.78rem;
+    line-height: 1.5;
     color: var(--cloudy-deep);
+    font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
 
-  .muted {
+  .ledger-title {
+    font-size: 0.92rem;
+    line-height: 1.45;
+    font-weight: 500;
+    color: var(--ink);
+    text-wrap: pretty;
+  }
+
+  /* Separators hang off the preceding span so they trail at a line end. */
+  .ledger-title > span:not(:last-child)::after {
+    content: " ·";
     color: var(--cloudy-deep);
   }
 
-  .institution {
-    display: block;
-    margin-top: 0.15rem;
+  .ledger-org {
+    font-weight: 400;
+    color: var(--midnight);
   }
 
-  .small {
-    font-size: 0.8rem;
-    margin: 0.3rem 0 0;
+  .ledger-kind {
+    font-weight: 400;
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 600px) {
+    .ledger-entry {
+      display: block;
+      padding: 0.5rem 0;
+    }
+
+    .ledger-when {
+      white-space: normal;
+      margin-bottom: 0.05rem;
+    }
+
+    .ledger-title > span:not(:last-child)::after {
+      content: ",";
+      color: inherit;
+    }
   }
 </style>

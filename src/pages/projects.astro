@@ -211,6 +211,14 @@ const filters = [
                       <span class="in-progress">In progress</span>
                     </>
                   )}
+                  {(p.href || p.modal) && (
+                    <span class="project-arrow" aria-hidden="true">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="7" y1="17" x2="17" y2="7" />
+                        <polyline points="7 7 17 7 17 17" />
+                      </svg>
+                    </span>
+                  )}
                 </span>
               </Tag>
             </li>
@@ -325,7 +333,7 @@ const filters = [
   }
 
   .filter {
-    font-family: "Montserrat", sans-serif;
+    font-family: var(--font-serif);
     font-size: 0.72rem;
     font-weight: 500;
     color: var(--cloudy-deep);
@@ -343,9 +351,10 @@ const filters = [
   }
 
   .filter.active {
-    background: var(--crail);
-    border-color: var(--crail);
+    background: var(--midnight);
+    border-color: var(--midnight);
     color: var(--pampas);
+    font-weight: 600;
   }
 
   .project-list {
@@ -375,12 +384,12 @@ const filters = [
 
   a.project-row:hover,
   button.project-row:hover {
-    color: var(--crail);
+    color: var(--midnight);
   }
 
   a.project-row:hover .project-year,
   button.project-row:hover .project-year {
-    color: var(--crail);
+    color: var(--midnight);
   }
 
   button.project-row {
@@ -393,7 +402,7 @@ const filters = [
   }
 
   .project-title {
-    font-family: "Montserrat", sans-serif;
+    font-family: var(--font-serif);
     font-size: 0.92rem;
     font-weight: 500;
     line-height: 1.4;
@@ -407,7 +416,7 @@ const filters = [
   }
 
   .project-year {
-    font-family: "Montserrat", sans-serif;
+    font-family: var(--font-serif);
     font-size: 0.72rem;
     font-weight: 500;
     letter-spacing: 0.06em;
@@ -421,12 +430,27 @@ const filters = [
   }
 
   .in-progress {
-    font-family: "Montserrat", sans-serif;
+    font-family: var(--font-serif);
     font-size: 0.68rem;
     font-weight: 600;
-    color: var(--crail);
+    color: var(--midnight);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.06em;
+  }
+
+  /* Same north-east arrow, position and hover nudge as the certification rows
+     on /skills. */
+  .project-arrow {
+    color: var(--cloudy-deep);
+    display: inline-flex;
+    flex-shrink: 0;
+    transition: color 0.15s ease, transform 0.15s ease;
+  }
+
+  a.project-row:hover .project-arrow,
+  button.project-row:hover .project-arrow {
+    color: var(--midnight);
+    transform: translate(2px, -2px);
   }
 
   div.project-row {
@@ -454,6 +478,16 @@ const filters = [
       flex-direction: column;
       align-items: flex-start;
       gap: 0.35rem;
+    }
+
+    /* Stacked under the title, the meta line spans the row so the arrow can keep
+       the right edge while the year and status stay tight together on the left. */
+    .project-meta {
+      width: 100%;
+    }
+
+    .project-arrow {
+      margin-left: auto;
     }
   }
 </style>

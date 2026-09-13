@@ -85,7 +85,7 @@ const certs: Cert[] = [
                   <span class="muted"> · {c.issuer}</span>
                 </div>
                 {c.status && <span class="cert-status">{c.status}</span>}
-                {(c.href || c.modal) && !c.status && (
+                {(c.href || c.modal) && (
                   <span class="cert-arrow" aria-hidden="true">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <line x1="7" y1="17" x2="17" y2="7" />
@@ -184,10 +184,10 @@ const certs: Cert[] = [
   }
 
   .block-heading {
-    font-family: "Montserrat", sans-serif;
+    font-family: var(--font-serif);
     font-size: 0.68rem;
     font-weight: 600;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--cloudy-deep);
     margin: 0 0 0.85rem;
@@ -253,12 +253,12 @@ const certs: Cert[] = [
 
   a.cert-row:hover,
   button.cert-row:hover {
-    color: var(--crail);
+    color: var(--midnight);
   }
 
   a.cert-row:hover strong,
   button.cert-row:hover strong {
-    color: var(--crail);
+    color: var(--midnight);
   }
 
   .cert-row strong {
@@ -270,12 +270,13 @@ const certs: Cert[] = [
   .cert-arrow {
     color: var(--cloudy-deep);
     display: inline-flex;
+    flex-shrink: 0;
     transition: color 0.15s ease, transform 0.15s ease;
   }
 
   a.cert-row:hover .cert-arrow,
   button.cert-row:hover .cert-arrow {
-    color: var(--crail);
+    color: var(--midnight);
     transform: translate(2px, -2px);
   }
 
@@ -283,14 +284,17 @@ const certs: Cert[] = [
     color: var(--cloudy-deep);
   }
 
+  /* The auto margin takes the row's free space, so a status and an arrow sit
+     together at the right edge instead of being spread apart by space-between. */
   .cert-status {
-    font-family: "Montserrat", sans-serif;
+    font-family: var(--font-serif);
     font-size: 0.68rem;
     font-weight: 600;
-    color: var(--crail);
+    color: var(--midnight);
     white-space: nowrap;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.06em;
+    margin-left: auto;
   }
 </style>
 
