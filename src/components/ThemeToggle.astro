@@ -65,15 +65,15 @@ const { class: className } = Astro.props;
     display: block;
   }
 
-  .icon-sun {
+  .theme-toggle .icon-sun {
     display: none;
   }
 
-  :global(html.dark) .icon-moon {
+  :global(html.dark) .theme-toggle .icon-moon {
     display: none;
   }
 
-  :global(html.dark) .icon-sun {
+  :global(html.dark) .theme-toggle .icon-sun {
     display: block;
   }
 </style>

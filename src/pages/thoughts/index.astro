@@ -10,16 +10,8 @@ const thoughts = await getThoughts();
   description="Occasional writing on security, building things, and looking at things."
   active="thoughts"
 >
-  <p class="thoughts-lede">
-    Occasional writing on security, building things, and looking at things.
-  </p>
-
   {
-    thoughts.length === 0 ? (
-      <div class="thoughts-empty">
-        <p>Nothing published yet. The first piece is being written.</p>
-      </div>
-    ) : (
+    thoughts.length > 0 && (
       <ul class="thought-grid">
         {thoughts.map((thought, i) => (
           <li>
@@ -44,14 +36,6 @@ const thoughts = await getThoughts();
 </MinimalLayout>
 
 <style>
-  .thoughts-lede {
-    margin: 0 0 1.75rem;
-    color: var(--cloudy-deep);
-    font-family: var(--font-serif, "Newsreader", Georgia, serif);
-    font-size: 0.95rem;
-    font-style: italic;
-  }
-
   .thought-grid {
     list-style: none;
     margin: 0;
@@ -130,21 +114,6 @@ const thoughts = await getThoughts();
     }
   }
 
-  .thoughts-empty {
-    border: 1px dashed var(--rule);
-    border-radius: 6px;
-    padding: 2.25rem 1.5rem;
-    text-align: center;
-    color: var(--cloudy-deep);
-    font-family: var(--font-serif, "Newsreader", Georgia, serif);
-    font-style: italic;
-    font-size: 0.98rem;
-  }
-
-  .thoughts-empty p {
-    margin: 0;
-  }
-
   @media (max-width: 860px) {
     .thought-grid {
       column-gap: 1.1rem;
@@ -154,11 +123,6 @@ const thoughts = await getThoughts();
     .thought-title {
       font-size: 0.98rem;
       margin-top: 0.6rem;
-    }
-
-    .thoughts-lede {
-      font-size: 0.92rem;
-      margin-bottom: 1.25rem;
     }
   }
 
