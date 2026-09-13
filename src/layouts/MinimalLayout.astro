@@ -264,6 +264,8 @@ const year = new Date().getFullYear();
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
     <script>
+      import { CountUp } from "countup.js";
+
       // Live visitor counter (abacus, a free key/value hit counter).
       // Counts once per browser session; later pages only read the value.
       const visitorEl = document.querySelector<HTMLElement>("[data-visitor]");
@@ -292,24 +294,25 @@ const year = new Date().getFullYear();
                 : "th";
               return `${n.toLocaleString("en-GB")}${suffix}`;
             };
-            // Odometer: the previous number is shown first and rolls up
-            // to the visitor's own once the footer scrolls into view.
-            const roll = document.createElement("span");
-            roll.className = "visitor-roll";
-            for (const n of [Math.max(value - 1, 0), value]) {
-              const line = document.createElement("span");
-              line.textContent = ordinal(n);
-              roll.append(line);
-            }
+            // Counts up from zero (CountUp.js) once the footer scrolls into view.
             const num = document.createElement("span");
             num.className = "visitor-num";
-            num.append(roll);
+            num.textContent = ordinal(value);
             visitorEl.replaceChildren("You are the ", num, " person to see this! :)");
             visitorEl.hidden = false;
+            const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+            if (reduceMotion) return;
+            const countUp = new CountUp(num, value, {
+              startVal: 0,
+              duration: 2,
+              formattingFn: (n) => ordinal(Math.round(n)),
+            });
+            if (countUp.error) return;
+            num.textContent = ordinal(0);
             const observer = new IntersectionObserver((entries) => {
               if (!entries.some((e) => e.isIntersecting)) return;
               observer.disconnect();
-              setTimeout(() => roll.classList.add("is-live"), 500);
+              setTimeout(() => countUp.start(), 300);
             });
             observer.observe(visitorEl);
           })
@@ -702,9 +705,10 @@ const year = new Date().getFullYear();
         height: auto;
         margin-top: var(--extra-offset, 18rem);
         /* Comes to rest just clear of the nav rather than sliding behind it:
-           3rem of sidebar offset, ~9rem of nav, then breathing room. */
+           7.5rem of sidebar offset (under the pinned header), ~9rem of nav,
+           then breathing room. */
         position: sticky;
-        top: 14rem;
+        top: 21rem;
       }
 
       .sidebar :global(.sidebar-cartoon) {
@@ -767,27 +771,7 @@ const year = new Date().getFullYear();
       }
 
       .site-footer :global(.visitor-num) {
-        display: inline-block;
-        vertical-align: bottom;
-        height: 1.25em;
-        line-height: 1.25em;
-        overflow: hidden;
-      }
-
-      .site-footer :global(.visitor-roll) {
-        display: flex;
-        flex-direction: column;
-        transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
-      }
-
-      .site-footer :global(.visitor-roll.is-live) {
-        transform: translateY(-50%);
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        .site-footer :global(.visitor-roll) {
-          transition: none;
-        }
+        font-variant-numeric: tabular-nums;
       }
 
       .site-footer .sep {
