@@ -75,7 +75,7 @@ const year = new Date().getFullYear();
     <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
-    <script defer src="https://cloud.umami.is/script.js" data-website-id="8c977691-5137-4260-bd4b-9abd81c35a1a"></script>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="6c39e7c8-43d5-47a8-931e-8cb32be0dc68"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -236,6 +236,7 @@ const year = new Date().getFullYear();
             />
           </svg>
         </span>
+        <span class="visitor" data-visitor hidden></span>
       </p>
       <div class="socials-wrap">
         <svg class="socials-arrow" viewBox="0 0 90 56" aria-hidden="true">
@@ -263,6 +264,61 @@ const year = new Date().getFullYear();
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
     <script>
+      import { CountUp } from "countup.js";
+
+      // Live visitor counter (abacus, a free key/value hit counter).
+      // Counts once per browser session; later pages only read the value.
+      const visitorEl = document.querySelector<HTMLElement>("[data-visitor]");
+      if (visitorEl) {
+        const counter = "https://abacus.jasoncameron.dev";
+        const key = "abdullaalbassam-com/visits";
+        let seen = false;
+        try {
+          seen = sessionStorage.getItem("visitor-counted") === "1";
+        } catch (e) {}
+        fetch(`${counter}/${seen ? "get" : "hit"}/${key}`)
+          .then((r) => r.json())
+          .then(({ value }: { value: number }) => {
+            if (!Number.isInteger(value)) return;
+            try {
+              sessionStorage.setItem("visitor-counted", "1");
+            } catch (e) {}
+            const ordinal = (n: number) => {
+              const mod100 = n % 100;
+              const mod10 = n % 10;
+              const suffix =
+                mod100 >= 11 && mod100 <= 13 ? "th"
+                : mod10 === 1 ? "st"
+                : mod10 === 2 ? "nd"
+                : mod10 === 3 ? "rd"
+                : "th";
+              return `${n.toLocaleString("en-GB")}${suffix}`;
+            };
+            // Counts up from zero (CountUp.js) once the footer scrolls into view.
+            const num = document.createElement("span");
+            num.className = "visitor-num";
+            num.textContent = ordinal(value);
+            visitorEl.replaceChildren("You are the ", num, " person to see this! :)");
+            visitorEl.hidden = false;
+            const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+            if (reduceMotion) return;
+            const countUp = new CountUp(num, value, {
+              startVal: 0,
+              duration: 2,
+              formattingFn: (n) => ordinal(Math.round(n)),
+            });
+            if (countUp.error) return;
+            num.textContent = ordinal(0);
+            const observer = new IntersectionObserver((entries) => {
+              if (!entries.some((e) => e.isIntersecting)) return;
+              observer.disconnect();
+              setTimeout(() => countUp.start(), 300);
+            });
+            observer.observe(visitorEl);
+          })
+          .catch(() => {});
+      }
+
       const root = document.documentElement;
       // One toggle per surface: sidebar, mobile header and the open menu.
       const themeToggles = document.querySelectorAll<HTMLButtonElement>("[data-theme-toggle]");
@@ -493,9 +549,15 @@ const year = new Date().getFullYear();
     </style>
 
     <style>
+      /* Stays pinned while scrolling so the home link (and, on mobile,
+         the menu) is always reachable. Sits under the menu overlay. */
       .brand {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: var(--pampas);
         text-align: center;
-        padding: 3rem 1.5rem 0;
+        padding: 3rem 1.5rem 0.75rem;
       }
 
       /* Indented to sit on the nav's dot column. The toggle is a child
@@ -572,7 +634,7 @@ const year = new Date().getFullYear();
 
       .sidebar {
         position: sticky;
-        top: 3rem;
+        top: 7.5rem; /* clears the sticky header */
         align-self: start;
         z-index: 2;
         background: var(--pampas);
@@ -643,9 +705,10 @@ const year = new Date().getFullYear();
         height: auto;
         margin-top: var(--extra-offset, 18rem);
         /* Comes to rest just clear of the nav rather than sliding behind it:
-           3rem of sidebar offset, ~9rem of nav, then breathing room. */
+           7.5rem of sidebar offset (under the pinned header), ~9rem of nav,
+           then breathing room. */
         position: sticky;
-        top: 14rem;
+        top: 21rem;
       }
 
       .sidebar :global(.sidebar-cartoon) {
@@ -696,6 +759,19 @@ const year = new Date().getFullYear();
 
       .site-footer .copy {
         margin: 0;
+      }
+
+      .site-footer .visitor {
+        display: block;
+        margin-top: 0.35rem;
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-size: 0.78rem;
+        color: var(--cloudy-deep);
+      }
+
+      .site-footer :global(.visitor-num) {
+        font-variant-numeric: tabular-nums;
       }
 
       .site-footer .sep {
@@ -972,7 +1048,7 @@ const year = new Date().getFullYear();
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 1.25rem 1.25rem 0;
+          padding: 1.25rem 1.25rem 0.75rem;
           text-align: left;
         }
 
