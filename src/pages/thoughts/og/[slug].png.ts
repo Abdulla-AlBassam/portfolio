@@ -22,7 +22,7 @@ const escape = (value: string) =>
 export const GET: APIRoute = async ({ props }) => {
   const entry = props.entry as Thought;
 
-  // The cover is square, so cropping to 1.91:1 keeps its middle band only.
+  // The cover is 3:2, so cropping to 1.91:1 trims a little off the top and bottom.
   const cover = await sharp(path.join(process.cwd(), "public", entry.data.cover))
     .resize(WIDTH, HEIGHT, { fit: "cover", position: "centre" })
     .jpeg({ quality: 82 })
