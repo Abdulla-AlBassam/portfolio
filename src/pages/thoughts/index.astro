@@ -13,23 +13,13 @@ const thoughts = await getThoughts();
   {
     thoughts.length > 0 && (
       <ul class="thought-list">
-        {thoughts.map((thought, i) => (
+        {thoughts.map((thought) => (
           <li>
             <a class="thought-card" href={`/thoughts/${thought.id}`}>
               <span class="thought-title">{thought.data.title}</span>
               <time class="thought-date" datetime={monthStamp(thought.data.date)}>
                 {monthYear(thought.data.date)}
               </time>
-              <span class="thought-cover">
-                <img
-                  src={thought.data.cover}
-                  alt={thought.data.coverAlt}
-                  width="1800"
-                  height="1200"
-                  loading={i < 2 ? "eager" : "lazy"}
-                  decoding="async"
-                />
-              </span>
             </a>
           </li>
         ))}
@@ -39,13 +29,14 @@ const thoughts = await getThoughts();
 </MinimalLayout>
 
 <style>
+  /* One column: each entry is its title and date, spaced apart, no rules between. */
   .thought-list {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 3.5rem;
+    gap: 2.25rem;
   }
 
   .thought-card {
@@ -79,45 +70,7 @@ const thoughts = await getThoughts();
     letter-spacing: 0.01em;
   }
 
-  /* Landscape, square-cornered, the full width of the content column. */
-  .thought-cover {
-    display: block;
-    position: relative;
-    margin-top: 1.1rem;
-    aspect-ratio: 3 / 2;
-    overflow: hidden;
-    background: var(--pampas-deep);
-  }
-
-  .thought-cover img {
-    display: block;
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transform: scale(1);
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  /* Hairline keeps a dark image from dissolving into the dark page. */
-  .thought-cover::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
-    pointer-events: none;
-  }
-
-  :global(html.dark) .thought-cover::after {
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
-  }
-
   @media (hover: hover) {
-    .thought-card:hover .thought-cover img {
-      transform: scale(1.03);
-    }
-
     .thought-card:hover .thought-title {
       color: var(--midnight, #272757);
     }
@@ -125,26 +78,17 @@ const thoughts = await getThoughts();
 
   @media (max-width: 860px) {
     .thought-list {
-      gap: 2.5rem;
+      gap: 1.9rem;
     }
 
     .thought-title {
       font-size: 1.2rem;
     }
-
-    .thought-cover {
-      margin-top: 0.9rem;
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .thought-cover img,
     .thought-title {
       transition: none;
-    }
-
-    .thought-card:hover .thought-cover img {
-      transform: none;
     }
   }
 </style>
