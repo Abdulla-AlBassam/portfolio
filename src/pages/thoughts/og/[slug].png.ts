@@ -8,6 +8,8 @@ import { getThoughts, type Thought } from "../_thoughts";
 
 const WIDTH = 1200;
 const HEIGHT = 627;
+// Rasterised at 2x so the title stays crisp after LinkedIn and WhatsApp resample it.
+const SCALE = 2;
 const MIDNIGHT = "#272757"; // the site accent, as it is in the light theme
 const PAPER = "#f4f3ee";
 
@@ -44,6 +46,6 @@ export const GET: APIRoute = async ({ props }) => {
     ],
   });
 
-  const png = new Resvg(svg, { fitTo: { mode: "width", value: WIDTH } }).render().asPng();
+  const png = new Resvg(svg, { fitTo: { mode: "width", value: WIDTH * SCALE } }).render().asPng();
   return new Response(new Uint8Array(png), { headers: { "Content-Type": "image/png" } });
 };
