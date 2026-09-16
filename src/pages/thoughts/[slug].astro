@@ -15,7 +15,7 @@ interface Props {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 
-const ogImage = new URL(`/thoughts/og/${entry.id}.png`, Astro.site).href;
+const ogImage = new URL(`/thoughts/og/${entry.id}.jpg`, Astro.site).href;
 const published = entry.data.date.toISOString();
 ---
 
