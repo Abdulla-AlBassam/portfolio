@@ -57,14 +57,9 @@ const { class: className } = Astro.props;
       </svg>
     </a>
   </li>
-  <li>
+  <li class="social-cv-item">
     <a class="social social-cv" href="/cv.pdf" download aria-label="Download CV" title="Download CV">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
-        <path d="M14 3v6h6" />
-        <path d="M12 12v6" />
-        <path d="m9 15 3 3 3-3" />
-      </svg>
+      <span class="social-cv-text">CV</span>
     </a>
   </li>
 </ul>
@@ -120,6 +115,21 @@ const { class: className } = Astro.props;
   .social-hackthebox { color: #9FEF00; }
   .social-tryhackme { color: #88CC14; }
   .social-cv        { color: var(--midnight); }
+
+  /* Icon items carry descender space below the glyph, so the row centres
+     them high. Pin the text item to the same top edge. */
+  .social-cv-item { align-self: flex-start; }
+
+  /* The CV link is the word itself, underlined like a body link. */
+  .social-cv-text {
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 22px;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
 
   /* GitHub mark is near-black; lift it on dark. */
   :global(html.dark) .social-github {
