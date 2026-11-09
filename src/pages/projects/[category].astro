@@ -1,0 +1,231 @@
+---
+import MinimalLayout from "@/layouts/MinimalLayout.astro";
+import LinkModal from "@/components/LinkModal.astro";
+import { categories, projects, modals } from "./_projects";
+
+export function getStaticPaths() {
+  return categories.map((category) => ({
+    params: { category: category.id },
+    props: { category },
+  }));
+}
+
+const { category } = Astro.props;
+const list = projects.filter((p) => p.categories.includes(category.id));
+const pageModals = modals.filter((m) => list.some((p) => p.modal === m.id));
+---
+
+<MinimalLayout title={`${category.label} Projects – Abdulla AlBassam`} active="projects">
+  <img slot="sidebar-extra" src="/cat.webp" alt="" class="sidebar-cartoon" />
+  <section class="projects">
+    <a class="back" href="/projects">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="19" y1="12" x2="5" y2="12" />
+        <polyline points="12 19 5 12 12 5" />
+      </svg>
+      Projects
+    </a>
+    <h2 class="category-title">{category.label}</h2>
+
+    <ul class="project-list">
+      {
+        list.map((p) => {
+          const Tag = p.modal ? "button" : p.href ? "a" : "div";
+          const tagProps = p.modal
+            ? { type: "button", "data-modal-trigger": p.modal }
+            : p.href
+            ? p.external
+              ? { href: p.href, target: "_blank", rel: "noopener noreferrer" }
+              : { href: p.href }
+            : {};
+          return (
+            <li class="project-item">
+              <Tag class="project-row" {...tagProps}>
+                <span class="project-title">{p.title}</span>
+                <span class="project-meta">
+                  <span class="project-year">{p.year}</span>
+                  {p.inProgress && (
+                    <>
+                      <span class="meta-sep" aria-hidden="true">·</span>
+                      <span class="in-progress">In progress</span>
+                    </>
+                  )}
+                  {(p.href || p.modal) && (
+                    <span class="project-arrow" aria-hidden="true">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="7" y1="17" x2="17" y2="7" />
+                        <polyline points="7 7 17 7 17 17" />
+                      </svg>
+                    </span>
+                  )}
+                </span>
+              </Tag>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </section>
+
+  {pageModals.map((m) => <LinkModal eyebrow="View project" {...m} />)}
+</MinimalLayout>
+
+<style is:global>
+  body:has(.projects) .sidebar-cartoon {
+    transform: translateX(-1rem);
+  }
+</style>
+
+<style>
+  .projects {
+    color: var(--ink-soft);
+  }
+
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    color: var(--cloudy-deep);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .back svg {
+    transition: transform 0.15s ease;
+  }
+
+  .back:hover {
+    color: var(--midnight);
+  }
+
+  .back:hover svg {
+    transform: translateX(-2px);
+  }
+
+  .category-title {
+    margin: 0.9rem 0 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--rule);
+    font-size: 1.35rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.008em;
+  }
+
+  .project-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .project-item {
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .project-item:last-child {
+    border-bottom: none;
+  }
+
+  .project-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1.25rem;
+    padding: 0.8rem 0;
+    color: var(--ink);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  a.project-row:hover,
+  button.project-row:hover {
+    color: var(--midnight);
+  }
+
+  a.project-row:hover .project-year,
+  button.project-row:hover .project-year {
+    color: var(--midnight);
+  }
+
+  button.project-row {
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    font: inherit;
+  }
+
+  .project-title {
+    font-family: var(--font-serif);
+    font-size: 0.92rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .project-meta {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    white-space: nowrap;
+  }
+
+  .project-year {
+    font-family: var(--font-serif);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--cloudy-deep);
+    transition: color 0.15s ease;
+  }
+
+  .meta-sep {
+    color: var(--cloudy);
+    font-size: 0.72rem;
+  }
+
+  .in-progress {
+    font-family: var(--font-serif);
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--midnight);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .project-arrow {
+    color: var(--cloudy-deep);
+    display: inline-flex;
+    flex-shrink: 0;
+    transition: color 0.15s ease, transform 0.15s ease;
+  }
+
+  a.project-row:hover .project-arrow,
+  button.project-row:hover .project-arrow {
+    color: var(--midnight);
+    transform: translate(2px, -2px);
+  }
+
+  div.project-row {
+    cursor: default;
+  }
+
+  @media (max-width: 600px) {
+    .project-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.35rem;
+    }
+
+    /* Stacked under the title, the meta line spans the row so the arrow can keep
+       the right edge while the year and status stay tight together on the left. */
+    .project-meta {
+      width: 100%;
+    }
+
+    .project-arrow {
+      margin-left: auto;
+    }
+  }
+</style>
